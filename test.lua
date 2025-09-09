@@ -1,6 +1,8 @@
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
 -- Tạo ScreenGui
 local gui = Instance.new("ScreenGui", playerGui)
@@ -81,10 +83,65 @@ hideBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- Auto Parry logic (ví dụ)
+-- Logic Auto Parry
+
 local autoParryOn = false
+local mouse = player:GetMouse()
+
 toggleBtn.MouseButton1Click:Connect(function()
     autoParryOn = not autoParryOn
     status.Text = "Auto Parry: " .. (autoParryOn and "ON" or "OFF")
-    -- Gắn logic auto parry ở đây
+end)
+
+-- Hàm kiểm tra bóng bay về phía người chơi
+local function isBallComingToPlayer(ball)
+    if not ball or not ball:IsA("BasePart") then return false end
+    -- Tính vector hướng bóng di chuyển
+    local velocity = ball.Velocity
+    if velocity.Magnitude < 1 then return false end
+    
+    -- Vector từ bóng đến người chơi
+    local playerPos = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
+    if not playerPos then return false end
+    
+    local directionToPlayer = (playerPos - ball.Position).Unit
+    
+    -- Kiểm tra nếu bóng bay gần hướng về người chơi (góc nhỏ hơn 30 độ)
+    local dot = velocity.Unit:Dot(directionToPlayer)
+    if dot > 0.85 then
+        return true
+    end
+    return false
+end
+
+-- Tìm bóng trong workspace (bạn cần chỉnh theo tên hoặc cách xác định bóng)
+local function getBalls()
+    local balls = {}
+    for _, v in pairs(workspace:GetChildren()) do
+        if v:IsA("BasePart") and v.Name:lower():find("ball") then
+            table.insert(balls, v)
+        end
+    end
+    return balls
+end
+
+-- Thực hiện parry (bấm phím block)
+local function parry()
+    -- Thường game sẽ gán block vào 1 phím (ví dụ F hoặc Q), mình giả định là "F"
+    UserInputService:SetKeyDown(Enum.KeyCode.F)
+    wait(0.1)
+    UserInputService:SetKeyUp(Enum.KeyCode.F)
+end
+
+-- Loop kiểm tra và auto parry
+RunService.RenderStepped:Connect(function()
+    if autoParryOn then
+        local balls = getBalls()
+        for _, ball in pairs(balls) do
+            if isBallComingToPlayer(ball) then
+                parry()
+                break -- chỉ parry 1 lần mỗi frame
+            end
+        end
+    end
 end)
