@@ -1,147 +1,109 @@
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+-- Services
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
--- Tạo ScreenGui
-local gui = Instance.new("ScreenGui", playerGui)
-gui.Name = "BladeBallGui"
-gui.ResetOnSpawn = false
-gui.IgnoreGuiInset = true
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BladeBallVisual"
+screenGui.Parent = PlayerGui
 
--- Khung chính
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 460, 0, 160)
-frame.Position = UDim2.new(0.5, -230, 0.5, -80)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.BackgroundTransparency = 0.05
-frame.BorderSizePixel = 0
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 14)
-Instance.new("UIStroke", frame).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 320, 0, 140)
+mainFrame.Position = UDim2.new(0.5, -160, 0.5, -70)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Parent = screenGui
 
--- Tiêu đề
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, -40, 0, 60)
-title.Position = UDim2.new(0, 20, 0, 10)
-title.Text = "Blade Ball Auto Parry"
-title.TextColor3 = Color3.fromRGB(0, 200, 255)
-title.Font = Enum.Font.FredokaOne
-title.TextScaled = true
-title.BackgroundTransparency = 1
+-- Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, 0, 0, 50)
+titleLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+titleLabel.BorderSizePixel = 0
+titleLabel.Text = "Blade Ball Visual"
+titleLabel.TextColor3 = Color3.fromRGB(0, 153, 255)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 30
+titleLabel.Parent = mainFrame
 
--- Trạng thái Auto Parry
-local status = Instance.new("TextLabel", frame)
-status.Size = UDim2.new(1, -40, 0, 30)
-status.Position = UDim2.new(0, 20, 0, 80)
-status.Text = "Auto Parry: OFF"
-status.TextColor3 = Color3.fromRGB(200, 200, 200)
-status.Font = Enum.Font.FredokaOne
-status.TextScaled = true
-status.BackgroundTransparency = 1
+-- Status Label
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Size = UDim2.new(1, 0, 0, 40)
+statusLabel.Position = UDim2.new(0, 0, 0, 50)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Text = "Visual: OFF"
+statusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.TextSize = 24
+statusLabel.Parent = mainFrame
 
--- Nút bật/tắt Auto Parry
-local toggleBtn = Instance.new("TextButton", frame)
-toggleBtn.Size = UDim2.new(0, 150, 0, 40)
-toggleBtn.Position = UDim2.new(0.5, -75, 1, -50)
-toggleBtn.Text = "Toggle Auto Parry"
-toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-toggleBtn.TextColor3 = Color3.new(1,1,1)
-toggleBtn.Font = Enum.Font.FredokaOne
-toggleBtn.TextScaled = true
-toggleBtn.AutoButtonColor = true
-Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 8)
+-- Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 140, 0, 40)
+toggleButton.Position = UDim2.new(0.5, -70, 1, -50)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+toggleButton.BorderSizePixel = 0
+toggleButton.Text = "Toggle Visual"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.Font = Enum.Font.GothamBold
+toggleButton.TextSize = 22
+toggleButton.Parent = mainFrame
 
--- Nút ẩn/hiện GUI
-local hideBtn = Instance.new("TextButton", frame)
-hideBtn.Size = UDim2.new(0, 30, 0, 30)
-hideBtn.Position = UDim2.new(1, -35, 0, 5)
-hideBtn.Text = "-"
-hideBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-hideBtn.TextColor3 = Color3.new(1,1,1)
-hideBtn.Font = Enum.Font.SourceSansBold
-Instance.new("UICorner", hideBtn).CornerRadius = UDim.new(0, 8)
+-- Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+minimizeButton.Position = UDim2.new(1, -35, 0, 10)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+minimizeButton.BorderSizePixel = 0
+minimizeButton.Text = "-"
+minimizeButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+minimizeButton.Font = Enum.Font.GothamBold
+minimizeButton.TextSize = 24
+minimizeButton.Parent = mainFrame
 
-local isHidden = false
-hideBtn.MouseButton1Click:Connect(function()
-    if isHidden then
-        -- Hiện GUI lại
-        frame.Size = UDim2.new(0, 460, 0, 160)
-        status.Visible = true
-        toggleBtn.Visible = true
-        title.Text = "Blade Ball Auto Parry"
-        hideBtn.Text = "-"
-        isHidden = false
+-- Hidden Frame (for minimized)
+local hiddenFrame = Instance.new("Frame")
+hiddenFrame.Size = UDim2.new(0, 160, 0, 40)
+hiddenFrame.Position = mainFrame.Position
+hiddenFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+hiddenFrame.BorderSizePixel = 0
+hiddenFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+hiddenFrame.Visible = false
+hiddenFrame.Parent = screenGui
+
+local showButton = Instance.new("TextButton")
+showButton.Size = UDim2.new(1, 0, 1, 0)
+showButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+showButton.BorderSizePixel = 0
+showButton.Text = "Show Visual"
+showButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+showButton.Font = Enum.Font.GothamBold
+showButton.TextSize = 22
+showButton.Parent = hiddenFrame
+
+-- Toggle visual state variable
+local visualOn = false
+
+toggleButton.MouseButton1Click:Connect(function()
+    visualOn = not visualOn
+    if visualOn then
+        statusLabel.Text = "Visual: ON"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
     else
-        -- Thu nhỏ GUI chỉ còn nút ẩn
-        frame.Size = UDim2.new(0, 100, 0, 40)
-        status.Visible = false
-        toggleBtn.Visible = false
-        title.Text = "BB Parry"
-        hideBtn.Text = "+"
-        isHidden = true
+        statusLabel.Text = "Visual: OFF"
+        toggleButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
     end
+    -- Bạn có thể thêm code visual blade ball ở đây khi bật/tắt
 end)
 
--- Logic Auto Parry
-
-local autoParryOn = false
-local mouse = player:GetMouse()
-
-toggleBtn.MouseButton1Click:Connect(function()
-    autoParryOn = not autoParryOn
-    status.Text = "Auto Parry: " .. (autoParryOn and "ON" or "OFF")
+minimizeButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = false
+    hiddenFrame.Visible = true
 end)
 
--- Hàm kiểm tra bóng bay về phía người chơi
-local function isBallComingToPlayer(ball)
-    if not ball or not ball:IsA("BasePart") then return false end
-    -- Tính vector hướng bóng di chuyển
-    local velocity = ball.Velocity
-    if velocity.Magnitude < 1 then return false end
-    
-    -- Vector từ bóng đến người chơi
-    local playerPos = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
-    if not playerPos then return false end
-    
-    local directionToPlayer = (playerPos - ball.Position).Unit
-    
-    -- Kiểm tra nếu bóng bay gần hướng về người chơi (góc nhỏ hơn 30 độ)
-    local dot = velocity.Unit:Dot(directionToPlayer)
-    if dot > 0.85 then
-        return true
-    end
-    return false
-end
-
--- Tìm bóng trong workspace (bạn cần chỉnh theo tên hoặc cách xác định bóng)
-local function getBalls()
-    local balls = {}
-    for _, v in pairs(workspace:GetChildren()) do
-        if v:IsA("BasePart") and v.Name:lower():find("ball") then
-            table.insert(balls, v)
-        end
-    end
-    return balls
-end
-
--- Thực hiện parry (bấm phím block)
-local function parry()
-    -- Thường game sẽ gán block vào 1 phím (ví dụ F hoặc Q), mình giả định là "F"
-    UserInputService:SetKeyDown(Enum.KeyCode.F)
-    wait(0.1)
-    UserInputService:SetKeyUp(Enum.KeyCode.F)
-end
-
--- Loop kiểm tra và auto parry
-RunService.RenderStepped:Connect(function()
-    if autoParryOn then
-        local balls = getBalls()
-        for _, ball in pairs(balls) do
-            if isBallComingToPlayer(ball) then
-                parry()
-                break -- chỉ parry 1 lần mỗi frame
-            end
-        end
-    end
+showButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = true
+    hiddenFrame.Visible = false
 end)
