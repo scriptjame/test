@@ -1,136 +1,204 @@
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+-- Tạo ScreenGui
+local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "BladeBallGUI"
-ScreenGui.Parent = playerGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "rutoairas"
+screenGui.Parent = playerGui
 
--- Main frame
+-- Khung chính
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 400, 0, 320)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -160)
-mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+mainFrame.Size = UDim2.new(0, 400, 0, 350)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
+mainFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
 mainFrame.BorderSizePixel = 0
-mainFrame.Parent = ScreenGui
+mainFrame.Parent = screenGui
 
--- Title bar
-local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 30)
-titleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-titleBar.BorderSizePixel = 0
-titleBar.Parent = mainFrame
-
+-- Tên GUI header
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -60, 1, 0)
-titleLabel.Position = UDim2.new(0, 10, 0, 0)
-titleLabel.BackgroundTransparency = 1
+titleLabel.Size = UDim2.new(1, 0, 0, 30)
+titleLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+titleLabel.BorderSizePixel = 0
 titleLabel.Text = "rutoairas"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextSize = 16
-titleLabel.TextColor3 = Color3.fromRGB(235, 235, 235)
-titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-titleLabel.Parent = titleBar
+titleLabel.TextSize = 20
+titleLabel.Parent = mainFrame
 
-local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 30, 1, 0)
-closeBtn.Position = UDim2.new(1, -30, 0, 0)
-closeBtn.BackgroundTransparency = 1
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 18
-closeBtn.Parent = titleBar
+-- Nút thu nhỏ và đóng
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -30, 0, 0)
+closeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 20
+closeButton.Parent = mainFrame
 
-closeBtn.MouseButton1Click:Connect(function()
-    ScreenGui.Enabled = false
+closeButton.MouseButton1Click:Connect(function()
+    screenGui.Enabled = false
 end)
 
--- Left menu frame
+-- Menu bên trái
 local menuFrame = Instance.new("Frame")
-menuFrame.Size = UDim2.new(0, 130, 1, -30)
+menuFrame.Size = UDim2.new(0, 100, 1, -30)
 menuFrame.Position = UDim2.new(0, 0, 0, 30)
-menuFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+menuFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 menuFrame.BorderSizePixel = 0
 menuFrame.Parent = mainFrame
 
--- Menu label "Blade Ball"
-local bladeBallBtn = Instance.new("TextButton")
-bladeBallBtn.Size = UDim2.new(1, -20, 0, 40)
-bladeBallBtn.Position = UDim2.new(0, 10, 0, 10)
-bladeBallBtn.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
-bladeBallBtn.Text = "Blade Ball"
-bladeBallBtn.TextColor3 = Color3.fromRGB(210, 210, 210)
-bladeBallBtn.Font = Enum.Font.Gotham
-bladeBallBtn.TextSize = 16
-bladeBallBtn.AutoButtonColor = false
-bladeBallBtn.Parent = menuFrame
-bladeBallBtn.BackgroundTransparency = 0
+local function createMenuButton(name, yPos)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 40)
+    btn.Position = UDim2.new(0, 0, 0, yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    btn.BorderSizePixel = 0
+    btn.Text = name
+    btn.TextColor3 = Color3.fromRGB(220, 220, 220)
+    btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 18
+    btn.Parent = menuFrame
+    return btn
+end
 
--- Content frame (bên phải)
+local mainBtn = createMenuButton("Main", 0)
+local playerBtn = createMenuButton("Player", 40)
+local autoBuyBtn = createMenuButton("Auto Buy", 80)
+local settingsBtn = createMenuButton("Settings", 120)
+
+-- Khu vực nội dung bên phải
 local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -130, 1, -30)
-contentFrame.Position = UDim2.new(0, 130, 0, 30)
+contentFrame.Size = UDim2.new(1, -100, 1, -30)
+contentFrame.Position = UDim2.new(0, 100, 0, 30)
 contentFrame.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
 contentFrame.BorderSizePixel = 0
 contentFrame.Parent = mainFrame
 
-local contentLayout = Instance.new("UIListLayout")
-contentLayout.Padding = UDim.new(0, 12)
-contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
-contentLayout.Parent = contentFrame
+-- Tiêu đề tab Main
+local tabTitle = Instance.new("TextLabel")
+tabTitle.Size = UDim2.new(1, 0, 0, 30)
+tabTitle.BackgroundTransparency = 1
+tabTitle.Text = "Main"
+tabTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+tabTitle.Font = Enum.Font.GothamBold
+tabTitle.TextSize = 24
+tabTitle.TextXAlignment = Enum.TextXAlignment.Left
+tabTitle.Parent = contentFrame
 
--- Các chức năng blade ball với toggle button
-local functions = {
-    {Name = "Fix Lag", Enabled = false},
-    {Name = "Auto Parry", Enabled = false},
-    {Name = "Change Skin", Enabled = false},
-    {Name = "Super Speed", Enabled = false},  -- Bạn có thể thêm các chức năng ảo khác
-}
-
-local function createToggleButton(func)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, -20, 0, 40)
-    frame.BackgroundTransparency = 1
-    frame.Parent = contentFrame
+-- Tạo một nút toggle theo mẫu trong ảnh
+local function createToggleButton(text, posY)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -20, 0, 40)
+    container.Position = UDim2.new(0, 10, 0, posY)
+    container.BackgroundTransparency = 1
+    container.Parent = contentFrame
 
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.7, 0, 1, 0)
+    label.Size = UDim2.new(1, -60, 1, 0)
     label.BackgroundTransparency = 1
-    label.Text = func.Name
-    label.TextColor3 = Color3.fromRGB(230, 230, 230)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 16
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(200, 200, 200)
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 18
     label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
+    label.Parent = container
 
-    local toggleBtn = Instance.new("TextButton")
-    toggleBtn.Size = UDim2.new(0.3, -5, 0.7, 0)
-    toggleBtn.Position = UDim2.new(0.7, 5, 0.15, 0)
-    toggleBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    toggleBtn.Text = "Off"
-    toggleBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
-    toggleBtn.Font = Enum.Font.GothamBold
-    toggleBtn.TextSize = 14
-    toggleBtn.Parent = frame
+    local toggle = Instance.new("Frame")
+    toggle.Size = UDim2.new(0, 40, 0, 20)
+    toggle.Position = UDim2.new(1, -50, 0, 10)
+    toggle.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    toggle.Parent = container
+    toggle.ClipsDescendants = true
+    toggle.AnchorPoint = Vector2.new(0, 0)
 
-    toggleBtn.MouseButton1Click:Connect(function()
-        func.Enabled = not func.Enabled
-        if func.Enabled then
-            toggleBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
-            toggleBtn.Text = "On"
-            toggleBtn.TextColor3 = Color3.fromRGB(240, 240, 240)
+    local toggleCircle = Instance.new("Frame")
+    toggleCircle.Size = UDim2.new(0, 18, 0, 18)
+    toggleCircle.Position = UDim2.new(0, 1, 0, 1)
+    toggleCircle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    toggleCircle.BorderSizePixel = 0
+    toggleCircle.Parent = toggle
+    toggleCircle.AnchorPoint = Vector2.new(0, 0)
+    toggleCircle.Name = "ToggleCircle"
+    toggleCircle.ZIndex = 2
+    toggleCircle.BackgroundTransparency = 0.1
+    toggleCircle.BorderColor3 = Color3.new(0,0,0)
+
+    -- Bật tắt toggle
+    local toggled = false
+    local function toggleSwitch()
+        toggled = not toggled
+        if toggled then
+            toggle.BackgroundColor3 = Color3.fromRGB(0, 162, 255) -- xanh dương bật
+            toggleCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
         else
-            toggleBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-            toggleBtn.Text = "Off"
-            toggleBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+            toggle.BackgroundColor3 = Color3.fromRGB(80, 80, 80) -- xám tắt
+            toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
         end
-    end)
+    end
 
-    return frame
+    toggle.MouseButton1Click = toggleSwitch -- toggle là frame nên không có sự kiện này, cần thay bằng nút bấm
+
+    -- Thay frame toggle thành nút bấm
+    local toggleBtn = Instance.new("TextButton")
+    toggleBtn.Size = UDim2.new(1, 0, 1, 0)
+    toggleBtn.BackgroundTransparency = 1
+    toggleBtn.Text = ""
+    toggleBtn.Parent = toggle
+
+    toggleBtn.MouseButton1Click:Connect(toggleSwitch)
+
+    return container
 end
 
--- Tạo các nút toggle cho chức năng
-for _, func in ipairs(functions) do
-    createToggleButton(func)
+-- Thêm các toggle buttons theo ảnh
+createToggleButton("Spam Click V2", 50)
+createToggleButton("Spam Click Mobile", 100)
+createToggleButton("Auto Spam Bata", 150)
+
+-- Tạo toggle FFA phía dưới cùng
+local ffaLabel = Instance.new("TextLabel")
+ffaLabel.Size = UDim2.new(1, -20, 0, 40)
+ffaLabel.Position = UDim2.new(0, 10, 0, 220)
+ffaLabel.BackgroundTransparency = 1
+ffaLabel.Text = "Auto Vote"
+ffaLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+ffaLabel.Font = Enum.Font.GothamSemibold
+ffaLabel.TextSize = 18
+ffaLabel.TextXAlignment = Enum.TextXAlignment.Left
+ffaLabel.Parent = contentFrame
+
+local ffaToggle = Instance.new("Frame")
+ffaToggle.Size = UDim2.new(0, 40, 0, 20)
+ffaToggle.Position = UDim2.new(1, -50, 0, 220 + 10)
+ffaToggle.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+ffaToggle.Parent = contentFrame
+ffaToggle.ClipsDescendants = true
+
+local ffaCircle = Instance.new("Frame")
+ffaCircle.Size = UDim2.new(0, 18, 0, 18)
+ffaCircle.Position = UDim2.new(0.5, 20, 0, 1)
+ffaCircle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ffaCircle.BorderSizePixel = 0
+ffaCircle.Parent = ffaToggle
+
+-- Toggle FFA logic
+local ffaOn = true
+local function toggleFFA()
+    ffaOn = not ffaOn
+    if ffaOn then
+        ffaToggle.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+        ffaCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+    else
+        ffaToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+        ffaCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+    end
 end
+
+ffaToggle.MouseButton1Click = nil -- Frame không có sự kiện bấm
+local ffaToggleBtn = Instance.new("TextButton")
+ffaToggleBtn.Size = UDim2.new(1, 0, 1, 0)
+ffaToggleBtn.BackgroundTransparency = 1
+ffaToggleBtn.Text = ""
+ffaToggleBtn.Parent = ffaToggle
+ffaToggleBtn.MouseButton1Click:Connect(toggleFFA)
