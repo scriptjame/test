@@ -72,6 +72,23 @@ toggleGuiButton.TextSize = 18
 toggleGuiButton.Parent = screenGui
 
 local guiVisible = true
+
+-- Auto Spam ngoài GUI (THAY ĐỔI VỊ TRÍ Ở ĐÂY)
+local externalLabel = Instance.new("TextLabel")
+externalLabel.Size = UDim2.new(0, 140, 0, 30)
+externalLabel.Position = UDim2.new(0.5, 0, 1, -40) -- nằm dưới cùng màn hình, cách mép dưới 40px
+externalLabel.AnchorPoint = Vector2.new(0.5, 1) -- neo ở giữa dưới
+externalLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+externalLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+externalLabel.Text = "Auto Spam"
+externalLabel.Font = Enum.Font.GothamBold
+externalLabel.TextSize = 20
+externalLabel.Visible = false
+externalLabel.Parent = screenGui
+
+local extCorner = Instance.new("UICorner", externalLabel)
+extCorner.CornerRadius = UDim.new(0, 8)
+
 toggleGuiButton.MouseButton1Click:Connect(function()
     guiVisible = not guiVisible
     outerFrame.Visible = guiVisible
@@ -109,10 +126,8 @@ local function createMenuButton(name, yPos)
     btn.Font = Enum.Font.GothamSemibold
     btn.TextSize = 18
     btn.Parent = menuFrame
-
     local corner = Instance.new("UICorner", btn)
     corner.CornerRadius = UDim.new(0, 6)
-
     return btn
 end
 
@@ -139,22 +154,6 @@ tabTitle.Font = Enum.Font.GothamBold
 tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 tabTitle.Parent = contentFrame
-
--- Auto Spam ngoài GUI
-local externalLabel = Instance.new("TextLabel")
-externalLabel.Size = UDim2.new(0, 140, 0, 30)
-externalLabel.Position = UDim2.new(0.5, -70, 0, -50)
-externalLabel.AnchorPoint = Vector2.new(0.5, 0)
-externalLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-externalLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-externalLabel.Text = "Auto Spam"
-externalLabel.Font = Enum.Font.GothamBold
-externalLabel.TextSize = 20
-externalLabel.Visible = false
-externalLabel.Parent = screenGui
-
-local extCorner = Instance.new("UICorner", externalLabel)
-extCorner.CornerRadius = UDim.new(0, 8)
 
 -- Quản lý toggle bật
 local toggles = {}
@@ -313,45 +312,6 @@ settingsBtn.MouseButton1Click:Connect(function()
     tabTitle.Text = "Settings"
     clearContent()
 end)
--- Số lượng toggle trong main tab (ví dụ 4 toggle)
-local numToggles = 4
 
--- Khoảng cách từ trên xuống toggle đầu tiên trong contentFrame (theo code bạn là 50)
-local startY = 50
-
--- Chiều cao mỗi toggle (đã bao gồm khoảng cách) (nếu có toggle 60 thì lấy 70 để chắc)
-local toggleHeight = 50
-
--- Vị trí Y để đặt countdownLabel: dưới toggle cuối + chút khoảng cách
-local countdownPosY = startY + numToggles * toggleHeight + 10
-
--- Tạo label thông báo đếm ngược
-local countdownLabel = Instance.new("TextLabel")
-countdownLabel.Size = UDim2.new(1, 0, 0, 40)
-countdownLabel.Position = UDim2.new(0, 0, 0, countdownPosY)
-countdownLabel.BackgroundTransparency = 1
-countdownLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-countdownLabel.Font = Enum.Font.GothamBold
-countdownLabel.TextSize = 18
-countdownLabel.TextWrapped = true
-countdownLabel.TextXAlignment = Enum.TextXAlignment.Center
-countdownLabel.Parent = contentFrame -- Gắn vào contentFrame cho đúng vị trí bên trong tab chính
-
--- Hàm cập nhật thông báo
-local function updateCountdownLabel(timeLeft)
-    countdownLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: " .. timeLeft .. " seconds."
-end
-
--- Đếm ngược
-spawn(function()
-    local timeLeft = countdownTime
-    while timeLeft > 0 do
-        updateCountdownLabel(timeLeft)
-        wait(1)
-        timeLeft = timeLeft - 1
-    end
-    countdownLabel.Text = "✅ Optimization complete! Enjoy your game."
-    wait(3)
-    countdownLabel.Visible = false
-end)
-
+-- Mặc định load Main tab
+loadMainTab()
