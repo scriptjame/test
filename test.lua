@@ -5,25 +5,25 @@ local playerGui = player:WaitForChild("PlayerGui")
 local oldGui = playerGui:FindFirstChild("rutoairas")
 if oldGui then oldGui:Destroy() end
 
+-- GUI chính
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "rutoairas"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
--- Viền ngoài lớn bọc toàn bộ GUI
+-- Viền ngoài
 local outerFrame = Instance.new("Frame")
-outerFrame.Size = UDim2.new(0, 420, 0, 370)
-outerFrame.Position = UDim2.new(0.5, -210, 0.5, -185)
+outerFrame.Size = UDim2.new(0, 420, 0, 400) -- Tăng chiều cao để chứa thông báo
+outerFrame.Position = UDim2.new(0.5, -210, 0.5, -200)
 outerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 outerFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
 outerFrame.BorderSizePixel = 2
 outerFrame.Parent = screenGui
 
-local outerCorner = Instance.new("UICorner")
+local outerCorner = Instance.new("UICorner", outerFrame)
 outerCorner.CornerRadius = UDim.new(0, 15)
-outerCorner.Parent = outerFrame
 
--- Khung chính bên trong (chừa viền)
+-- Frame chính
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(1, -20, 1, -20)
 mainFrame.Position = UDim2.new(0, 10, 0, 10)
@@ -31,11 +31,10 @@ mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = outerFrame
 
-local mainCorner = Instance.new("UICorner")
+local mainCorner = Instance.new("UICorner", mainFrame)
 mainCorner.CornerRadius = UDim.new(0, 12)
-mainCorner.Parent = mainFrame
 
--- Tên GUI header
+-- Tiêu đề
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, 0, 0, 30)
 titleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -60,7 +59,7 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
--- Nút ẩn/hiện GUI (góc trên bên trái)
+-- Nút Hide/Show
 local toggleGuiButton = Instance.new("TextButton")
 toggleGuiButton.Size = UDim2.new(0, 50, 0, 30)
 toggleGuiButton.Position = UDim2.new(0, 5, 0, 5)
@@ -72,40 +71,10 @@ toggleGuiButton.TextSize = 18
 toggleGuiButton.Parent = screenGui
 
 local guiVisible = true
-
--- Auto Spam ngoài GUI (THAY ĐỔI VỊ TRÍ Ở ĐÂY)
-local externalLabel = Instance.new("TextLabel")
-externalLabel.Size = UDim2.new(0, 140, 0, 30)
-externalLabel.Position = UDim2.new(0.5, 0, 1, -40) -- nằm dưới cùng màn hình, cách mép dưới 40px
-externalLabel.AnchorPoint = Vector2.new(0.5, 1) -- neo ở giữa dưới
-externalLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-externalLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-externalLabel.Text = "Auto Spam"
-externalLabel.Font = Enum.Font.GothamBold
-externalLabel.TextSize = 20
-externalLabel.Visible = false
-externalLabel.Parent = screenGui
-
-local extCorner = Instance.new("UICorner", externalLabel)
-extCorner.CornerRadius = UDim.new(0, 8)
-
 toggleGuiButton.MouseButton1Click:Connect(function()
     guiVisible = not guiVisible
     outerFrame.Visible = guiVisible
-    if guiVisible then
-        toggleGuiButton.Text = "Hide"
-        externalLabel.Visible = false
-    else
-        toggleGuiButton.Text = "Show"
-        local anyEnabled = false
-        for _, state in pairs(toggles) do
-            if state then
-                anyEnabled = true
-                break
-            end
-        end
-        externalLabel.Visible = anyEnabled
-    end
+    toggleGuiButton.Text = guiVisible and "Hide" or "Show"
 end)
 
 -- Menu bên trái
@@ -126,8 +95,7 @@ local function createMenuButton(name, yPos)
     btn.Font = Enum.Font.GothamSemibold
     btn.TextSize = 18
     btn.Parent = menuFrame
-    local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
     return btn
 end
 
@@ -138,13 +106,13 @@ local settingsBtn = createMenuButton("Settings", 120)
 
 -- Nội dung chính
 local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -100, 1, -30)
+contentFrame.Size = UDim2.new(1, -100, 1, -80)
 contentFrame.Position = UDim2.new(0, 100, 0, 30)
 contentFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 contentFrame.BorderSizePixel = 0
 contentFrame.Parent = mainFrame
 
--- Tiêu đề Main và Player
+-- Tiêu đề tab
 local tabTitle = Instance.new("TextLabel")
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
 tabTitle.BackgroundTransparency = 1
@@ -155,24 +123,34 @@ tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 tabTitle.Parent = contentFrame
 
--- Quản lý toggle bật
-local toggles = {}
+-- Dòng thông báo tối ưu hóa
+local optimizeLabel = Instance.new("TextLabel")
+optimizeLabel.Size = UDim2.new(1, -20, 0, 30)
+optimizeLabel.Position = UDim2.new(0, 10, 1, -35)
+optimizeLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+optimizeLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+optimizeLabel.Font = Enum.Font.GothamBold
+optimizeLabel.TextSize = 16
+optimizeLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: 200 seconds."
+optimizeLabel.Parent = mainFrame
+Instance.new("UICorner", optimizeLabel).CornerRadius = UDim.new(0, 6)
 
-local function updateExternalLabel()
-    local anyEnabled = false
-    for _, state in pairs(toggles) do
-        if state then
-            anyEnabled = true
-            break
-        end
+-- Đếm ngược
+local secondsLeft = 200
+task.spawn(function()
+    while secondsLeft > 0 do
+        optimizeLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: " .. secondsLeft .. " seconds."
+        secondsLeft -= 1
+        wait(1)
     end
-    externalLabel.Visible = anyEnabled and not guiVisible
-end
+    optimizeLabel.Text = "✅ Optimization completed. Ready to use!"
+end)
 
--- Tạo toggle (có thêm chú thích "Chỉ là ảo" nếu muốn)
-local function createToggleButton(text, posY, parent, withFakeNote)
+-- Tạo toggle
+local toggles = {}
+local function createToggleButton(text, posY, parent, fakeNote)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -20, 0, withFakeNote and 60 or 40)
+    container.Size = UDim2.new(1, -20, 0, fakeNote and 60 or 40)
     container.Position = UDim2.new(0, 10, 0, posY)
     container.BackgroundTransparency = 1
     container.Parent = parent
@@ -187,7 +165,7 @@ local function createToggleButton(text, posY, parent, withFakeNote)
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = container
 
-    if withFakeNote then
+    if fakeNote then
         local note = Instance.new("TextLabel")
         note.Size = UDim2.new(1, -60, 0, 20)
         note.Position = UDim2.new(0, 0, 0, 22)
@@ -206,9 +184,7 @@ local function createToggleButton(text, posY, parent, withFakeNote)
     toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
     toggle.Parent = container
     toggle.ClipsDescendants = true
-
-    local toggleCorner = Instance.new("UICorner", toggle)
-    toggleCorner.CornerRadius = UDim.new(1, 0)
+    Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
 
     local toggleCircle = Instance.new("Frame")
     toggleCircle.Size = UDim2.new(0, 18, 0, 18)
@@ -216,18 +192,14 @@ local function createToggleButton(text, posY, parent, withFakeNote)
     toggleCircle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     toggleCircle.BorderSizePixel = 0
     toggleCircle.Parent = toggle
-
-    local circleCorner = Instance.new("UICorner", toggleCircle)
-    circleCorner.CornerRadius = UDim.new(1, 0)
+    Instance.new("UICorner", toggleCircle).CornerRadius = UDim.new(1, 0)
 
     toggles[text] = false
-
     local toggleBtn = Instance.new("TextButton")
     toggleBtn.Size = UDim2.new(1, 0, 1, 0)
     toggleBtn.BackgroundTransparency = 1
     toggleBtn.Text = ""
     toggleBtn.Parent = toggle
-
     toggleBtn.MouseButton1Click:Connect(function()
         toggles[text] = not toggles[text]
         if toggles[text] then
@@ -237,81 +209,49 @@ local function createToggleButton(text, posY, parent, withFakeNote)
             toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
             toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
         end
-        updateExternalLabel()
     end)
-
-    return container
 end
 
--- Các toggle cho Main tab
-local mainToggles = {
-    "Spam Click V2",
-    "Spam Click Mobile",
-    "Auto Spam Bata",
-    "AutoParry"
-}
-
--- Các toggle cho Player tab với chú thích "Chỉ là ảo"
-local playerToggles = {
-    "ESP PLAYER",
-    "ESP BALL",
-    "SPEED",
-    "JUMP"
-}
-
--- Chức năng đổi tab
-local currentTab = "Main"
+-- Tạo các tab
+local mainToggles = { "Spam Click V2", "Spam Click Mobile", "Auto Spam Bata", "AutoParry" }
+local playerToggles = { "ESP PLAYER", "ESP BALL", "SPEED", "JUMP" }
 
 local function clearContent()
     for _, child in pairs(contentFrame:GetChildren()) do
-        if child ~= tabTitle then
-            child:Destroy()
-        end
+        if child ~= tabTitle then child:Destroy() end
     end
 end
 
 local function loadMainTab()
     tabTitle.Text = "Main"
     clearContent()
-    local posY = 50
+    local y = 50
     for _, name in ipairs(mainToggles) do
-        createToggleButton(name, posY, contentFrame, false)
-        posY = posY + 50
+        createToggleButton(name, y, contentFrame, false)
+        y += 50
     end
 end
 
 local function loadPlayerTab()
     tabTitle.Text = "Player"
     clearContent()
-    local posY = 50
+    local y = 50
     for _, name in ipairs(playerToggles) do
-        createToggleButton(name, posY, contentFrame, true)
-        posY = posY + 70
+        createToggleButton(name, y, contentFrame, true)
+        y += 70
     end
 end
 
--- Chọn tab khi bấm nút menu
-mainBtn.MouseButton1Click:Connect(function()
-    currentTab = "Main"
-    loadMainTab()
-end)
-
-playerBtn.MouseButton1Click:Connect(function()
-    currentTab = "Player"
-    loadPlayerTab()
-end)
-
+mainBtn.MouseButton1Click:Connect(loadMainTab)
+playerBtn.MouseButton1Click:Connect(loadPlayerTab)
 autoBuyBtn.MouseButton1Click:Connect(function()
-    currentTab = "Auto Buy"
     tabTitle.Text = "Auto Buy"
     clearContent()
 end)
-
 settingsBtn.MouseButton1Click:Connect(function()
-    currentTab = "Settings"
     tabTitle.Text = "Settings"
     clearContent()
 end)
 
--- Mặc định load Main tab
+-- Mặc định load Main
 loadMainTab()
