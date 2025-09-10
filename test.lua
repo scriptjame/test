@@ -135,71 +135,27 @@ local function clearContent()
     end
 end
 
--- Tạo toggle đơn giản
-local function createToggle(text, y)
-    local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -20, 0, 40)
-    container.Position = UDim2.new(0, 10, 0, y)
-    container.BackgroundTransparency = 1
-    container.Parent = contentFrame
+-- Quản lý toggle trạng thái
+local toggles = {}
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -60, 1, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 0, 0)
-    label.Font = Enum.Font.GothamSemibold
-    label.TextSize = 18
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = container
-
-    local toggleFrame = Instance.new("Frame")
-    toggleFrame.Size = UDim2.new(0, 40, 0, 20)
-    toggleFrame.Position = UDim2.new(1, -50, 0, 10)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-    toggleFrame.Parent = container
-    toggleFrame.ClipsDescendants = true
-
-    local toggleCorner = Instance.new("UICorner", toggleFrame)
-    toggleCorner.CornerRadius = UDim.new(1, 0)
-
-    local toggleCircle = Instance.new("Frame")
-    toggleCircle.Size = UDim2.new(0, 18, 0, 18)
-    toggleCircle.Position = UDim2.new(0, 1, 0, 1)
-    toggleCircle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    toggleCircle.BorderSizePixel = 0
-    toggleCircle.Parent = toggleFrame
-
-    local circleCorner = Instance.new("UICorner", toggleCircle)
-    circleCorner.CornerRadius = UDim.new(1, 0)
-
-    local enabled = false
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(1, 0, 1, 0)
-    toggleButton.BackgroundTransparency = 1
-    toggleButton.Text = ""
-    toggleButton.Parent = toggleFrame
-
-    toggleButton.MouseButton1Click:Connect(function()
-        enabled = not enabled
-        if enabled then
-            toggleFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-            toggleCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
-        else
-            toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-            toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+local function updateExternalLabel()
+    local anyEnabled = false
+    for _, state in pairs(toggles) do
+        if state then
+            anyEnabled = true
+            break
         end
-    end)
+    end
+    externalLabel.Visible = anyEnabled and not guiVisible
 end
 
--- Tạo slider hoặc input số cho SPEED và JUMP (chỉ ảo)
-local function createSliderWithInput(text, y)
+-- Tạo toggle button chuẩn cho Main tab
+local function createToggleButton(text, y, parent, withFakeNote)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -20, 0, 70)
+    container.Size = UDim2.new(1, -20, 0, withFakeNote and 60 or 40)
     container.Position = UDim2.new(0, 10, 0, y)
     container.BackgroundTransparency = 1
-    container.Parent = contentFrame
+    container.Parent = parent
 
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, -60, 0, 20)
@@ -211,140 +167,40 @@ local function createSliderWithInput(text, y)
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = container
 
-    -- Slider
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, -80, 0, 20)
-    sliderFrame.Position = UDim2.new(0, 0, 0, 25)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(50, 0, 0)
-    sliderFrame.Parent = container
-
-    local sliderCorner = Instance.new("UICorner", sliderFrame)
-    sliderCorner.CornerRadius = UDim.new(0, 6)
-
-    local fillBar = Instance.new("Frame")
-    fillBar.Size = UDim2.new(0, 0, 1, 0)
-    fillBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    fillBar.Parent = sliderFrame
-
-    local fillCorner = Instance.new("UICorner", fillBar)
-    fillCorner.CornerRadius = UDim.new(0, 6)
-
-    -- TextBox nhập số
-    local inputBox = Instance.new("TextBox")
-    inputBox.Size = UDim2.new(0, 50, 0, 20)
-    inputBox.Position = UDim2.new(1, 5, 0, 25)
-    inputBox.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
-    inputBox.TextColor3 = Color3.fromRGB(255, 0, 0)
-    inputBox.Font = Enum.Font.GothamSemibold
-    inputBox.TextSize = 18
-    inputBox.Text = "0"
-    inputBox.ClearTextOnFocus = false
-    inputBox.Parent = container
-
-    local inputCorner = Instance.new("UICorner", inputBox)
-    inputCorner.CornerRadius = UDim.new(0, 5)
-
-    -- Chú thích "Chỉ là ảo"
-    local note = Instance.new("TextLabel")
-    note.Size = UDim2.new(1, -60, 0, 20)
-    note.Position = UDim2.new(0, 0, 0, 50)
-    note.BackgroundTransparency = 1
-    note.Text = "Chỉ là ảo"
-    note.TextColor3 = Color3.fromRGB(255, 50, 50)
-    note.Font = Enum.Font.GothamItalic
-    note.TextSize = 14
-    note.TextXAlignment = Enum.TextXAlignment.Left
-    note.Parent = container
-
-    -- Giới hạn input và update fillBar
-    local function updateSlider(value)
-        local num = tonumber(value)
-        if not num then
-            inputBox.Text = "0"
-            num = 0
-        end
-        if num < 0 then num = 0 end
-        if num > 100 then num = 100 end
-        inputBox.Text = tostring(num)
-        fillBar.Size = UDim2.new(num/100, 0, 1, 0)
+    if withFakeNote then
+        local note = Instance.new("TextLabel")
+        note.Size = UDim2.new(1, -60, 0, 20)
+        note.Position = UDim2.new(0, 0, 0, 22)
+        note.BackgroundTransparency = 1
+        note.Text = "Chỉ là ảo"
+        note.TextColor3 = Color3.fromRGB(255, 50, 50)
+        note.Font = Enum.Font.GothamItalic
+        note.TextSize = 14
+        note.TextXAlignment = Enum.TextXAlignment.Left
+        note.Parent = container
     end
 
-    inputBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            updateSlider(inputBox.Text)
-        end
-    end)
+    local toggle = Instance.new("Frame")
+    toggle.Size = UDim2.new(0, 40, 0, 20)
+    toggle.Position = UDim2.new(1, -50, 0, 10)
+    toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+    toggle.Parent = container
+    toggle.ClipsDescendants = true
 
-    -- Cho phép kéo chuột để điều chỉnh slider (đơn giản)
-    local dragging = false
-    sliderFrame.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            local mouseX = sliderFrame:AbsoluteToLocal(input.Position).X
-            local percent = math.clamp(mouseX / sliderFrame.AbsoluteSize.X, 0, 1)
-            updateSlider(tostring(math.floor(percent * 100)))
-        end
-    end)
-    sliderFrame.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-    sliderFrame.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local mouseX = sliderFrame:AbsoluteToLocal(input.Position).X
-            local percent = math.clamp(mouseX / sliderFrame.AbsoluteSize.X, 0, 1)
-            updateSlider(tostring(math.floor(percent * 100)))
-        end
-    end)
+    local toggleCorner = Instance.new("UICorner", toggle)
+    toggleCorner.CornerRadius = UDim.new(1, 0)
 
-    -- Khởi tạo thanh slider = 0
-    updateSlider("0")
-end
+    local toggleCircle = Instance.new("Frame")
+    toggleCircle.Size = UDim2.new(0, 18, 0, 18)
+    toggleCircle.Position = UDim2.new(0, 1, 0, 1)
+    toggleCircle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    toggleCircle.BorderSizePixel = 0
+    toggleCircle.Parent = toggle
 
--- Load tab Player mới
-local function loadPlayerTab()
-    tabTitle.Text = "Player"
-    clearContent()
+    local circleCorner = Instance.new("UICorner", toggleCircle)
+    circleCorner.CornerRadius = UDim.new(1, 0)
 
-    -- ESP PLAYER toggle
-    createToggle("ESP PLAYER", 50)
+    toggles[text] = false
 
-    -- ESP BALL toggle
-    createToggle("ESP BALL", 100)
-
-    -- SPEED slider
-    createSliderWithInput("SPEED", 150)
-
-    -- JUMP slider
-    createSliderWithInput("JUMP", 220)
-end
-
--- Load tab Main (chỉ ví dụ)
-local function loadMainTab()
-    tabTitle.Text = "Main"
-    clearContent()
-    -- Thêm toggle hoặc nội dung main khác nếu cần
-end
-
--- Chọn tab khi bấm nút menu
-mainBtn.MouseButton1Click:Connect(function()
-    loadMainTab()
-end)
-
-playerBtn.MouseButton1Click:Connect(function()
-    loadPlayerTab()
-end)
-
-autoBuyBtn.MouseButton1Click:Connect(function()
-    tabTitle.Text = "Auto Buy"
-    clearContent()
-end)
-
-settingsBtn.MouseButton1Click:Connect(function()
-    tabTitle.Text = "Settings"
-    clearContent()
-end)
-
--- Mặc định load Main tab
-loadMainTab()
+    local toggleBtn = Instance.new("TextButton")
+    toggleBtn
