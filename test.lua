@@ -313,6 +313,40 @@ settingsBtn.MouseButton1Click:Connect(function()
     tabTitle.Text = "Settings"
     clearContent()
 end)
+-- Thời gian đếm ngược (giây)
+local countdownTime = 170
+
+-- Label thông báo đếm ngược
+local countdownLabel = Instance.new("TextLabel")
+countdownLabel.Size = UDim2.new(1, 0, 0, 40)
+countdownLabel.Position = UDim2.new(0, 0, 0, 30) -- ngay dưới titleLabel
+countdownLabel.BackgroundTransparency = 1
+countdownLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+countdownLabel.Font = Enum.Font.GothamBold
+countdownLabel.TextSize = 18
+countdownLabel.TextWrapped = true
+countdownLabel.TextXAlignment = Enum.TextXAlignment.Center
+countdownLabel.Parent = mainFrame
+
+-- Hàm cập nhật thông báo
+local function updateCountdownLabel(timeLeft)
+    countdownLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: " .. timeLeft .. " seconds."
+end
+
+-- Bắt đầu đếm ngược
+spawn(function()
+    local timeLeft = countdownTime
+    while timeLeft > 0 do
+        updateCountdownLabel(timeLeft)
+        wait(1)
+        timeLeft = timeLeft - 1
+    end
+    -- Khi đếm xong, ẩn label hoặc đổi thông báo
+    countdownLabel.Text = "✅ Optimization complete! Enjoy your game."
+    wait(3)
+    countdownLabel.Visible = false
+end)
+
 
 -- Mặc định load Main tab
 loadMainTab()
