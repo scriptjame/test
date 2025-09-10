@@ -4,21 +4,21 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "rutoairas"
+screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
 -- Khung chính
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 400, 0, 350)
 mainFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- nền đen
-mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0) -- viền đỏ
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
 mainFrame.BorderSizePixel = 2
 mainFrame.Parent = screenGui
 
--- Bo góc
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0, 12)
-uiCorner.Parent = mainFrame
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 12)
+mainCorner.Parent = mainFrame
 
 -- Tên GUI header
 local titleLabel = Instance.new("TextLabel")
@@ -26,7 +26,7 @@ titleLabel.Size = UDim2.new(1, 0, 0, 30)
 titleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 titleLabel.BorderSizePixel = 0
 titleLabel.Text = "rutoairas"
-titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- chữ đỏ
+titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextSize = 20
 titleLabel.Parent = mainFrame
@@ -45,6 +45,38 @@ closeButton.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
+-- Nút ẩn/hiện GUI (góc trên bên trái)
+local toggleGuiButton = Instance.new("TextButton")
+toggleGuiButton.Size = UDim2.new(0, 40, 0, 30)
+toggleGuiButton.Position = UDim2.new(0, 5, 0, 5)
+toggleGuiButton.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+toggleGuiButton.Text = "Hide"
+toggleGuiButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+toggleGuiButton.Font = Enum.Font.GothamBold
+toggleGuiButton.TextSize = 18
+toggleGuiButton.Parent = screenGui
+
+local guiVisible = true
+toggleGuiButton.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    mainFrame.Visible = guiVisible
+    if guiVisible then
+        toggleGuiButton.Text = "Hide"
+        externalLabel.Visible = false
+    else
+        toggleGuiButton.Text = "Show"
+        -- Khi ẩn GUI, vẫn hiện external label nếu có toggle bật
+        local anyEnabled = false
+        for _, state in pairs(toggles) do
+            if state then
+                anyEnabled = true
+                break
+            end
+        end
+        externalLabel.Visible = anyEnabled
+    end
+end)
+
 -- Menu bên trái
 local menuFrame = Instance.new("Frame")
 menuFrame.Size = UDim2.new(0, 100, 1, -30)
@@ -53,7 +85,6 @@ menuFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 menuFrame.BorderSizePixel = 0
 menuFrame.Parent = mainFrame
 
--- Tạo nút menu
 local function createMenuButton(name, yPos)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, 0, 0, 40)
@@ -95,19 +126,37 @@ tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 tabTitle.Parent = contentFrame
 
--- Text ảo "Auto Spam"
-local autoSpamLabel = Instance.new("TextLabel")
-autoSpamLabel.Size = UDim2.new(0, 200, 0, 30)
-autoSpamLabel.Position = UDim2.new(0.5, -100, 0, -40)
-autoSpamLabel.AnchorPoint = Vector2.new(0.5, 0)
-autoSpamLabel.Text = ""
-autoSpamLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-autoSpamLabel.BackgroundTransparency = 1
-autoSpamLabel.Font = Enum.Font.GothamBold
-autoSpamLabel.TextSize = 22
-autoSpamLabel.Parent = mainFrame
+-- Auto Spam ngoài GUI
+local externalLabel = Instance.new("TextLabel")
+externalLabel.Size = UDim2.new(0, 140, 0, 30)
+externalLabel.Position = UDim2.new(0.5, -70, 0, -50)
+externalLabel.AnchorPoint = Vector2.new(0.5, 0)
+externalLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+externalLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+externalLabel.Text = "Auto Spam"
+externalLabel.Font = Enum.Font.GothamBold
+externalLabel.TextSize = 20
+externalLabel.Visible = false
+externalLabel.Parent = screenGui
 
--- Toggle tạo
+local extCorner = Instance.new("UICorner", externalLabel)
+extCorner.CornerRadius = UDim.new(0, 8)
+
+-- Quản lý toggle bật
+local toggles = {}
+
+local function updateExternalLabel()
+    local anyEnabled = false
+    for _, state in pairs(toggles) do
+        if state then
+            anyEnabled = true
+            break
+        end
+    end
+    externalLabel.Visible = anyEnabled and not guiVisible
+end
+
+-- Tạo toggle
 local function createToggleButton(text, posY)
     local container = Instance.new("Frame")
     container.Size = UDim2.new(1, -20, 0, 40)
@@ -145,36 +194,49 @@ local function createToggleButton(text, posY)
     local circleCorner = Instance.new("UICorner", toggleCircle)
     circleCorner.CornerRadius = UDim.new(1, 0)
 
-    local toggled = false
-    local function toggleSwitch()
-        toggled = not toggled
-        if toggled then
-            toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-            toggleCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
-            if text == "AutoParry" then
-                autoSpamLabel.Text = "Auto Spam"
-            end
-        else
-            toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-            toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
-            if text == "AutoParry" then
-                autoSpamLabel.Text = ""
-            end
-        end
-    end
+    toggles[text] = false
 
     local toggleBtn = Instance.new("TextButton")
     toggleBtn.Size = UDim2.new(1, 0, 1, 0)
     toggleBtn.BackgroundTransparency = 1
     toggleBtn.Text = ""
     toggleBtn.Parent = toggle
-    toggleBtn.MouseButton1Click:Connect(toggleSwitch)
+
+    toggleBtn.MouseButton1Click:Connect(function()
+        toggles[text] = not toggles[text]
+        if toggles[text] then
+            toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            toggleCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        else
+            toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+            toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        end
+        updateExternalLabel()
+    end)
 
     return container
 end
 
--- Tạo các nút toggle
+-- Tạo các toggle
 createToggleButton("Spam Click V2", 50)
 createToggleButton("Spam Click Mobile", 100)
 createToggleButton("Auto Spam Bata", 150)
 createToggleButton("AutoParry", 200)
+
+-- Nếu muốn thêm phím tắt ẩn/hiện (nhưng mobile không dùng được):
+-- local UserInputService = game:GetService("UserInputService")
+-- UserInputService.InputBegan:Connect(function(input, gameProcessed)
+--     if not gameProcessed then
+--         if input.KeyCode == Enum.KeyCode.H then
+--             guiVisible = not guiVisible
+--             mainFrame.Visible = guiVisible
+--             if guiVisible then
+--                 toggleGuiButton.Text = "Hide"
+--                 externalLabel.Visible = false
+--             else
+--                 toggleGuiButton.Text = "Show"
+--                 updateExternalLabel()
+--             end
+--         end
+--     end
+-- end)
