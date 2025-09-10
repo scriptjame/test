@@ -135,30 +135,16 @@ local function clearContent()
     end
 end
 
--- Quản lý toggle trạng thái
-local toggles = {}
-
-local function updateExternalLabel()
-    local anyEnabled = false
-    for _, state in pairs(toggles) do
-        if state then
-            anyEnabled = true
-            break
-        end
-    end
-    externalLabel.Visible = anyEnabled and not guiVisible
-end
-
--- Tạo toggle button chuẩn cho Main tab
-local function createToggleButton(text, y, parent, withFakeNote)
+-- Tạo toggle đơn giản
+local function createToggle(text, y, parent)
     local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -20, 0, withFakeNote and 60 or 40)
+    container.Size = UDim2.new(1, -20, 0, 40)
     container.Position = UDim2.new(0, 10, 0, y)
     container.BackgroundTransparency = 1
     container.Parent = parent
 
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -60, 0, 20)
+    label.Size = UDim2.new(1, -60, 1, 0)
     label.BackgroundTransparency = 1
     label.Text = text
     label.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -167,27 +153,14 @@ local function createToggleButton(text, y, parent, withFakeNote)
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = container
 
-    if withFakeNote then
-        local note = Instance.new("TextLabel")
-        note.Size = UDim2.new(1, -60, 0, 20)
-        note.Position = UDim2.new(0, 0, 0, 22)
-        note.BackgroundTransparency = 1
-        note.Text = "Chỉ là ảo"
-        note.TextColor3 = Color3.fromRGB(255, 50, 50)
-        note.Font = Enum.Font.GothamItalic
-        note.TextSize = 14
-        note.TextXAlignment = Enum.TextXAlignment.Left
-        note.Parent = container
-    end
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Size = UDim2.new(0, 40, 0, 20)
+    toggleFrame.Position = UDim2.new(1, -50, 0, 10)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+    toggleFrame.Parent = container
+    toggleFrame.ClipsDescendants = true
 
-    local toggle = Instance.new("Frame")
-    toggle.Size = UDim2.new(0, 40, 0, 20)
-    toggle.Position = UDim2.new(1, -50, 0, 10)
-    toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-    toggle.Parent = container
-    toggle.ClipsDescendants = true
-
-    local toggleCorner = Instance.new("UICorner", toggle)
+    local toggleCorner = Instance.new("UICorner", toggleFrame)
     toggleCorner.CornerRadius = UDim.new(1, 0)
 
     local toggleCircle = Instance.new("Frame")
@@ -195,12 +168,166 @@ local function createToggleButton(text, y, parent, withFakeNote)
     toggleCircle.Position = UDim2.new(0, 1, 0, 1)
     toggleCircle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     toggleCircle.BorderSizePixel = 0
-    toggleCircle.Parent = toggle
+    toggleCircle.Parent = toggleFrame
 
     local circleCorner = Instance.new("UICorner", toggleCircle)
     circleCorner.CornerRadius = UDim.new(1, 0)
 
-    toggles[text] = false
+    local enabled = false
 
-    local toggleBtn = Instance.new("TextButton")
-    toggleBtn
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Text = ""
+    toggleButton.Parent = toggleFrame
+
+    toggleButton.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        if enabled then
+            toggleFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            toggleCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        else
+            toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+            toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        end
+    end)
+
+    return {
+        frame = container,
+        isEnabled = function() return enabled end,
+        setEnabled = function(state)
+            enabled = state
+            if enabled then
+                toggleFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                toggleCircle.Position = UDim2.new(0.5, 20, 0, 1)
+            else
+                toggleFrame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+                toggleCircle.Position = UDim2.new(0, 1, 0, 1)
+            end
+        end
+    }
+end
+
+-- Tạo slider đơn giản
+local function createSlider(text, y, parent, minVal, maxVal, defaultVal)
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -20, 0, 50)
+    container.Position = UDim2.new(0, 10, 0, y)
+    container.BackgroundTransparency = 1
+    container.Parent = parent
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -60, 0, 20)
+    label.BackgroundTransparency = 1
+    label.Text = text .. ": " .. tostring(defaultVal)
+    label.TextColor3 = Color3.fromRGB(255, 0, 0)
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 18
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = container
+
+    local sliderFrame = Instance.new("Frame")
+    sliderFrame.Size = UDim2.new(1, -60, 0, 20)
+    sliderFrame.Position = UDim2.new(0, 0, 0, 25)
+    sliderFrame.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+    sliderFrame.Parent = container
+    sliderFrame.ClipsDescendants = true
+
+    local sliderCorner = Instance.new("UICorner", sliderFrame)
+    sliderCorner.CornerRadius = UDim.new(0, 6)
+
+    local sliderBar = Instance.new("Frame")
+    sliderBar.Size = UDim2.new((defaultVal - minVal) / (maxVal - minVal), 0, 1, 0)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    sliderBar.Parent = sliderFrame
+
+    local sliderButton = Instance.new("TextButton")
+    sliderButton.Size = UDim2.new(0, 18, 0, 20)
+    sliderButton.Position = UDim2.new(sliderBar.Size.X.Scale, 0, 0, 0)
+    sliderButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    sliderButton.BorderSizePixel = 0
+    sliderButton.Parent = sliderFrame
+
+    local buttonCorner = Instance.new("UICorner", sliderButton)
+    buttonCorner.CornerRadius = UDim.new(1, 0)
+
+    local dragging = false
+
+    local function updateSlider(inputPosX)
+        local relativePos = math.clamp(inputPosX - sliderFrame.AbsolutePosition.X, 0, sliderFrame.AbsoluteSize.X)
+        local scale = relativePos / sliderFrame.AbsoluteSize.X
+        sliderBar.Size = UDim2.new(scale, 0, 1, 0)
+        sliderButton.Position = UDim2.new(scale, 0, 0, 0)
+
+        local value = math.floor(minVal + scale * (maxVal - minVal))
+        label.Text = text .. ": " .. tostring(value)
+    end
+
+    sliderButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+
+    sliderButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    sliderFrame.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateSlider(input.Position.X)
+        end
+    end)
+
+    return container
+end
+
+-- Xây dựng nội dung từng tab
+local function showMainTab()
+    clearContent()
+    tabTitle.Text = "Main"
+
+    local autoParryToggle = createToggle("AutoParry", 10, contentFrame)
+    autoParryToggle.frame.Parent = contentFrame
+
+    -- Ví dụ thêm toggle khác
+    local autoClickToggle = createToggle("AutoClick (Fake)", 60, contentFrame)
+    autoClickToggle.frame.Parent = contentFrame
+end
+
+local function showPlayerTab()
+    clearContent()
+    tabTitle.Text = "Player"
+
+    local flyToggle = createToggle("Fly (Fake)", 10, contentFrame)
+    flyToggle.frame.Parent = contentFrame
+
+    local speedSlider = createSlider("Speed", 60, contentFrame, 16, 500, 16)
+    speedSlider.Parent = contentFrame
+end
+
+-- Gán sự kiện chuyển tab
+mainBtn.MouseButton1Click:Connect(function()
+    showMainTab()
+end)
+
+playerBtn.MouseButton1Click:Connect(function()
+    showPlayerTab()
+end)
+
+autoBuyBtn.MouseButton1Click:Connect(function()
+    clearContent()
+    tabTitle.Text = "Auto Buy"
+    -- Thêm code Auto Buy tại đây
+end)
+
+settingsBtn.MouseButton1Click:Connect(function()
+    clearContent()
+    tabTitle.Text = "Settings"
+    -- Thêm code Settings tại đây
+end)
+
+-- Mặc định hiển thị Main tab
+showMainTab()
