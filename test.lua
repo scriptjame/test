@@ -313,27 +313,36 @@ settingsBtn.MouseButton1Click:Connect(function()
     tabTitle.Text = "Settings"
     clearContent()
 end)
--- Thời gian đếm ngược (giây)
-local countdownTime = 170
+-- Số lượng toggle trong main tab (ví dụ 4 toggle)
+local numToggles = 4
 
--- Label thông báo đếm ngược
+-- Khoảng cách từ trên xuống toggle đầu tiên trong contentFrame (theo code bạn là 50)
+local startY = 50
+
+-- Chiều cao mỗi toggle (đã bao gồm khoảng cách) (nếu có toggle 60 thì lấy 70 để chắc)
+local toggleHeight = 50
+
+-- Vị trí Y để đặt countdownLabel: dưới toggle cuối + chút khoảng cách
+local countdownPosY = startY + numToggles * toggleHeight + 10
+
+-- Tạo label thông báo đếm ngược
 local countdownLabel = Instance.new("TextLabel")
 countdownLabel.Size = UDim2.new(1, 0, 0, 40)
-countdownLabel.Position = UDim2.new(0, 0, 0, 30) -- ngay dưới titleLabel
+countdownLabel.Position = UDim2.new(0, 0, 0, countdownPosY)
 countdownLabel.BackgroundTransparency = 1
 countdownLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
 countdownLabel.Font = Enum.Font.GothamBold
 countdownLabel.TextSize = 18
 countdownLabel.TextWrapped = true
 countdownLabel.TextXAlignment = Enum.TextXAlignment.Center
-countdownLabel.Parent = mainFrame
+countdownLabel.Parent = contentFrame -- Gắn vào contentFrame cho đúng vị trí bên trong tab chính
 
 -- Hàm cập nhật thông báo
 local function updateCountdownLabel(timeLeft)
     countdownLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: " .. timeLeft .. " seconds."
 end
 
--- Bắt đầu đếm ngược
+-- Đếm ngược
 spawn(function()
     local timeLeft = countdownTime
     while timeLeft > 0 do
@@ -341,12 +350,8 @@ spawn(function()
         wait(1)
         timeLeft = timeLeft - 1
     end
-    -- Khi đếm xong, ẩn label hoặc đổi thông báo
     countdownLabel.Text = "✅ Optimization complete! Enjoy your game."
     wait(3)
     countdownLabel.Visible = false
 end)
 
-
--- Mặc định load Main tab
-loadMainTab()
