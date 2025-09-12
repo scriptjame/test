@@ -95,7 +95,7 @@ content.Size = UDim2.new(1, -100, 1, -60)
 content.Position = UDim2.new(0, 100, 0, 30)
 content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
--- Tiêu đề của tab (ví dụ “Main”, “Player”, ...)
+-- Tiêu đề của tab
 local tabTitle = Instance.new("TextLabel", content)
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
 tabTitle.Position = UDim2.new(0, 0, 0, 0)
@@ -232,6 +232,8 @@ local function loadChanger()
     clearContent()
     local y = 50
     createToggle("Auto Skin Change", y)
+    y = y + 50
+    createInput("Change Skin", y)
 end
 
 -- Tab Auto Rank
