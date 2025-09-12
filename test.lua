@@ -152,6 +152,19 @@ local function createToggle(text, y)
     end)
 end
 
+-- Hàm tạo label tĩnh (chỉ hiện chữ)
+local function createLabel(text, y)
+    local label = Instance.new("TextLabel", content)
+    label.Size = UDim2.new(1, -20, 0, 30)
+    label.Position = UDim2.new(0, 10, 0, y)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.new(1, 0, 0)
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 18
+    label.TextXAlignment = Enum.TextXAlignment.Left
+end
+
 -- Hàm xóa nội dung của content frame (trừ tiêu đề)
 local function clearContent()
     for _, c in ipairs(content:GetChildren()) do
@@ -191,6 +204,10 @@ local function loadDupe()
     clearContent()
     local y = 50
     createToggle("Auto Dupe", y)
+    y = y + 50
+    createLabel("Dupe Token", y)
+    y = y + 40
+    createLabel("Dupe Sword", y)
 end
 
 -- Tab Changer Skin
