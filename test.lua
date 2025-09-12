@@ -7,6 +7,46 @@ if old then old:Destroy() end
 -- Tạo ScreenGui mới
 local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.Name = "rutoairas"
+screenGui.ResetOnSpawn = false
+
+-- GUI Loading chung
+local loadingFrame = Instance.new("Frame", screenGui)
+loadingFrame.Size = UDim2.new(0, 250, 0, 120)
+loadingFrame.Position = UDim2.new(0.5, -125, 0.5, -60)
+loadingFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+loadingFrame.BorderSizePixel = 2
+loadingFrame.BorderColor3 = Color3.new(1, 0, 0)
+Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 12)
+loadingFrame.Visible = false
+
+local loadingTitle = Instance.new("TextLabel", loadingFrame)
+loadingTitle.Size = UDim2.new(1, 0, 0, 30)
+loadingTitle.BackgroundTransparency = 1
+loadingTitle.Text = "Loading..."
+loadingTitle.TextColor3 = Color3.new(1, 0, 0)
+loadingTitle.Font = Enum.Font.GothamBold
+loadingTitle.TextSize = 20
+
+local progressLabel = Instance.new("TextLabel", loadingFrame)
+progressLabel.Size = UDim2.new(1, 0, 0, 50)
+progressLabel.Position = UDim2.new(0, 0, 0, 40)
+progressLabel.BackgroundTransparency = 1
+progressLabel.Text = "0%"
+progressLabel.TextColor3 = Color3.new(1, 0, 0)
+progressLabel.Font = Enum.Font.GothamBold
+progressLabel.TextSize = 28
+
+-- Hàm chạy loading
+local function showLoading(callback)
+    loadingFrame.Visible = true
+    progressLabel.Text = "0%"
+    for i = 1, 100 do
+        progressLabel.Text = i.."%"
+        task.wait(0.02) -- tốc độ loading (2s sẽ xong)
+    end
+    loadingFrame.Visible = false
+    if callback then callback() end
+end
 
 -- Khung outer chứa UI
 local outer = Instance.new("Frame", screenGui)
@@ -27,7 +67,6 @@ Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 -- Tiêu đề GUI
 local title = Instance.new("TextLabel", main)
 title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "rutoairas"
 title.TextColor3 = Color3.new(1, 0, 0)
@@ -89,23 +128,21 @@ local btnDupe = makeMenuBtn("Dupe", 80)
 local btnChanger = makeMenuBtn("Skin", 120)
 local btnRank = makeMenuBtn("Rank", 160)
 
--- Frame chứa nội dung các toggle theo tab
+-- Frame chứa nội dung tab
 local content = Instance.new("Frame", main)
 content.Size = UDim2.new(1, -100, 1, -60)
 content.Position = UDim2.new(0, 100, 0, 30)
 content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
--- Tiêu đề của tab
 local tabTitle = Instance.new("TextLabel", content)
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
-tabTitle.Position = UDim2.new(0, 0, 0, 0)
 tabTitle.BackgroundTransparency = 1
 tabTitle.TextColor3 = Color3.new(1, 0, 0)
 tabTitle.Font = Enum.Font.GothamBold
 tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 
--- Hàm tạo toggle dòng
+-- Hàm tạo toggle có loading
 local function createToggle(text, y)
     local frame = Instance.new("Frame", content)
     frame.Size = UDim2.new(1, -20, 0, 40)
@@ -114,7 +151,6 @@ local function createToggle(text, y)
 
     local label = Instance.new("TextLabel", frame)
     label.Size = UDim2.new(1, -60, 0, 20)
-    label.Position = UDim2.new(0, 0, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = text
     label.TextColor3 = Color3.new(1, 0, 0)
@@ -126,7 +162,6 @@ local function createToggle(text, y)
     toggle.Size = UDim2.new(0, 40, 0, 20)
     toggle.Position = UDim2.new(1, -50, 0, 10)
     toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
-    toggle.ClipsDescendants = true
     Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
 
     local circ = Instance.new("Frame", toggle)
@@ -139,19 +174,29 @@ local function createToggle(text, y)
     local btn = Instance.new("TextButton", toggle)
     btn.Size = UDim2.new(1, 0, 1, 0)
     btn.BackgroundTransparency = 1
+    btn.Text = ""
+
     btn.MouseButton1Click:Connect(function()
-        enabled = not enabled
         if enabled then
-            toggle.BackgroundColor3 = Color3.new(1, 0, 0)
-            circ:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
-        else
+            -- Tắt ngay lập tức
+            enabled = false
             toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
-            circ:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+            circ:TweenPosition(UDim2.new(0, 1, 0, 1))
+        else
+            -- Chạy loading
+            enabled = false
+            toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
+            circ:TweenPosition(UDim2.new(0, 1, 0, 1))
+            showLoading(function()
+                enabled = true
+                toggle.BackgroundColor3 = Color3.new(1, 0, 0)
+                circ:TweenPosition(UDim2.new(0.5, 20, 0, 1))
+            end)
         end
     end)
 end
 
--- Hàm tạo label kèm TextBox để nhập giá trị
+-- Hàm tạo input box
 local function createInput(text, y)
     local frame = Instance.new("Frame", content)
     frame.Size = UDim2.new(1, -20, 0, 40)
@@ -160,7 +205,6 @@ local function createInput(text, y)
 
     local label = Instance.new("TextLabel", frame)
     label.Size = UDim2.new(0, 120, 1, 0)
-    label.Position = UDim2.new(0, 0, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = text
     label.TextColor3 = Color3.new(1, 0, 0)
