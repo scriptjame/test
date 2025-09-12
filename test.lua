@@ -106,7 +106,7 @@ tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 
 ----------------------------------------------------------------
--- 🟢 Loading GUI
+-- 🟢 Loading GUI (170 giây)
 ----------------------------------------------------------------
 local loadingFrame = Instance.new("Frame", screenGui)
 loadingFrame.Size = UDim2.new(0, 300, 0, 80)
@@ -140,10 +140,14 @@ local function startLoading(callback)
     progressBar.Size = UDim2.new(0, 0, 1, 0)
     loadingText.Text = "Loading 0%"
 
-    for i = 1, 100 do
-        progressBar.Size = UDim2.new(i/100, 0, 1, 0)
+    local duration = 170
+    local steps = 100
+    local stepTime = duration / steps
+
+    for i = 1, steps do
+        progressBar.Size = UDim2.new(i/steps, 0, 1, 0)
         loadingText.Text = "Loading " .. i .. "%"
-        task.wait(0.02)
+        task.wait(stepTime)
     end
 
     loadingFrame.Visible = false
@@ -187,14 +191,14 @@ local function createToggle(text, y)
     btn.Size = UDim2.new(1, 0, 1, 0)
     btn.BackgroundTransparency = 1
     btn.MouseButton1Click:Connect(function()
-        -- chạy loading
-        enabled = not enabled
-        if enabled then
+        if not enabled then
             startLoading(function()
+                enabled = true
                 toggle.BackgroundColor3 = Color3.new(1, 0, 0)
                 circ:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
             end)
         else
+            enabled = false
             toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
             circ:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
         end
