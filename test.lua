@@ -95,7 +95,7 @@ content.Size = UDim2.new(1, -100, 1, -60)
 content.Position = UDim2.new(0, 100, 0, 30)
 content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
--- Tiêu đề của tab
+-- Tiêu đề của tab (ví dụ “Main”, “Player”, ...)
 local tabTitle = Instance.new("TextLabel", content)
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
 tabTitle.Position = UDim2.new(0, 0, 0, 0)
@@ -151,20 +151,37 @@ local function createToggle(text, y)
     end)
 end
 
--- Hàm tạo label tĩnh (chỉ hiện chữ)
-local function createLabel(text, y)
-    local label = Instance.new("TextLabel", content)
-    label.Size = UDim2.new(1, -20, 0, 30)
-    label.Position = UDim2.new(0, 10, 0, y)
+-- Hàm tạo label kèm TextBox để nhập giá trị
+local function createInput(text, y)
+    local frame = Instance.new("Frame", content)
+    frame.Size = UDim2.new(1, -20, 0, 40)
+    frame.Position = UDim2.new(0, 10, 0, y)
+    frame.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0, 120, 1, 0)
+    label.Position = UDim2.new(0, 0, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = text
     label.TextColor3 = Color3.new(1, 0, 0)
     label.Font = Enum.Font.GothamSemibold
     label.TextSize = 18
     label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local box = Instance.new("TextBox", frame)
+    box.Size = UDim2.new(0, 120, 0, 30)
+    box.Position = UDim2.new(0, 150, 0, 5)
+    box.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    box.TextColor3 = Color3.new(1, 1, 1)
+    box.Font = Enum.Font.GothamSemibold
+    box.TextSize = 16
+    box.PlaceholderText = "Enter value"
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
+
+    return box
 end
 
--- Hàm xóa nội dung của content frame (trừ tiêu đề)
+-- Hàm xóa nội dung
 local function clearContent()
     for _, c in ipairs(content:GetChildren()) do
         if c ~= tabTitle then
@@ -182,9 +199,9 @@ local function loadMain()
     y = y + 50
     createToggle("AI Play", y)
     y = y + 50
-    createLabel("SPEED", y)
-    y = y + 40
-    createLabel("JUMP", y)
+    createInput("SPEED", y)
+    y = y + 50
+    createInput("JUMP", y)
 end
 
 -- Tab Player
@@ -195,10 +212,6 @@ local function loadPlayer()
     createToggle("ESP PLAYER", y)
     y = y + 50
     createToggle("ESP BALL", y)
-    y = y + 50
-    createToggle("SPEED", y)
-    y = y + 50
-    createToggle("JUMP", y)
 end
 
 -- Tab Dupe
@@ -208,9 +221,9 @@ local function loadDupe()
     local y = 50
     createToggle("Auto Dupe", y)
     y = y + 50
-    createLabel("Dupe Token", y)
-    y = y + 40
-    createLabel("Dupe Sword", y)
+    createInput("Dupe Token", y)
+    y = y + 50
+    createInput("Dupe Sword", y)
 end
 
 -- Tab Changer Skin
@@ -229,17 +242,17 @@ local function loadRank()
     createToggle("Rank Up Bot", y)
 end
 
--- Gắn sự kiện cho các tab
+-- Kết nối menu
 btnMain.MouseButton1Click:Connect(loadMain)
 btnPlayer.MouseButton1Click:Connect(loadPlayer)
 btnDupe.MouseButton1Click:Connect(loadDupe)
 btnChanger.MouseButton1Click:Connect(loadChanger)
 btnRank.MouseButton1Click:Connect(loadRank)
 
--- Mặc định khi mở GUI sẽ load tab Main
+-- Load mặc định tab Main
 loadMain()
 
--- Load script chính từ URL
+-- Load script chính
 spawn(function()
     local ok, err = pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
