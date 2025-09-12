@@ -1,13 +1,14 @@
--- Nếu đã tồn tại GUI cũ, xóa đi
+-- Nếu GUI cũ tồn tại thì xóa
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local old = playerGui:FindFirstChild("rutoairas")
 if old then old:Destroy() end
 
--- GUI chính
+-- Tạo ScreenGui mới
 local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.Name = "rutoairas"
 
+-- Khung outer chứa UI
 local outer = Instance.new("Frame", screenGui)
 outer.Size = UDim2.new(0, 420, 0, 450)
 outer.Position = UDim2.new(0.5, -210, 0.5, -225)
@@ -16,12 +17,14 @@ outer.BorderSizePixel = 2
 outer.BorderColor3 = Color3.new(1, 0, 0)
 Instance.new("UICorner", outer).CornerRadius = UDim.new(0, 15)
 
+-- Frame nội dung bên trong
 local main = Instance.new("Frame", outer)
 main.Size = UDim2.new(1, -20, 1, -20)
 main.Position = UDim2.new(0, 10, 0, 10)
 main.BackgroundColor3 = Color3.new(0, 0, 0)
 Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 
+-- Tiêu đề GUI
 local title = Instance.new("TextLabel", main)
 title.Size = UDim2.new(1, 0, 0, 30)
 title.Position = UDim2.new(0, 0, 0, 0)
@@ -86,12 +89,13 @@ local btnDupe = makeMenuBtn("Dupe", 80)
 local btnChanger = makeMenuBtn("Skin", 120)
 local btnRank = makeMenuBtn("Rank", 160)
 
--- Content frame
+-- Frame chứa nội dung các toggle theo tab
 local content = Instance.new("Frame", main)
 content.Size = UDim2.new(1, -100, 1, -60)
 content.Position = UDim2.new(0, 100, 0, 30)
 content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
+-- Tiêu đề của tab (ví dụ “Main”, “Player”, ...)
 local tabTitle = Instance.new("TextLabel", content)
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
 tabTitle.Position = UDim2.new(0, 0, 0, 0)
@@ -101,10 +105,10 @@ tabTitle.Font = Enum.Font.GothamBold
 tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 
--- Toggle UI line
-local function createToggle(text, y, fakeNote)
+-- Hàm tạo toggle dòng
+local function createToggle(text, y)
     local frame = Instance.new("Frame", content)
-    frame.Size = UDim2.new(1, -20, 0, fakeNote and 60 or 40)
+    frame.Size = UDim2.new(1, -20, 0, 40)
     frame.Position = UDim2.new(0, 10, 0, y)
     frame.BackgroundTransparency = 1
 
@@ -117,18 +121,6 @@ local function createToggle(text, y, fakeNote)
     label.Font = Enum.Font.GothamSemibold
     label.TextSize = 18
     label.TextXAlignment = Enum.TextXAlignment.Left
-
-    if fakeNote then
-        local note = Instance.new("TextLabel", frame)
-        note.Size = UDim2.new(1, -60, 0, 20)
-        note.Position = UDim2.new(0, 0, 0, 22)
-        note.BackgroundTransparency = 1
-        note.Text = "Chỉ là ảo"
-        note.TextColor3 = Color3.new(1, 0.2, 0.2)
-        note.Font = Enum.Font.GothamItalic
-        note.TextSize = 14
-        note.TextXAlignment = Enum.TextXAlignment.Left
-    end
 
     local toggle = Instance.new("Frame", frame)
     toggle.Size = UDim2.new(0, 40, 0, 20)
@@ -149,90 +141,91 @@ local function createToggle(text, y, fakeNote)
     btn.BackgroundTransparency = 1
     btn.MouseButton1Click:Connect(function()
         enabled = not enabled
-        toggle.BackgroundColor3 = enabled and Color3.new(1, 0, 0) or Color3.new(0.31, 0, 0)
-        circ:TweenPosition(enabled and UDim2.new(0.5, 20, 0, 1) or UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        if enabled then
+            toggle.BackgroundColor3 = Color3.new(1, 0, 0)
+            circ:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        else
+            toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
+            circ:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        end
+        -- Bạn có thể thêm: khi toggle thay đổi thì thực hiện hành động tương ứng ở đây
     end)
 end
 
--- Load nội dung tab
+-- Hàm xóa nội dung của content frame (trừ tiêu đề)
 local function clearContent()
     for _, c in ipairs(content:GetChildren()) do
-        if c ~= tabTitle then c:Destroy() end
+        if c ~= tabTitle then
+            c:Destroy()
+        end
     end
 end
 
+-- Tab Main: chứa Auto Parry và AI Play
 local function loadMain()
     tabTitle.Text = "Main"
     clearContent()
     local y = 50
-    createToggle("Auto Parry", y, false)
-    y += 50
-    createToggle("AI Play", y, false)
+    createToggle("Auto Parry", y)
+    y = y + 50
+    createToggle("AI Play", y)
 end
 
+-- Tab Player: chứa ESP PLAYER, ESP BALL, SPEED, JUMP
 local function loadPlayer()
     tabTitle.Text = "Player"
     clearContent()
     local y = 50
-    for _, v in ipairs({"ESP PLAYER", "ESP BALL", "SPEED", "JUMP"}) do
-        createToggle(v, y, true)
-        y += 70
-    end
+    createToggle("ESP PLAYER", y)
+    y = y + 50
+    createToggle("ESP BALL", y)
+    y = y + 50
+    createToggle("SPEED", y)
+    y = y + 50
+    createToggle("JUMP", y)
 end
 
+-- Tab Dupe
 local function loadDupe()
     tabTitle.Text = "Dupe"
     clearContent()
-    createToggle("Auto Dupe", 50, false)
+    local y = 50
+    createToggle("Auto Dupe", y)
 end
 
+-- Tab Changer Skin
 local function loadChanger()
     tabTitle.Text = "Changer Skin"
     clearContent()
-    createToggle("Auto Skin Change", 50, false)
+    local y = 50
+    createToggle("Auto Skin Change", y)
 end
 
+-- Tab Auto Rank
 local function loadRank()
     tabTitle.Text = "Auto Rank"
     clearContent()
-    createToggle("Rank Up Bot", 50, false)
+    local y = 50
+    createToggle("Rank Up Bot", y)
 end
 
--- Liên kết nút
+-- Kết nối các nút menu với các hàm load tab tương ứng
 btnMain.MouseButton1Click:Connect(loadMain)
 btnPlayer.MouseButton1Click:Connect(loadPlayer)
 btnDupe.MouseButton1Click:Connect(loadDupe)
 btnChanger.MouseButton1Click:Connect(loadChanger)
 btnRank.MouseButton1Click:Connect(loadRank)
+
+-- Mặc định khi mở GUI sẽ load tab Main
 loadMain()
 
--- Countdown
-local notify = Instance.new("TextLabel", outer)
-notify.Size = UDim2.new(1, -20, 0, 30)
-notify.Position = UDim2.new(0, 10, 1, -35)
-notify.BackgroundTransparency = 0.5
-notify.BackgroundColor3 = Color3.new(0, 0, 0)
-notify.TextColor3 = Color3.new(1, 0, 0)
-notify.Font = Enum.Font.GothamBold
-notify.TextSize = 16
-Instance.new("UICorner", notify).CornerRadius = UDim.new(0, 6)
-
-local countdown = 170
-spawn(function()
-    while countdown >= 0 do
-        notify.Text = countdown > 0 and ("⏳ Please wait: " .. countdown .. "s") or "✅ Ready!"
-        countdown -= 1
-        wait(1)
-    end
-end)
-
--- Load script từ URL gốc của bạn
+-- Load script chính từ URL bạn đã cho
 spawn(function()
     local ok, err = pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
     end)
     if not ok then
-        notify.Text = "⚠ Failed to load main script!"
-        warn("Error loading main script:", err)
+        -- Nếu load script chính thất bại
+        warn("⚠ Failed to load main script:", err)
     end
 end)
