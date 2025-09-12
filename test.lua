@@ -95,7 +95,7 @@ content.Size = UDim2.new(1, -100, 1, -60)
 content.Position = UDim2.new(0, 100, 0, 30)
 content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
--- Tiêu đề của tab (ví dụ “Main”, “Player”, ...)
+-- Tiêu đề của tab
 local tabTitle = Instance.new("TextLabel", content)
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
 tabTitle.Position = UDim2.new(0, 0, 0, 0)
@@ -148,7 +148,6 @@ local function createToggle(text, y)
             toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
             circ:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
         end
-        -- Bạn có thể thêm: khi toggle thay đổi thì thực hiện hành động tương ứng ở đây
     end)
 end
 
@@ -174,7 +173,7 @@ local function clearContent()
     end
 end
 
--- Tab Main: chứa Auto Parry và AI Play
+-- Tab Main
 local function loadMain()
     tabTitle.Text = "Main"
     clearContent()
@@ -182,9 +181,13 @@ local function loadMain()
     createToggle("Auto Parry", y)
     y = y + 50
     createToggle("AI Play", y)
+    y = y + 50
+    createLabel("SPEED", y)
+    y = y + 40
+    createLabel("JUMP", y)
 end
 
--- Tab Player: chứa ESP PLAYER, ESP BALL, SPEED, JUMP
+-- Tab Player
 local function loadPlayer()
     tabTitle.Text = "Player"
     clearContent()
@@ -226,7 +229,7 @@ local function loadRank()
     createToggle("Rank Up Bot", y)
 end
 
--- Kết nối các nút menu với các hàm load tab tương ứng
+-- Gắn sự kiện cho các tab
 btnMain.MouseButton1Click:Connect(loadMain)
 btnPlayer.MouseButton1Click:Connect(loadPlayer)
 btnDupe.MouseButton1Click:Connect(loadDupe)
@@ -236,13 +239,12 @@ btnRank.MouseButton1Click:Connect(loadRank)
 -- Mặc định khi mở GUI sẽ load tab Main
 loadMain()
 
--- Load script chính từ URL bạn đã cho
+-- Load script chính từ URL
 spawn(function()
     local ok, err = pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
     end)
     if not ok then
-        -- Nếu load script chính thất bại
         warn("⚠ Failed to load main script:", err)
     end
 end)
