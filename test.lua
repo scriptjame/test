@@ -1,257 +1,238 @@
+-- Nếu đã tồn tại GUI cũ, xóa đi
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-
--- Xóa gui cũ nếu có
-local oldGui = playerGui:FindFirstChild("rutoairas")
-if oldGui then oldGui:Destroy() end
+local old = playerGui:FindFirstChild("rutoairas")
+if old then old:Destroy() end
 
 -- GUI chính
-local screenGui = Instance.new("ScreenGui")
+local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.Name = "rutoairas"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = playerGui
 
--- Viền ngoài
-local outerFrame = Instance.new("Frame")
-outerFrame.Size = UDim2.new(0, 420, 0, 400) -- Tăng chiều cao để chứa thông báo
-outerFrame.Position = UDim2.new(0.5, -210, 0.5, -200)
-outerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-outerFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
-outerFrame.BorderSizePixel = 2
-outerFrame.Parent = screenGui
+local outer = Instance.new("Frame", screenGui)
+outer.Size = UDim2.new(0, 420, 0, 450)
+outer.Position = UDim2.new(0.5, -210, 0.5, -225)
+outer.BackgroundColor3 = Color3.new(0, 0, 0)
+outer.BorderSizePixel = 2
+outer.BorderColor3 = Color3.new(1, 0, 0)
+Instance.new("UICorner", outer).CornerRadius = UDim.new(0, 15)
 
-local outerCorner = Instance.new("UICorner", outerFrame)
-outerCorner.CornerRadius = UDim.new(0, 15)
+local main = Instance.new("Frame", outer)
+main.Size = UDim2.new(1, -20, 1, -20)
+main.Position = UDim2.new(0, 10, 0, 10)
+main.BackgroundColor3 = Color3.new(0, 0, 0)
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
 
--- Frame chính
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(1, -20, 1, -20)
-mainFrame.Position = UDim2.new(0, 10, 0, 10)
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = outerFrame
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "rutoairas"
+title.TextColor3 = Color3.new(1, 0, 0)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
 
-local mainCorner = Instance.new("UICorner", mainFrame)
-mainCorner.CornerRadius = UDim.new(0, 12)
-
--- Tiêu đề
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, 0, 0, 30)
-titleLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-titleLabel.BorderSizePixel = 0
-titleLabel.Text = "rutoairas"
-titleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextSize = 20
-titleLabel.Parent = mainFrame
-
--- Nút đóng
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -30, 0, 0)
-closeButton.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.fromRGB(255, 0, 0)
-closeButton.Font = Enum.Font.GothamBold
-closeButton.TextSize = 20
-closeButton.Parent = mainFrame
-closeButton.MouseButton1Click:Connect(function()
+-- Nút đóng GUI
+local closeBtn = Instance.new("TextButton", main)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -30, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.new(1, 0, 0)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 20
+closeBtn.BackgroundColor3 = Color3.new(0.16, 0, 0)
+closeBtn.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
--- Nút Hide/Show
-local toggleGuiButton = Instance.new("TextButton")
-toggleGuiButton.Size = UDim2.new(0, 50, 0, 30)
-toggleGuiButton.Position = UDim2.new(0, 5, 0, 5)
-toggleGuiButton.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-toggleGuiButton.Text = "Hide"
-toggleGuiButton.TextColor3 = Color3.fromRGB(255, 0, 0)
-toggleGuiButton.Font = Enum.Font.GothamBold
-toggleGuiButton.TextSize = 18
-toggleGuiButton.Parent = screenGui
+-- Nút Hide/Show GUI
+local toggleBtn = Instance.new("TextButton", screenGui)
+toggleBtn.Size = UDim2.new(0, 50, 0, 30)
+toggleBtn.Position = UDim2.new(0, 5, 0, 5)
+toggleBtn.Text = "Hide"
+toggleBtn.TextColor3 = Color3.new(1, 0, 0)
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 18
+toggleBtn.BackgroundColor3 = Color3.new(0.16, 0, 0)
 
 local guiVisible = true
-toggleGuiButton.MouseButton1Click:Connect(function()
+toggleBtn.MouseButton1Click:Connect(function()
     guiVisible = not guiVisible
-    outerFrame.Visible = guiVisible
-    toggleGuiButton.Text = guiVisible and "Hide" or "Show"
+    outer.Visible = guiVisible
+    toggleBtn.Text = guiVisible and "Hide" or "Show"
 end)
 
--- Menu bên trái
-local menuFrame = Instance.new("Frame")
-menuFrame.Size = UDim2.new(0, 100, 1, -30)
-menuFrame.Position = UDim2.new(0, 0, 0, 30)
-menuFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-menuFrame.BorderSizePixel = 0
-menuFrame.Parent = mainFrame
+-- Sidebar menu
+local menu = Instance.new("Frame", main)
+menu.Size = UDim2.new(0, 100, 1, -30)
+menu.Position = UDim2.new(0, 0, 0, 30)
+menu.BackgroundColor3 = Color3.new(0.06, 0.06, 0.06)
 
-local function createMenuButton(name, yPos)
-    local btn = Instance.new("TextButton")
+local function makeMenuBtn(txt, y)
+    local btn = Instance.new("TextButton", menu)
     btn.Size = UDim2.new(1, 0, 0, 40)
-    btn.Position = UDim2.new(0, 0, 0, yPos)
-    btn.BackgroundColor3 = Color3.fromRGB(25, 0, 0)
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(255, 0, 0)
+    btn.Position = UDim2.new(0, 0, 0, y)
+    btn.Text = txt
+    btn.TextColor3 = Color3.new(1, 0, 0)
     btn.Font = Enum.Font.GothamSemibold
     btn.TextSize = 18
-    btn.Parent = menuFrame
+    btn.BackgroundColor3 = Color3.new(0.1, 0, 0)
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
     return btn
 end
 
-local mainBtn = createMenuButton("Main", 0)
-local playerBtn = createMenuButton("Player", 40)
-local autoBuyBtn = createMenuButton("Auto Buy", 80)
-local settingsBtn = createMenuButton("Settings", 120)
+local btnMain = makeMenuBtn("Main", 0)
+local btnPlayer = makeMenuBtn("Player", 40)
+local btnDupe = makeMenuBtn("Dupe", 80)
+local btnChanger = makeMenuBtn("Skin", 120)
+local btnRank = makeMenuBtn("Rank", 160)
 
--- Nội dung chính
-local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, -100, 1, -80)
-contentFrame.Position = UDim2.new(0, 100, 0, 30)
-contentFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-contentFrame.BorderSizePixel = 0
-contentFrame.Parent = mainFrame
+-- Content frame
+local content = Instance.new("Frame", main)
+content.Size = UDim2.new(1, -100, 1, -60)
+content.Position = UDim2.new(0, 100, 0, 30)
+content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
--- Tiêu đề tab
-local tabTitle = Instance.new("TextLabel")
+local tabTitle = Instance.new("TextLabel", content)
 tabTitle.Size = UDim2.new(1, 0, 0, 30)
+tabTitle.Position = UDim2.new(0, 0, 0, 0)
 tabTitle.BackgroundTransparency = 1
-tabTitle.Text = "Main"
-tabTitle.TextColor3 = Color3.fromRGB(255, 0, 0)
+tabTitle.TextColor3 = Color3.new(1, 0, 0)
 tabTitle.Font = Enum.Font.GothamBold
 tabTitle.TextSize = 24
 tabTitle.TextXAlignment = Enum.TextXAlignment.Left
-tabTitle.Parent = contentFrame
 
--- Dòng thông báo tối ưu hóa
-local optimizeLabel = Instance.new("TextLabel")
-optimizeLabel.Size = UDim2.new(1, -20, 0, 30)
-optimizeLabel.Position = UDim2.new(0, 10, 1, -35)
-optimizeLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-optimizeLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-optimizeLabel.Font = Enum.Font.GothamBold
-optimizeLabel.TextSize = 16
-optimizeLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: 200 seconds."
-optimizeLabel.Parent = mainFrame
-Instance.new("UICorner", optimizeLabel).CornerRadius = UDim.new(0, 6)
+-- Toggle UI line
+local function createToggle(text, y, fakeNote)
+    local frame = Instance.new("Frame", content)
+    frame.Size = UDim2.new(1, -20, 0, fakeNote and 60 or 40)
+    frame.Position = UDim2.new(0, 10, 0, y)
+    frame.BackgroundTransparency = 1
 
--- Đếm ngược
-local secondsLeft = 200
-task.spawn(function()
-    while secondsLeft > 0 do
-        optimizeLabel.Text = "⏳ The system is optimizing for the best experience. Please wait: " .. secondsLeft .. " seconds."
-        secondsLeft -= 1
-        wait(1)
-    end
-    optimizeLabel.Text = "✅ Optimization completed. Ready to use!"
-end)
-
--- Tạo toggle
-local toggles = {}
-local function createToggleButton(text, posY, parent, fakeNote)
-    local container = Instance.new("Frame")
-    container.Size = UDim2.new(1, -20, 0, fakeNote and 60 or 40)
-    container.Position = UDim2.new(0, 10, 0, posY)
-    container.BackgroundTransparency = 1
-    container.Parent = parent
-
-    local label = Instance.new("TextLabel")
+    local label = Instance.new("TextLabel", frame)
     label.Size = UDim2.new(1, -60, 0, 20)
+    label.Position = UDim2.new(0, 0, 0, 0)
     label.BackgroundTransparency = 1
     label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 0, 0)
+    label.TextColor3 = Color3.new(1, 0, 0)
     label.Font = Enum.Font.GothamSemibold
     label.TextSize = 18
     label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = container
 
     if fakeNote then
-        local note = Instance.new("TextLabel")
+        local note = Instance.new("TextLabel", frame)
         note.Size = UDim2.new(1, -60, 0, 20)
         note.Position = UDim2.new(0, 0, 0, 22)
         note.BackgroundTransparency = 1
         note.Text = "Chỉ là ảo"
-        note.TextColor3 = Color3.fromRGB(255, 50, 50)
+        note.TextColor3 = Color3.new(1, 0.2, 0.2)
         note.Font = Enum.Font.GothamItalic
         note.TextSize = 14
         note.TextXAlignment = Enum.TextXAlignment.Left
-        note.Parent = container
     end
 
-    local toggle = Instance.new("Frame")
+    local toggle = Instance.new("Frame", frame)
     toggle.Size = UDim2.new(0, 40, 0, 20)
     toggle.Position = UDim2.new(1, -50, 0, 10)
-    toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-    toggle.Parent = container
+    toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
     toggle.ClipsDescendants = true
     Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
 
-    local toggleCircle = Instance.new("Frame")
-    toggleCircle.Size = UDim2.new(0, 18, 0, 18)
-    toggleCircle.Position = UDim2.new(0, 1, 0, 1)
-    toggleCircle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    toggleCircle.BorderSizePixel = 0
-    toggleCircle.Parent = toggle
-    Instance.new("UICorner", toggleCircle).CornerRadius = UDim.new(1, 0)
+    local circ = Instance.new("Frame", toggle)
+    circ.Size = UDim2.new(0, 18, 0, 18)
+    circ.Position = UDim2.new(0, 1, 0, 1)
+    circ.BackgroundColor3 = Color3.new(0, 0, 0)
+    Instance.new("UICorner", circ).CornerRadius = UDim.new(1, 0)
 
-    toggles[text] = false
-    local toggleBtn = Instance.new("TextButton")
-    toggleBtn.Size = UDim2.new(1, 0, 1, 0)
-    toggleBtn.BackgroundTransparency = 1
-    toggleBtn.Text = ""
-    toggleBtn.Parent = toggle
-    toggleBtn.MouseButton1Click:Connect(function()
-        toggles[text] = not toggles[text]
-        if toggles[text] then
-            toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-            toggleCircle:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
-        else
-            toggle.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-            toggleCircle:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
-        end
+    local enabled = false
+    local btn = Instance.new("TextButton", toggle)
+    btn.Size = UDim2.new(1, 0, 1, 0)
+    btn.BackgroundTransparency = 1
+    btn.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        toggle.BackgroundColor3 = enabled and Color3.new(1, 0, 0) or Color3.new(0.31, 0, 0)
+        circ:TweenPosition(enabled and UDim2.new(0.5, 20, 0, 1) or UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
     end)
 end
 
--- Tạo các tab
-local mainToggles = { "Spam Click V2", "Spam Click Mobile", "Auto Spam Bata", "AutoParry" }
-local playerToggles = { "ESP PLAYER", "ESP BALL", "SPEED", "JUMP" }
-
+-- Load nội dung tab
 local function clearContent()
-    for _, child in pairs(contentFrame:GetChildren()) do
-        if child ~= tabTitle then child:Destroy() end
+    for _, c in ipairs(content:GetChildren()) do
+        if c ~= tabTitle then c:Destroy() end
     end
 end
 
-local function loadMainTab()
+local function loadMain()
     tabTitle.Text = "Main"
     clearContent()
     local y = 50
-    for _, name in ipairs(mainToggles) do
-        createToggleButton(name, y, contentFrame, false)
-        y += 50
-    end
+    createToggle("Auto Parry", y, false)
+    y += 50
+    createToggle("AI Play", y, false)
 end
 
-local function loadPlayerTab()
+local function loadPlayer()
     tabTitle.Text = "Player"
     clearContent()
     local y = 50
-    for _, name in ipairs(playerToggles) do
-        createToggleButton(name, y, contentFrame, true)
+    for _, v in ipairs({"ESP PLAYER", "ESP BALL", "SPEED", "JUMP"}) do
+        createToggle(v, y, true)
         y += 70
     end
 end
 
-mainBtn.MouseButton1Click:Connect(loadMainTab)
-playerBtn.MouseButton1Click:Connect(loadPlayerTab)
-autoBuyBtn.MouseButton1Click:Connect(function()
-    tabTitle.Text = "Auto Buy"
+local function loadDupe()
+    tabTitle.Text = "Dupe"
     clearContent()
-end)
-settingsBtn.MouseButton1Click:Connect(function()
-    tabTitle.Text = "Settings"
+    createToggle("Auto Dupe", 50, false)
+end
+
+local function loadChanger()
+    tabTitle.Text = "Changer Skin"
     clearContent()
+    createToggle("Auto Skin Change", 50, false)
+end
+
+local function loadRank()
+    tabTitle.Text = "Auto Rank"
+    clearContent()
+    createToggle("Rank Up Bot", 50, false)
+end
+
+-- Liên kết nút
+btnMain.MouseButton1Click:Connect(loadMain)
+btnPlayer.MouseButton1Click:Connect(loadPlayer)
+btnDupe.MouseButton1Click:Connect(loadDupe)
+btnChanger.MouseButton1Click:Connect(loadChanger)
+btnRank.MouseButton1Click:Connect(loadRank)
+loadMain()
+
+-- Countdown
+local notify = Instance.new("TextLabel", outer)
+notify.Size = UDim2.new(1, -20, 0, 30)
+notify.Position = UDim2.new(0, 10, 1, -35)
+notify.BackgroundTransparency = 0.5
+notify.BackgroundColor3 = Color3.new(0, 0, 0)
+notify.TextColor3 = Color3.new(1, 0, 0)
+notify.Font = Enum.Font.GothamBold
+notify.TextSize = 16
+Instance.new("UICorner", notify).CornerRadius = UDim.new(0, 6)
+
+local countdown = 170
+spawn(function()
+    while countdown >= 0 do
+        notify.Text = countdown > 0 and ("⏳ Please wait: " .. countdown .. "s") or "✅ Ready!"
+        countdown -= 1
+        wait(1)
+    end
 end)
 
--- Mặc định load Main
-loadMainTab()
+-- Load script từ URL gốc của bạn
+spawn(function()
+    local ok, err = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+    end)
+    if not ok then
+        notify.Text = "⚠ Failed to load main script!"
+        warn("Error loading main script:", err)
+    end
+end)
