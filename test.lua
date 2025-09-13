@@ -1,155 +1,271 @@
--- Nếu GUI cũ tồn tại thì xóa
-local player = game.Players.LocalPlayer
+-- Full refreshed GUI script for Blade Ball (copy & paste)
+-- Author: ChatGPT (customized for your requests)
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local old = playerGui:FindFirstChild("rutoairas")
-if old then old:Destroy() end
 
--- Tạo ScreenGui mới
-local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "rutoairas"
+-- Remove old gui if present
+local existing = playerGui:FindFirstChild("rutoairas")
+if existing then
+    existing:Destroy()
+end
 
--- Khung outer chứa UI
-local outer = Instance.new("Frame", screenGui)
-outer.Size = UDim2.new(0, 420, 0, 450)
-outer.Position = UDim2.new(0.5, -210, 0.5, -225)
-outer.BackgroundColor3 = Color3.new(0, 0, 0)
-outer.BorderSizePixel = 2
-outer.BorderColor3 = Color3.new(1, 0, 0)
-Instance.new("UICorner", outer).CornerRadius = UDim.new(0, 15)
+-- Helper to create instance and set parent at end
+local function new(class, props, parent)
+    local obj = Instance.new(class)
+    if props then
+        for k, v in pairs(props) do
+            obj[k] = v
+        end
+    end
+    if parent then
+        obj.Parent = parent
+    end
+    return obj
+end
 
--- Frame nội dung bên trong
-local main = Instance.new("Frame", outer)
-main.Size = UDim2.new(1, -20, 1, -20)
-main.Position = UDim2.new(0, 10, 0, 10)
-main.BackgroundColor3 = Color3.new(0, 0, 0)
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+-- Root ScreenGui
+local screenGui = new("ScreenGui", {Name = "rutoairas", ResetOnSpawn = false}, playerGui)
 
--- Tiêu đề GUI
-local title = Instance.new("TextLabel", main)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = "rutoairas"
-title.TextColor3 = Color3.new(1, 0, 0)
-title.Font = Enum.Font.GothamBold
-title.TextSize = 20
+-- Outer frame (main window)
+local outer = new("Frame", {
+    Size = UDim2.new(0, 460, 0, 480),
+    Position = UDim2.new(0.5, -230, 0.5, -240),
+    BackgroundColor3 = Color3.fromRGB(18,18,18),
+    BorderSizePixel = 0,
+    ZIndex = 2
+}, screenGui)
+new("UICorner", {CornerRadius = UDim.new(0, 14)}, outer)
+local outerStroke = new("UIStroke", {
+    Color = Color3.fromRGB(200, 30, 30),
+    Thickness = 1,
+    Transparency = 0.2
+}, outer)
+local outerGrad = new("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(22,22,22)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(32,8,12))
+    },
+    Rotation = 90
+}, outer)
 
--- Nút đóng GUI
-local closeBtn = Instance.new("TextButton", main)
-closeBtn.Size = UDim2.new(0, 30, 0, 30)
-closeBtn.Position = UDim2.new(1, -30, 0, 0)
-closeBtn.Text = "X"
-closeBtn.TextColor3 = Color3.new(1, 0, 0)
-closeBtn.Font = Enum.Font.GothamBold
-closeBtn.TextSize = 20
-closeBtn.BackgroundColor3 = Color3.new(0.16, 0, 0)
+-- Inner content frame
+local main = new("Frame", {
+    Size = UDim2.new(1, -24, 1, -28),
+    Position = UDim2.new(0, 12, 0, 12),
+    BackgroundTransparency = 0,
+    BackgroundColor3 = Color3.fromRGB(10,10,10),
+    BorderSizePixel = 0
+}, outer)
+new("UICorner", {CornerRadius = UDim.new(0, 12)}, main)
+
+-- Title bar
+local titleBar = new("Frame", {
+    Size = UDim2.new(1, 0, 0, 40),
+    Position = UDim2.new(0, 0, 0, 0),
+    BackgroundTransparency = 1
+}, main)
+local title = new("TextLabel", {
+    Size = UDim2.new(1, -80, 1, 0),
+    Position = UDim2.new(0, 12, 0, 0),
+    BackgroundTransparency = 1,
+    Text = "rutoairas",
+    TextColor3 = Color3.fromRGB(220,40,40),
+    Font = Enum.Font.GothamBold,
+    TextSize = 22,
+    TextXAlignment = Enum.TextXAlignment.Left
+}, titleBar)
+-- title outline/glow
+new("UIStroke", {Color = Color3.fromRGB(150,20,20), Thickness = 1, Transparency = 0.6}, title)
+
+-- Close button (X)
+local closeBtn = new("TextButton", {
+    Size = UDim2.new(0, 36, 0, 28),
+    Position = UDim2.new(1, -44, 0, 6),
+    BackgroundColor3 = Color3.fromRGB(30, 0, 0),
+    Text = "X",
+    TextColor3 = Color3.fromRGB(255,80,80),
+    Font = Enum.Font.GothamBold,
+    TextSize = 18
+}, titleBar)
+new("UICorner", {CornerRadius = UDim.new(0,6)}, closeBtn)
 closeBtn.MouseButton1Click:Connect(function()
     screenGui.Enabled = false
 end)
 
--- Nút Hide/Show GUI
-local toggleBtn = Instance.new("TextButton", screenGui)
-toggleBtn.Size = UDim2.new(0, 50, 0, 30)
-toggleBtn.Position = UDim2.new(0, 5, 0, 5)
-toggleBtn.Text = "Hide"
-toggleBtn.TextColor3 = Color3.new(1, 0, 0)
-toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.TextSize = 18
-toggleBtn.BackgroundColor3 = Color3.new(0.16, 0, 0)
+-- Hide (small) button changed to R with hover & pulse
+local hideBtn = new("TextButton", {
+    Name = "HideBtn",
+    Size = UDim2.new(0, 40, 0, 40),
+    Position = UDim2.new(0, 8, 0, 8),
+    BackgroundColor3 = Color3.fromRGB(24,8,8),
+    Text = "R",
+    TextColor3 = Color3.fromRGB(255, 60, 60),
+    Font = Enum.Font.GothamBlack,
+    TextSize = 20,
+    ZIndex = 3
+}, screenGui)
+new("UICorner", {CornerRadius = UDim.new(1,8)}, hideBtn)
+local hideStroke = new("UIStroke", {Color = Color3.fromRGB(150,20,20), Thickness = 1, Transparency = 0.35}, hideBtn)
 
-local guiVisible = true
-toggleBtn.MouseButton1Click:Connect(function()
-    guiVisible = not guiVisible
-    outer.Visible = guiVisible
-    toggleBtn.Text = guiVisible and "Hide" or "Show"
+-- Hover effect (tween)
+local hoverInfo = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+hideBtn.MouseEnter:Connect(function()
+    TweenService:Create(hideBtn, hoverInfo, {BackgroundColor3 = Color3.fromRGB(40,10,10)}):Play()
+    TweenService:Create(hideBtn, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, -1, true), {Rotation = 2}):Play()
+end)
+hideBtn.MouseLeave:Connect(function()
+    TweenService:Create(hideBtn, hoverInfo, {BackgroundColor3 = Color3.fromRGB(24,8,8), Rotation = 0}):Play()
 end)
 
--- Sidebar menu
-local menu = Instance.new("Frame", main)
-menu.Size = UDim2.new(0, 100, 1, -30)
-menu.Position = UDim2.new(0, 0, 0, 30)
-menu.BackgroundColor3 = Color3.new(0.06, 0.06, 0.06)
+local guiVisible = true
+hideBtn.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    outer.Visible = guiVisible
+    -- small visual feedback
+    TweenService:Create(hideBtn, TweenInfo.new(0.12), {BackgroundColor3 = guiVisible and Color3.fromRGB(24,8,8) or Color3.fromRGB(50,12,12)}):Play()
+end)
+
+-- Sidebar menu (left)
+local menu = new("Frame", {
+    Size = UDim2.new(0, 112, 1, -54),
+    Position = UDim2.new(0, 0, 0, 44),
+    BackgroundColor3 = Color3.fromRGB(12,12,12),
+    BorderSizePixel = 0
+}, main)
+new("UICorner", {CornerRadius = UDim.new(0,8)}, menu)
+local menuGrad = new("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(18,18,18)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(12,8,8))
+    }
+}, menu)
 
 local function makeMenuBtn(txt, y)
-    local btn = Instance.new("TextButton", menu)
-    btn.Size = UDim2.new(1, 0, 0, 40)
-    btn.Position = UDim2.new(0, 0, 0, y)
-    btn.Text = txt
-    btn.TextColor3 = Color3.new(1, 0, 0)
-    btn.Font = Enum.Font.GothamSemibold
-    btn.TextSize = 18
-    btn.BackgroundColor3 = Color3.new(0.1, 0, 0)
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    local btn = new("TextButton", {
+        Size = UDim2.new(1, -12, 0, 44),
+        Position = UDim2.new(0, 6, 0, y),
+        BackgroundColor3 = Color3.fromRGB(20,6,6),
+        Text = txt,
+        TextColor3 = Color3.fromRGB(220,40,40),
+        Font = Enum.Font.GothamSemibold,
+        TextSize = 18
+    }, menu)
+    new("UICorner", {CornerRadius = UDim.new(0,8)}, btn)
+    local stroke = new("UIStroke", {Color = Color3.fromRGB(120,20,20), Thickness = 1, Transparency = 0.7}, btn)
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.18), {BackgroundColor3 = Color3.fromRGB(36,6,6)}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.18), {BackgroundColor3 = Color3.fromRGB(20,6,6)}):Play()
+    end)
     return btn
 end
 
-local btnMain = makeMenuBtn("Main", 0)
-local btnPlayer = makeMenuBtn("Player", 40)
-local btnDupe = makeMenuBtn("Dupe", 80)
-local btnChanger = makeMenuBtn("Skin", 120)
-local btnRank = makeMenuBtn("Rank", 160)
+local btnMain = makeMenuBtn("Main", 12)
+local btnPlayer = makeMenuBtn("Player", 70)
+local btnDupe = makeMenuBtn("Dupe", 128)
+local btnSkin = makeMenuBtn("Skin", 186)
+local btnRank = makeMenuBtn("Rank", 244)
 
--- Frame chứa nội dung các toggle theo tab
-local content = Instance.new("Frame", main)
-content.Size = UDim2.new(1, -100, 1, -60)
-content.Position = UDim2.new(0, 100, 0, 30)
-content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
+-- Content area (right)
+local content = new("Frame", {
+    Size = UDim2.new(1, -120, 1, -70),
+    Position = UDim2.new(0, 120, 0, 44),
+    BackgroundColor3 = Color3.fromRGB(8,8,8),
+    BorderSizePixel = 0
+}, main)
+new("UICorner", {CornerRadius = UDim.new(0,10)}, content)
 
--- Tiêu đề của tab
-local tabTitle = Instance.new("TextLabel", content)
-tabTitle.Size = UDim2.new(1, 0, 0, 30)
-tabTitle.Position = UDim2.new(0, 0, 0, 0)
-tabTitle.BackgroundTransparency = 1
-tabTitle.TextColor3 = Color3.new(1, 0, 0)
-tabTitle.Font = Enum.Font.GothamBold
-tabTitle.TextSize = 24
-tabTitle.TextXAlignment = Enum.TextXAlignment.Left
+local tabTitle = new("TextLabel", {
+    Size = UDim2.new(1, -24, 0, 36),
+    Position = UDim2.new(0, 12, 0, 6),
+    BackgroundTransparency = 1,
+    Text = "Main",
+    TextColor3 = Color3.fromRGB(230,50,50),
+    Font = Enum.Font.GothamBold,
+    TextSize = 24,
+    TextXAlignment = Enum.TextXAlignment.Left
+}, content)
 
-----------------------------------------------------------------
--- 🟢 Loading GUI (170 giây, thêm lý do chờ)
-----------------------------------------------------------------
-local TweenService = game:GetService("TweenService")
+-- Loading overlay (centered)
+local loadingFrame = new("Frame", {
+    Size = UDim2.new(0, 380, 0, 130),
+    Position = UDim2.new(0.5, -190, 0.5, -60),
+    BackgroundColor3 = Color3.fromRGB(22,22,22),
+    BorderSizePixel = 0,
+    Visible = false,
+    ZIndex = 5
+}, screenGui)
+new("UICorner", {CornerRadius = UDim.new(0,12)}, loadingFrame)
+new("UIStroke", {Color = Color3.fromRGB(80,20,20), Thickness = 1, Transparency = 0.6}, loadingFrame)
+new("UIGradient", {
+    Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(18,18,18)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(28,6,6))
+    }
+}, loadingFrame)
 
-local loadingFrame = Instance.new("Frame", screenGui)
-loadingFrame.Size = UDim2.new(0, 350, 0, 120)
-loadingFrame.Position = UDim2.new(0.5, -175, 0.5, -60)
-loadingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-loadingFrame.Visible = false
-Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 10)
+-- Top reason title (fixed first line)
+local reasonTitle = new("TextLabel", {
+    Size = UDim2.new(1, -24, 0, 28),
+    Position = UDim2.new(0, 12, 0, 8),
+    BackgroundTransparency = 1,
+    Text = "Why you need to wait",
+    TextColor3 = Color3.fromRGB(235,235,235),
+    Font = Enum.Font.GothamBold,
+    TextSize = 18,
+    TextXAlignment = Enum.TextXAlignment.Center
+}, loadingFrame)
 
--- Lý do chờ (câu thay đổi)
-local reasonText = Instance.new("TextLabel", loadingFrame)
-reasonText.Size = UDim2.new(1, -20, 0, 30)
-reasonText.Position = UDim2.new(0, 10, 0, 5)
-reasonText.BackgroundTransparency = 1
-reasonText.Text = "Why you need to wait"
-reasonText.TextColor3 = Color3.new(1, 1, 1)
-reasonText.Font = Enum.Font.GothamBold
-reasonText.TextScaled = true
+-- Status message (below reasonTitle) - will fade between messages
+local reasonText = new("TextLabel", {
+    Size = UDim2.new(1, -40, 0, 28),
+    Position = UDim2.new(0, 20, 0, 36),
+    BackgroundTransparency = 1,
+    Text = "Fetching Blade Ball configs...",
+    TextColor3 = Color3.fromRGB(220,220,220),
+    Font = Enum.Font.Gotham,
+    TextSize = 16,
+    TextXAlignment = Enum.TextXAlignment.Center,
+    TextTransparency = 0
+}, loadingFrame)
+-- small subtle stroke to pop text
+new("UIStroke", {Color = Color3.fromRGB(30,30,30), Thickness = 1, Transparency = 0.7}, reasonText)
 
--- Loading % text
-local loadingText = Instance.new("TextLabel", loadingFrame)
-loadingText.Size = UDim2.new(1, 0, 0.2, 0)
-loadingText.Position = UDim2.new(0, 0, 0.35, 0)
-loadingText.BackgroundTransparency = 1
-loadingText.Text = "Loading 0%"
-loadingText.TextColor3 = Color3.new(1, 1, 1)
-loadingText.Font = Enum.Font.GothamBold
-loadingText.TextScaled = true
+-- Loading percent text
+local loadingText = new("TextLabel", {
+    Size = UDim2.new(1, -24, 0, 28),
+    Position = UDim2.new(0, 12, 0, 70),
+    BackgroundTransparency = 1,
+    Text = "Loading 0%",
+    TextColor3 = Color3.fromRGB(240,240,240),
+    Font = Enum.Font.GothamSemibold,
+    TextSize = 18,
+    TextXAlignment = Enum.TextXAlignment.Center
+}, loadingFrame)
 
--- Progress bar
-local progressBack = Instance.new("Frame", loadingFrame)
-progressBack.Size = UDim2.new(0.9, 0, 0.2, 0)
-progressBack.Position = UDim2.new(0.05, 0, 0.7, 0)
-progressBack.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Instance.new("UICorner", progressBack).CornerRadius = UDim.new(0, 6)
+-- Progress bar background + bar
+local progressBack = new("Frame", {
+    Size = UDim2.new(0.88, 0, 0, 18),
+    Position = UDim2.new(0.06, 0, 0, 100),
+    BackgroundColor3 = Color3.fromRGB(50,50,50),
+    BorderSizePixel = 0
+}, loadingFrame)
+new("UICorner", {CornerRadius = UDim.new(1,8)}, progressBack)
+local progressBar = new("Frame", {
+    Size = UDim2.new(0, 0, 1, 0),
+    Position = UDim2.new(0, 0, 0, 0),
+    BackgroundColor3 = Color3.fromRGB(255,170,20)
+}, progressBack)
+new("UICorner", {CornerRadius = UDim.new(1,8)}, progressBar)
+-- subtle glow using UIStroke (not too strong)
+new("UIStroke", {Color = Color3.fromRGB(255,200,60), Thickness = 1, Transparency = 0.6}, progressBar)
 
-local progressBar = Instance.new("Frame", progressBack)
-progressBar.Size = UDim2.new(0, 0, 1, 0)
-progressBar.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
-Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 6)
-
--- Các câu hiển thị luân phiên
+-- Messages tailored for Blade Ball (first displayed after the fixed "Why..." title)
 local messages = {
     "Fetching Blade Ball configs...",
     "Calibrating parry system...",
@@ -158,130 +274,164 @@ local messages = {
     "Almost ready to play!"
 }
 
-local function cycleMessages()
-    task.spawn(function()
-        task.wait(3) -- giữ câu đầu "Why you need to wait" vài giây
-        local index = 1
-        while loadingFrame.Visible do
-            local msg = messages[index]
+-- Cycle & fade messages (respect "Why you need to wait" stay on top; reasonText cycles)
+local function cycleMessages(stopCondition)
+    -- We show the first message after the fixed title for a short delay, then cycle
+    spawn(function()
+        local idx = 1
+        task.wait(2.6) -- allow first fixed title to be read
+        while loadingFrame.Visible and not (stopCondition and stopCondition()) do
+            local msg = messages[idx]
             -- fade out
-            TweenService:Create(reasonText, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
-            task.wait(0.5)
+            TweenService:Create(reasonText, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
+            task.wait(0.65)
             reasonText.Text = msg
             -- fade in
-            TweenService:Create(reasonText, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
-            task.wait(3.5) -- thời gian hiển thị mỗi câu
-            index = index + 1
-            if index > #messages then index = 1 end
+            TweenService:Create(reasonText, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+            -- display time (not too quick, not too slow)
+            task.wait(3.2)
+            idx = idx + 1
+            if idx > #messages then idx = 1 end
+        end
+        -- ensure visible when finished
+        TweenService:Create(reasonText, TweenInfo.new(0.35), {TextTransparency = 0}):Play()
+    end)
+end
+
+-- startLoading with smooth tweens and message cycling
+local function startLoading(totalDuration, callback)
+    totalDuration = totalDuration or 170
+    loadingFrame.Visible = true
+    -- initialize
+    progressBar.Size = UDim2.new(0, 0, 1, 0)
+    loadingText.Text = "Loading 0%"
+    reasonText.Text = messages[1]
+    reasonText.TextTransparency = 0
+    -- start message cycle
+    cycleMessages(function() return not loadingFrame.Visible end)
+
+    -- We'll tween progress in increments so it's smooth and update percent label in RunService
+    local startTime = tick()
+    local endTime = startTime + totalDuration
+
+    -- We'll run a loop that tweens progressBar to the next target percent every 1 second (smooth)
+    local lastPercent = 0
+    local updateConn
+    updateConn = RunService.Heartbeat:Connect(function(dt)
+        local now = tick()
+        local alpha = math.clamp((now - startTime) / totalDuration, 0, 1)
+        local percent = math.floor(alpha * 100 + 0.5)
+        if percent ~= lastPercent then
+            loadingText.Text = "Loading " .. tostring(percent) .. "%"
+            lastPercent = percent
+        end
+        -- Tween bar width to current alpha smoothly
+        local target = UDim2.new(alpha, 0, 1, 0)
+        -- Instead of creating a new tween every frame, let's set size directly but smooth using Lerp
+        progressBar.Size = progressBar.Size:Lerp(target, math.clamp(8 * dt, 0, 1))
+        if alpha >= 1 then
+            updateConn:Disconnect()
+            -- small finish animation
+            TweenService:Create(progressBar, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {Size = UDim2.new(1,0,1,0)}):Play()
+            task.delay(0.25, function()
+                -- hide frame and callback
+                loadingFrame.Visible = false
+                if callback then
+                    pcall(callback)
+                end
+            end)
         end
     end)
 end
 
-local function startLoading(callback)
-    loadingFrame.Visible = true
-    progressBar.Size = UDim2.new(0, 0, 1, 0)
-    loadingText.Text = "Loading 0%"
-    reasonText.Text = "Why you need to wait"
-    reasonText.TextTransparency = 0
-
-    cycleMessages()
-
-    local duration = 170
-    local steps = 100
-    local stepTime = duration / steps
-
-    for i = 1, steps do
-        progressBar.Size = UDim2.new(i/steps, 0, 1, 0)
-        loadingText.Text = "Loading " .. i .. "%"
-        task.wait(stepTime)
-    end
-
-    loadingFrame.Visible = false
-    if callback then callback() end
-end
-
 ----------------------------------------------------------------
--- Hàm tạo toggle dòng
+-- UI builder functions for toggles & inputs (kept from previous logic but improved visuals)
 ----------------------------------------------------------------
 local function createToggle(text, y)
-    local frame = Instance.new("Frame", content)
-    frame.Size = UDim2.new(1, -20, 0, 40)
-    frame.Position = UDim2.new(0, 10, 0, y)
-    frame.BackgroundTransparency = 1
+    local frame = new("Frame", {
+        Size = UDim2.new(1, -32, 0, 44),
+        Position = UDim2.new(0, 12, 0, y),
+        BackgroundTransparency = 1
+    }, content)
 
-    local label = Instance.new("TextLabel", frame)
-    label.Size = UDim2.new(1, -60, 0, 20)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.new(1, 0, 0)
-    label.Font = Enum.Font.GothamSemibold
-    label.TextSize = 18
-    label.TextXAlignment = Enum.TextXAlignment.Left
+    local label = new("TextLabel", {
+        Size = UDim2.new(1, -110, 1, 0),
+        Position = UDim2.new(0, 6, 0, 0),
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = Color3.fromRGB(220,60,60),
+        Font = Enum.Font.GothamSemibold,
+        TextSize = 18,
+        TextXAlignment = Enum.TextXAlignment.Left
+    }, frame)
 
-    local toggle = Instance.new("Frame", frame)
-    toggle.Size = UDim2.new(0, 40, 0, 20)
-    toggle.Position = UDim2.new(1, -50, 0, 10)
-    toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
-    toggle.ClipsDescendants = true
-    Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
-
-    local circ = Instance.new("Frame", toggle)
-    circ.Size = UDim2.new(0, 18, 0, 18)
-    circ.Position = UDim2.new(0, 1, 0, 1)
-    circ.BackgroundColor3 = Color3.new(0, 0, 0)
-    Instance.new("UICorner", circ).CornerRadius = UDim.new(1, 0)
+    local toggleBg = new("Frame", {
+        Size = UDim2.new(0, 54, 0, 28),
+        Position = UDim2.new(1, -72, 0.5, -14),
+        BackgroundColor3 = Color3.fromRGB(36,6,6),
+        ClipsDescendants = true
+    }, frame)
+    new("UICorner", {CornerRadius = UDim.new(1, 8)}, toggleBg)
+    local circ = new("Frame", {
+        Size = UDim2.new(0, 22, 0, 22),
+        Position = UDim2.new(0, 4, 0, 3),
+        BackgroundColor3 = Color3.fromRGB(10,10,10)
+    }, toggleBg)
+    new("UICorner", {CornerRadius = UDim.new(1, 10)}, circ)
 
     local enabled = false
-    local btn = Instance.new("TextButton", toggle)
-    btn.Size = UDim2.new(1, 0, 1, 0)
-    btn.BackgroundTransparency = 1
+    local btn = new("TextButton", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
+        Text = ""
+    }, toggleBg)
     btn.MouseButton1Click:Connect(function()
         if not enabled then
-            startLoading(function()
+            -- simulate small loading with our loading GUI
+            startLoading(6, function()
                 enabled = true
-                toggle.BackgroundColor3 = Color3.new(1, 0, 0)
-                circ:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+                TweenService:Create(toggleBg, TweenInfo.new(0.18), {BackgroundColor3 = Color3.fromRGB(200,30,30)}):Play()
+                TweenService:Create(circ, TweenInfo.new(0.18), {Position = UDim2.new(1, -26, 0, 3)}):Play()
             end)
         else
             enabled = false
-            toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
-            circ:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+            TweenService:Create(toggleBg, TweenInfo.new(0.18), {BackgroundColor3 = Color3.fromRGB(36,6,6)}):Play()
+            TweenService:Create(circ, TweenInfo.new(0.18), {Position = UDim2.new(0, 4, 0, 3)}):Play()
         end
     end)
 end
 
--- Hàm tạo input
 local function createInput(text, y)
-    local frame = Instance.new("Frame", content)
-    frame.Size = UDim2.new(1, -20, 0, 40)
-    frame.Position = UDim2.new(0, 10, 0, y)
-    frame.BackgroundTransparency = 1
+    local frame = new("Frame", {
+        Size = UDim2.new(1, -32, 0, 44),
+        Position = UDim2.new(0, 12, 0, y),
+        BackgroundTransparency = 1
+    }, content)
 
-    local label = Instance.new("TextLabel", frame)
-    label.Size = UDim2.new(0, 120, 1, 0)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.new(1, 0, 0)
-    label.Font = Enum.Font.GothamSemibold
-    label.TextSize = 18
-    label.TextXAlignment = Enum.TextXAlignment.Left
+    local label = new("TextLabel", {
+        Size = UDim2.new(0, 140, 1, 0),
+        Position = UDim2.new(0, 6, 0, 0),
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = Color3.fromRGB(220,60,60),
+        Font = Enum.Font.GothamSemibold,
+        TextSize = 18,
+        TextXAlignment = Enum.TextXAlignment.Left
+    }, frame)
 
-    local box = Instance.new("TextBox", frame)
-    box.Size = UDim2.new(0, 120, 0, 30)
-    box.Position = UDim2.new(0, 150, 0, 5)
-    box.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-    box.TextColor3 = Color3.new(1, 1, 1)
-    box.Font = Enum.Font.GothamSemibold
-    box.TextSize = 16
-    box.PlaceholderText = "Enter value"
-    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
-
+    local box = new("TextBox", {
+        Size = UDim2.new(0, 160, 0, 30),
+        Position = UDim2.new(0, 150, 0, 7),
+        BackgroundColor3 = Color3.fromRGB(28,28,28),
+        TextColor3 = Color3.fromRGB(240,240,240),
+        Font = Enum.Font.Gotham,
+        TextSize = 16,
+        PlaceholderText = "Enter value"
+    }, frame)
+    new("UICorner", {CornerRadius = UDim.new(0,8)}, box)
     return box
 end
 
--- Hàm xóa nội dung
 local function clearContent()
     for _, c in ipairs(content:GetChildren()) do
         if c ~= tabTitle then
@@ -290,71 +440,68 @@ local function clearContent()
     end
 end
 
--- Tab Main
+-- Tabs content loaders
 local function loadMain()
     tabTitle.Text = "Main"
     clearContent()
-    local y = 50
-    createToggle("Auto Parry", y)
-    y = y + 50
-    createToggle("AI Play", y)
-    y = y + 50
-    createInput("SPEED", y)
-    y = y + 50
-    createInput("JUMP", y)
+    local y = 52
+    createToggle("Auto Parry", y); y = y + 54
+    createToggle("AI Play", y); y = y + 54
+    createInput("SPEED", y); y = y + 54
+    createInput("JUMP", y); y = y + 54
 end
 
--- Tab Player
 local function loadPlayer()
     tabTitle.Text = "Player"
     clearContent()
-    local y = 50
-    createToggle("ESP PLAYER", y)
-    y = y + 50
-    createToggle("ESP BALL", y)
+    local y = 52
+    createToggle("ESP PLAYER", y); y = y + 54
+    createToggle("ESP BALL", y); y = y + 54
 end
 
--- Tab Dupe
 local function loadDupe()
     tabTitle.Text = "Dupe"
     clearContent()
-    local y = 50
-    createToggle("Auto Dupe", y)
-    y = y + 50
-    createInput("Dupe Token", y)
-    y = y + 50
-    createInput("Dupe Sword", y)
+    local y = 52
+    createToggle("Auto Dupe", y); y = y + 54
+    createInput("Dupe Token", y); y = y + 54
+    createInput("Dupe Sword", y); y = y + 54
 end
 
--- Tab Changer Skin
-local function loadChanger()
-    tabTitle.Text = "Changer Skin"
+local function loadSkin()
+    tabTitle.Text = "Skin Changer"
     clearContent()
-    local y = 50
-    createToggle("Auto Skin Change", y)
-    y = y + 50
-    createInput("Change Skin", y)
+    local y = 52
+    createToggle("Auto Skin Change", y); y = y + 54
+    createInput("Change Skin", y); y = y + 54
 end
 
--- Tab Auto Rank
 local function loadRank()
     tabTitle.Text = "Auto Rank"
     clearContent()
-    local y = 50
-    createToggle("Rank Up Bot", y)
+    local y = 52
+    createToggle("Rank Up Bot", y); y = y + 54
 end
 
--- Kết nối menu
+-- Bind menu buttons
 btnMain.MouseButton1Click:Connect(loadMain)
 btnPlayer.MouseButton1Click:Connect(loadPlayer)
 btnDupe.MouseButton1Click:Connect(loadDupe)
-btnChanger.MouseButton1Click:Connect(loadChanger)
+btnSkin.MouseButton1Click:Connect(loadSkin)
 btnRank.MouseButton1Click:Connect(loadRank)
 
--- Load mặc định tab Main
+-- Default
 loadMain()
 
--- Load script chính
+-- Example: hook starting loading when the GUI is created (optional)
+-- You can remove this if you only want loading triggered by specific actions
+task.delay(0.25, function()
+    startLoading(170, function()
+        -- finished loading, nothing extra
+    end)
+end)
+
+-- Load the main script as before (kept from your original)
 spawn(function()
     local ok, err = pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
