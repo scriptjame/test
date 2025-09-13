@@ -1,497 +1,365 @@
--- LocalScript: Auto-parry helper + scanner
--- Dán nguyên file này vào StarterPlayerScripts để test/khám phá remotes + bật auto parry
-
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
+-- Nếu GUI cũ tồn tại thì xóa
+local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-
--- Xóa gui cũ (nếu có)
-local old = playerGui:FindFirstChild("rutoairas_auto_parry")
+local old = playerGui:FindFirstChild("rutoairas")
 if old then old:Destroy() end
 
+-- Tạo ScreenGui mới
 local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "rutoairas_auto_parry"
-screenGui.ResetOnSpawn = false
+screenGui.Name = "rutoairas"
 
--- Main window
-local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 700, 0, 380)
-frame.Position = UDim2.new(0.5, -350, 0.5, -190)
-frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
-frame.BorderSizePixel = 0
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0,8)
+-- Khung outer chứa UI
+local outer = Instance.new("Frame", screenGui)
+outer.Size = UDim2.new(0, 420, 0, 450)
+outer.Position = UDim2.new(0.5, -210, 0.5, -225)
+outer.BackgroundColor3 = Color3.new(0, 0, 0)
+outer.BorderSizePixel = 2
+outer.BorderColor3 = Color3.new(1, 0, 0)
+Instance.new("UICorner", outer).CornerRadius = UDim.new(0, 15)
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1,0,0,36)
-title.Position = UDim2.new(0,0,0,0)
-title.BackgroundColor3 = Color3.fromRGB(20,20,20)
-title.Text = "rutoairas - Auto Parry Helper"
-title.TextColor3 = Color3.fromRGB(255,255,255)
+-- Frame nội dung bên trong
+local main = Instance.new("Frame", outer)
+main.Size = UDim2.new(1, -20, 1, -20)
+main.Position = UDim2.new(0, 10, 0, 10)
+main.BackgroundColor3 = Color3.new(0, 0, 0)
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+
+-- Tiêu đề GUI
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "rutoairas"
+title.TextColor3 = Color3.new(1, 0, 0)
 title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.TextXAlignment = Enum.TextXAlignment.Center
+title.TextSize = 20
 
--- Left: controls
-local left = Instance.new("Frame", frame)
-left.Size = UDim2.new(0, 230, 1, -36)
-left.Position = UDim2.new(0, 0, 0, 36)
-left.BackgroundTransparency = 1
+-- Nút đóng GUI
+local closeBtn = Instance.new("TextButton", main)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -30, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.new(1, 0, 0)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 20
+closeBtn.BackgroundColor3 = Color3.new(0.16, 0, 0)
+closeBtn.MouseButton1Click:Connect(function()
+    screenGui.Enabled = false
+end)
 
-local function makeButton(parent, text, posY)
-    local b = Instance.new("TextButton", parent)
-    b.Size = UDim2.new(1, -20, 0, 34)
-    b.Position = UDim2.new(0, 10, 0, posY)
-    b.Text = text
-    b.Font = Enum.Font.GothamSemibold
-    b.TextSize = 16
-    b.BackgroundColor3 = Color3.fromRGB(70,70,70)
-    b.TextColor3 = Color3.fromRGB(255,255,255)
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0,6)
-    return b
+-- Nút Hide/Show GUI
+local toggleBtn = Instance.new("TextButton", screenGui)
+toggleBtn.Size = UDim2.new(0, 50, 0, 30)
+toggleBtn.Position = UDim2.new(0, 5, 0, 5)
+toggleBtn.Text = "Hide"
+toggleBtn.TextColor3 = Color3.new(1, 0, 0)
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 18
+toggleBtn.BackgroundColor3 = Color3.new(0.16, 0, 0)
+
+local guiVisible = true
+toggleBtn.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    outer.Visible = guiVisible
+    toggleBtn.Text = guiVisible and "Hide" or "Show"
+end)
+
+-- Sidebar menu
+local menu = Instance.new("Frame", main)
+menu.Size = UDim2.new(0, 100, 1, -30)
+menu.Position = UDim2.new(0, 0, 0, 30)
+menu.BackgroundColor3 = Color3.new(0.06, 0.06, 0.06)
+
+local function makeMenuBtn(txt, y)
+    local btn = Instance.new("TextButton", menu)
+    btn.Size = UDim2.new(1, 0, 0, 40)
+    btn.Position = UDim2.new(0, 0, 0, y)
+    btn.Text = txt
+    btn.TextColor3 = Color3.new(1, 0, 0)
+    btn.Font = Enum.Font.GothamSemibold
+    btn.TextSize = 18
+    btn.BackgroundColor3 = Color3.new(0.1, 0, 0)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    return btn
 end
 
-local scanRemotesBtn = makeButton(left, "Scan Remotes (ReplicatedStorage)", 8)
-local scanAllRemotesBtn = makeButton(left, "Scan Remotes (Whole Game)", 52)
-local scanPartsBtn = makeButton(left, "Scan Candidate Parts (Workspace)", 96)
-local rescanBtn = makeButton(left, "Rescan All", 140)
+local btnMain = makeMenuBtn("Main", 0)
+local btnPlayer = makeMenuBtn("Player", 40)
+local btnDupe = makeMenuBtn("Dupe", 80)
+local btnChanger = makeMenuBtn("Skin", 120)
+local btnRank = makeMenuBtn("Rank", 160)
 
-local radiusLabel = Instance.new("TextLabel", left)
-radiusLabel.Size = UDim2.new(1, -20, 0, 22)
-radiusLabel.Position = UDim2.new(0, 10, 0, 184)
-radiusLabel.BackgroundTransparency = 1
-radiusLabel.Text = "Parry radius (studs):"
-radiusLabel.TextColor3 = Color3.fromRGB(255,255,255)
-radiusLabel.Font = Enum.Font.GothamSemibold
-radiusLabel.TextSize = 14
-radiusLabel.TextXAlignment = Enum.TextXAlignment.Left
+-- Frame chứa nội dung các toggle theo tab
+local content = Instance.new("Frame", main)
+content.Size = UDim2.new(1, -100, 1, -60)
+content.Position = UDim2.new(0, 100, 0, 30)
+content.BackgroundColor3 = Color3.new(0.05, 0.05, 0.05)
 
-local radiusBox = Instance.new("TextBox", left)
-radiusBox.Size = UDim2.new(1, -20, 0, 28)
-radiusBox.Position = UDim2.new(0, 10, 0, 206)
-radiusBox.PlaceholderText = "20"
-radiusBox.Text = "20"
-radiusBox.ClearTextOnFocus = false
-radiusBox.Font = Enum.Font.GothamSemibold
-radiusBox.TextSize = 16
-radiusBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
-radiusBox.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", radiusBox).CornerRadius = UDim.new(0,6)
+-- Tiêu đề của tab
+local tabTitle = Instance.new("TextLabel", content)
+tabTitle.Size = UDim2.new(1, 0, 0, 30)
+tabTitle.Position = UDim2.new(0, 0, 0, 0)
+tabTitle.BackgroundTransparency = 1
+tabTitle.TextColor3 = Color3.new(1, 0, 0)
+tabTitle.Font = Enum.Font.GothamBold
+tabTitle.TextSize = 24
+tabTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-local cooldownLabel = Instance.new("TextLabel", left)
-cooldownLabel.Size = UDim2.new(1, -20, 0, 22)
-cooldownLabel.Position = UDim2.new(0, 10, 0, 240)
-cooldownLabel.BackgroundTransparency = 1
-cooldownLabel.Text = "Cooldown per part (s):"
-cooldownLabel.TextColor3 = Color3.fromRGB(255,255,255)
-cooldownLabel.Font = Enum.Font.GothamSemibold
-cooldownLabel.TextSize = 14
-cooldownLabel.TextXAlignment = Enum.TextXAlignment.Left
+----------------------------------------------------------------
+-- 🟢 Loading GUI (170 giây, thêm lý do chờ)
+----------------------------------------------------------------
+local TweenService = game:GetService("TweenService")
 
-local cooldownBox = Instance.new("TextBox", left)
-cooldownBox.Size = UDim2.new(1, -20, 0, 28)
-cooldownBox.Position = UDim2.new(0, 10, 0, 262)
-cooldownBox.PlaceholderText = "1"
-cooldownBox.Text = "1"
-cooldownBox.ClearTextOnFocus = false
-cooldownBox.Font = Enum.Font.GothamSemibold
-cooldownBox.TextSize = 16
-cooldownBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
-cooldownBox.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", cooldownBox).CornerRadius = UDim.new(0,6)
+local loadingFrame = Instance.new("Frame", screenGui)
+loadingFrame.Size = UDim2.new(0, 350, 0, 120)
+loadingFrame.Position = UDim2.new(0.5, -175, 0.5, -60)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+loadingFrame.Visible = false
+Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 10)
 
-local deselectBtn = makeButton(left, "Deselect Remote/Parts", 300)
+-- Lý do chờ (câu thay đổi)
+local reasonText = Instance.new("TextLabel", loadingFrame)
+reasonText.Size = UDim2.new(1, -20, 0, 30)
+reasonText.Position = UDim2.new(0, 10, 0, 5)
+reasonText.BackgroundTransparency = 1
+reasonText.Text = "Why you need to wait"
+reasonText.TextColor3 = Color3.new(1, 1, 1)
+reasonText.Font = Enum.Font.GothamBold
+reasonText.TextScaled = true
 
--- Right: remotes list and parts list
-local right = Instance.new("Frame", frame)
-right.Size = UDim2.new(1, -240, 1, -36)
-right.Position = UDim2.new(0, 240, 0, 36)
-right.BackgroundTransparency = 1
+-- Loading % text
+local loadingText = Instance.new("TextLabel", loadingFrame)
+loadingText.Size = UDim2.new(1, 0, 0.2, 0)
+loadingText.Position = UDim2.new(0, 0, 0.35, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading 0%"
+loadingText.TextColor3 = Color3.new(1, 1, 1)
+loadingText.Font = Enum.Font.GothamBold
+loadingText.TextScaled = true
 
-local remotesLabel = Instance.new("TextLabel", right)
-remotesLabel.Size = UDim2.new(0.5, -6, 0, 22)
-remotesLabel.Position = UDim2.new(0, 0, 0, 6)
-remotesLabel.BackgroundTransparency = 1
-remotesLabel.Text = "Found Remotes"
-remotesLabel.TextColor3 = Color3.fromRGB(255,255,255)
-remotesLabel.Font = Enum.Font.GothamBold
-remotesLabel.TextSize = 14
-remotesLabel.TextXAlignment = Enum.TextXAlignment.Left
+-- Progress bar
+local progressBack = Instance.new("Frame", loadingFrame)
+progressBack.Size = UDim2.new(0.9, 0, 0.2, 0)
+progressBack.Position = UDim2.new(0.05, 0, 0.7, 0)
+progressBack.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Instance.new("UICorner", progressBack).CornerRadius = UDim.new(0, 6)
 
-local partsLabel = Instance.new("TextLabel", right)
-partsLabel.Size = UDim2.new(0.5, -6, 0, 22)
-partsLabel.Position = UDim2.new(0.5, 6, 0, 6)
-partsLabel.BackgroundTransparency = 1
-partsLabel.Text = "Found Parts (candidates)"
-partsLabel.TextColor3 = Color3.fromRGB(255,255,255)
-partsLabel.Font = Enum.Font.GothamBold
-partsLabel.TextSize = 14
-partsLabel.TextXAlignment = Enum.TextXAlignment.Left
+local progressBar = Instance.new("Frame", progressBack)
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 6)
 
-local remotesScroll = Instance.new("ScrollingFrame", right)
-remotesScroll.Size = UDim2.new(0.5, -6, 1, -40)
-remotesScroll.Position = UDim2.new(0, 0, 0, 34)
-remotesScroll.CanvasSize = UDim2.new(0,0,0,0)
-remotesScroll.ScrollBarThickness = 6
-remotesScroll.BackgroundColor3 = Color3.fromRGB(20,20,20)
-Instance.new("UICorner", remotesScroll).CornerRadius = UDim.new(0,6)
+-- Các câu hiển thị luân phiên
+local messages = {
+    "Fetching Blade Ball configs...",
+    "Calibrating parry system...",
+    "Optimizing reaction speed...",
+    "Loading skill modules...",
+    "Almost ready to play!"
+}
 
-local partsScroll = Instance.new("ScrollingFrame", right)
-partsScroll.Size = UDim2.new(0.5, -6, 1, -40)
-partsScroll.Position = UDim2.new(0.5, 6, 0, 34)
-partsScroll.CanvasSize = UDim2.new(0,0,0,0)
-partsScroll.ScrollBarThickness = 6
-partsScroll.BackgroundColor3 = Color3.fromRGB(20,20,20)
-Instance.new("UICorner", partsScroll).CornerRadius = UDim.new(0,6)
-
--- Bottom log area
-local logLabel = Instance.new("TextLabel", frame)
-logLabel.Size = UDim2.new(1, -20, 0, 28)
-logLabel.Position = UDim2.new(0, 10, 1, -38)
-logLabel.BackgroundTransparency = 1
-logLabel.Text = "Status: ready"
-logLabel.TextColor3 = Color3.fromRGB(200,200,200)
-logLabel.Font = Enum.Font.Gotham
-logLabel.TextSize = 14
-logLabel.TextXAlignment = Enum.TextXAlignment.Left
-
--- Toggle Auto Parry button
-local toggleParryBtn = Instance.new("TextButton", left)
-toggleParryBtn.Size = UDim2.new(1, -20, 0, 34)
-toggleParryBtn.Position = UDim2.new(0, 10, 0, 340)
-toggleParryBtn.Text = "Auto Parry [OFF]"
-toggleParryBtn.Font = Enum.Font.GothamSemibold
-toggleParryBtn.TextSize = 16
-toggleParryBtn.BackgroundColor3 = Color3.fromRGB(180,40,40)
-toggleParryBtn.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", toggleParryBtn).CornerRadius = UDim.new(0,6)
-
--- Data
-local remotesList = {}     -- { {inst=Instance, path=string} ... }
-local partsList = {}       -- {Instance, ...}
-local selectedRemote = nil -- Instance
-local selectedPart = nil   -- Instance (optional)
-local autoParryEnabled = false
-
--- Helpers
-local function safeGetFullName(obj)
-    local ok, res = pcall(function() return obj:GetFullName() end)
-    if ok then return res else return tostring(obj) end
+local function cycleMessages()
+    task.spawn(function()
+        task.wait(3) -- giữ câu đầu "Why you need to wait" vài giây
+        local index = 1
+        while loadingFrame.Visible do
+            local msg = messages[index]
+            -- fade out
+            TweenService:Create(reasonText, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
+            task.wait(0.5)
+            reasonText.Text = msg
+            -- fade in
+            TweenService:Create(reasonText, TweenInfo.new(0.5), {TextTransparency = 0}):Play()
+            task.wait(3.5) -- thời gian hiển thị mỗi câu
+            index = index + 1
+            if index > #messages then index = 1 end
+        end
+    end)
 end
 
-local function clearFrameChildren(f)
-    for _, c in ipairs(f:GetChildren()) do
-        c:Destroy()
+local function startLoading(callback)
+    loadingFrame.Visible = true
+    progressBar.Size = UDim2.new(0, 0, 1, 0)
+    loadingText.Text = "Loading 0%"
+    reasonText.Text = "Why you need to wait"
+    reasonText.TextTransparency = 0
+
+    cycleMessages()
+
+    local duration = 170
+    local steps = 100
+    local stepTime = duration / steps
+
+    for i = 1, steps do
+        progressBar.Size = UDim2.new(i/steps, 0, 1, 0)
+        loadingText.Text = "Loading " .. i .. "%"
+        task.wait(stepTime)
     end
+
+    loadingFrame.Visible = false
+    if callback then callback() end
 end
 
-local function addLog(txt)
-    logLabel.Text = "Status: " .. tostring(txt)
-    print("[AutoParryHelper] "..tostring(txt))
+----------------------------------------------------------------
+-- Hàm tạo toggle dòng
+----------------------------------------------------------------
+local function createToggle(text, y)
+    local frame = Instance.new("Frame", content)
+    frame.Size = UDim2.new(1, -20, 0, 40)
+    frame.Position = UDim2.new(0, 10, 0, y)
+    frame.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -60, 0, 20)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.new(1, 0, 0)
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 18
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local toggle = Instance.new("Frame", frame)
+    toggle.Size = UDim2.new(0, 40, 0, 20)
+    toggle.Position = UDim2.new(1, -50, 0, 10)
+    toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
+    toggle.ClipsDescendants = true
+    Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
+
+    local circ = Instance.new("Frame", toggle)
+    circ.Size = UDim2.new(0, 18, 0, 18)
+    circ.Position = UDim2.new(0, 1, 0, 1)
+    circ.BackgroundColor3 = Color3.new(0, 0, 0)
+    Instance.new("UICorner", circ).CornerRadius = UDim.new(1, 0)
+
+    local enabled = false
+    local btn = Instance.new("TextButton", toggle)
+    btn.Size = UDim2.new(1, 0, 1, 0)
+    btn.BackgroundTransparency = 1
+    btn.MouseButton1Click:Connect(function()
+        if not enabled then
+            startLoading(function()
+                enabled = true
+                toggle.BackgroundColor3 = Color3.new(1, 0, 0)
+                circ:TweenPosition(UDim2.new(0.5, 20, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+            end)
+        else
+            enabled = false
+            toggle.BackgroundColor3 = Color3.new(0.31, 0, 0)
+            circ:TweenPosition(UDim2.new(0, 1, 0, 1), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, 0.2, true)
+        end
+    end)
 end
 
--- Scan functions
-local function scanRemotesInContainer(container, out)
-    for _, v in ipairs(container:GetDescendants()) do
-        if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-            local path = safeGetFullName(v)
-            out[path] = v
+-- Hàm tạo input
+local function createInput(text, y)
+    local frame = Instance.new("Frame", content)
+    frame.Size = UDim2.new(1, -20, 0, 40)
+    frame.Position = UDim2.new(0, 10, 0, y)
+    frame.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0, 120, 1, 0)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.new(1, 0, 0)
+    label.Font = Enum.Font.GothamSemibold
+    label.TextSize = 18
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local box = Instance.new("TextBox", frame)
+    box.Size = UDim2.new(0, 120, 0, 30)
+    box.Position = UDim2.new(0, 150, 0, 5)
+    box.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+    box.TextColor3 = Color3.new(1, 1, 1)
+    box.Font = Enum.Font.GothamSemibold
+    box.TextSize = 16
+    box.PlaceholderText = "Enter value"
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
+
+    return box
+end
+
+-- Hàm xóa nội dung
+local function clearContent()
+    for _, c in ipairs(content:GetChildren()) do
+        if c ~= tabTitle then
+            c:Destroy()
         end
     end
 end
 
-local function scanRemotes(recurseWholeGame)
-    remotesList = {}
-    local found = {}
-    -- ReplicatedStorage first
-    if ReplicatedStorage then
-        scanRemotesInContainer(ReplicatedStorage, found)
-    end
-    -- optionally whole game
-    if recurseWholeGame then
-        scanRemotesInContainer(game, found)
-    end
-    -- convert to list
-    for path, inst in pairs(found) do
-        table.insert(remotesList, {inst = inst, path = path})
-    end
-    table.sort(remotesList, function(a,b) return a.path < b.path end)
-    addLog("Found " .. tostring(#remotesList) .. " remote(s)")
+-- Tab Main
+local function loadMain()
+    tabTitle.Text = "Main"
+    clearContent()
+    local y = 50
+    createToggle("Auto Parry", y)
+    y = y + 50
+    createToggle("AI Play", y)
+    y = y + 50
+    createInput("SPEED", y)
+    y = y + 50
+    createInput("JUMP", y)
 end
 
-local candidatePatterns = {"ball","projectile","orb","bullet","attack","throw","dodge","soccer","football","ballpart","ball_","ball-"}
-
-local function isCandidatePartName(name)
-    if not name then return false end
-    local lname = string.lower(name)
-    for _, p in ipairs(candidatePatterns) do
-        if lname:find(p) then return true end
-    end
-    return false
+-- Tab Player
+local function loadPlayer()
+    tabTitle.Text = "Player"
+    clearContent()
+    local y = 50
+    createToggle("ESP PLAYER", y)
+    y = y + 50
+    createToggle("ESP BALL", y)
 end
 
-local function scanParts()
-    partsList = {}
-    -- first check common containers
-    local tryContainers = {workspace}
-    for _, cont in ipairs(tryContainers) do
-        for _, obj in ipairs(cont:GetDescendants()) do
-            if obj:IsA("BasePart") then
-                if isCandidatePartName(obj.Name) then
-                    table.insert(partsList, obj)
-                end
-            end
-        end
-    end
-    -- also try top-level named "Ball" or "Balls"
-    local b = workspace:FindFirstChild("Ball") or workspace:FindFirstChild("ball")
-    if b and b:IsA("BasePart") then table.insert(partsList, b) end
-    local balls = workspace:FindFirstChild("Balls") or workspace:FindFirstChild("balls")
-    if balls then
-        for _, v in ipairs(balls:GetDescendants()) do
-            if v:IsA("BasePart") then table.insert(partsList, v) end
-        end
-    end
-    -- unique
-    local seen = {}
-    local uniq = {}
-    for _, p in ipairs(partsList) do
-        if not seen[p] then
-            seen[p] = true
-            table.insert(uniq, p)
-        end
-    end
-    partsList = uniq
-    addLog("Found " .. tostring(#partsList) .. " candidate parts")
+-- Tab Dupe
+local function loadDupe()
+    tabTitle.Text = "Dupe"
+    clearContent()
+    local y = 50
+    createToggle("Auto Dupe", y)
+    y = y + 50
+    createInput("Dupe Token", y)
+    y = y + 50
+    createInput("Dupe Sword", y)
 end
 
--- UI render functions
-local function renderRemotes()
-    clearFrameChildren(remotesScroll)
-    local y = 6
-    for i, info in ipairs(remotesList) do
-        local b = Instance.new("TextButton", remotesScroll)
-        b.Size = UDim2.new(1, -12, 0, 28)
-        b.Position = UDim2.new(0, 6, 0, y)
-        b.TextXAlignment = Enum.TextXAlignment.Left
-        b.Text = info.path
-        b.BackgroundColor3 = (selectedRemote == info.inst) and Color3.fromRGB(90, 150, 90) or Color3.fromRGB(60,60,60)
-        b.TextColor3 = Color3.fromRGB(255,255,255)
-        b.Font = Enum.Font.Gotham
-        b.TextSize = 14
-        Instance.new("UICorner", b).CornerRadius = UDim.new(0,6)
-        b.MouseButton1Click:Connect(function()
-            selectedRemote = info.inst
-            addLog("Selected remote: " .. info.path)
-            renderRemotes()
-        end)
-        y = y + 34
-    end
-    remotesScroll.CanvasSize = UDim2.new(0,0,0,y)
+-- Tab Changer Skin
+local function loadChanger()
+    tabTitle.Text = "Changer Skin"
+    clearContent()
+    local y = 50
+    createToggle("Auto Skin Change", y)
+    y = y + 50
+    createInput("Change Skin", y)
 end
 
-local function renderParts()
-    clearFrameChildren(partsScroll)
-    local y = 6
-    for i, p in ipairs(partsList) do
-        local label = Instance.new("TextButton", partsScroll)
-        label.Size = UDim2.new(1, -12, 0, 28)
-        label.Position = UDim2.new(0, 6, 0, y)
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        local path = safeGetFullName(p)
-        label.Text = path .. " [" .. tostring(math.floor((p.Position and p.Position.Magnitude) or 0)) .. "]"
-        label.BackgroundColor3 = (selectedPart == p) and Color3.fromRGB(100,120,160) or Color3.fromRGB(60,60,60)
-        label.TextColor3 = Color3.fromRGB(255,255,255)
-        label.Font = Enum.Font.Gotham
-        label.TextSize = 14
-        Instance.new("UICorner", label).CornerRadius = UDim.new(0,6)
-        label.MouseButton1Click:Connect(function()
-            selectedPart = p
-            addLog("Selected part: " .. safeGetFullName(p))
-            renderParts()
-        end)
-        y = y + 34
-    end
-    partsScroll.CanvasSize = UDim2.new(0,0,0,y)
+-- Tab Auto Rank
+local function loadRank()
+    tabTitle.Text = "Auto Rank"
+    clearContent()
+    local y = 50
+    createToggle("Rank Up Bot", y)
 end
 
--- initial scans
-scanRemotes(false)
-scanParts()
-renderRemotes()
-renderParts()
+-- Kết nối menu
+btnMain.MouseButton1Click:Connect(loadMain)
+btnPlayer.MouseButton1Click:Connect(loadPlayer)
+btnDupe.MouseButton1Click:Connect(loadDupe)
+btnChanger.MouseButton1Click:Connect(loadChanger)
+btnRank.MouseButton1Click:Connect(loadRank)
 
--- Buttons behavior
-scanRemotesBtn.MouseButton1Click:Connect(function()
-    scanRemotes(false)
-    renderRemotes()
-end)
-scanAllRemotesBtn.MouseButton1Click:Connect(function()
-    scanRemotes(true)
-    renderRemotes()
-end)
-scanPartsBtn.MouseButton1Click:Connect(function()
-    scanParts()
-    renderParts()
-end)
-rescanBtn.MouseButton1Click:Connect(function()
-    scanRemotes(false)
-    scanParts()
-    renderRemotes()
-    renderParts()
-end)
-deselectBtn.MouseButton1Click:Connect(function()
-    selectedRemote = nil
-    selectedPart = nil
-    addLog("Deselected remote and parts")
-    renderRemotes()
-    renderParts()
-end)
+-- Load mặc định tab Main
+loadMain()
 
--- Auto parry logic
-local lastParryAt = {} -- map part -> time
-local function attemptParryForPart(part)
-    -- debounce
-    local now = os.clock()
-    local cooldown = tonumber(cooldownBox.Text) or 1
-    if lastParryAt[part] and now - lastParryAt[part] < cooldown then
-        return
-    end
-    lastParryAt[part] = now
-
-    -- call selected remote if any
-    if selectedRemote and (selectedRemote.Parent ~= nil) then
-        pcall(function()
-            if selectedRemote:IsA("RemoteEvent") then
-                selectedRemote:FireServer()
-            elseif selectedRemote:IsA("RemoteFunction") then
-                selectedRemote:InvokeServer()
-            end
-        end)
-        addLog("Fired selected remote for part: "..tostring(part.Name))
-        return
-    end
-
-    -- otherwise auto-try candidate remotes that look like parry/block
-    local tried = 0
-    local remotesToTry = {}
-    -- first look into ReplicatedStorage.Remotes container if exists
-    local remCont = ReplicatedStorage:FindFirstChild("Remotes") or ReplicatedStorage:FindFirstChild("remotes")
-    if remCont then
-        for _, v in ipairs(remCont:GetChildren()) do
-            if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-                table.insert(remotesToTry, v)
-            end
-        end
-    end
-    -- fallback: all remotesList
-    for _, info in ipairs(remotesList) do
-        table.insert(remotesToTry, info.inst)
-    end
-
-    for _, r in ipairs(remotesToTry) do
-        if r and (r.Parent ~= nil) and (r:IsA("RemoteEvent") or r:IsA("RemoteFunction")) then
-            local lower = string.lower(r.Name or "")
-            if lower:find("parry") or lower:find("block") or lower:find("deflect") or lower:find("parrybutton") or lower:find("button") then
-                pcall(function()
-                    if r:IsA("RemoteEvent") then r:FireServer() end
-                    if r:IsA("RemoteFunction") then r:InvokeServer() end
-                end)
-                addLog("Auto-fired candidate remote: "..tostring(r.Name))
-                tried = tried + 1
-                break
-            end
-        end
-    end
-
-    if tried == 0 then
-        addLog("No suitable remote auto-found - choose remote manually from list")
-    end
-end
-
--- helper to get current character hrp safely
-local function getHRP()
-    local ch = player.Character
-    if ch then
-        return ch:FindFirstChild("HumanoidRootPart") or ch:FindFirstChild("Torso") or ch:FindFirstChild("UpperTorso")
-    end
-    return nil
-end
-
--- main loop
-local checking = false
-toggleParryBtn.MouseButton1Click:Connect(function()
-    autoParryEnabled = not autoParryEnabled
-    toggleParryBtn.Text = "Auto Parry [" .. (autoParryEnabled and "ON" or "OFF") .. "]"
-    toggleParryBtn.BackgroundColor3 = autoParryEnabled and Color3.fromRGB(60,140,60) or Color3.fromRGB(180,40,40)
-    if autoParryEnabled and not checking then
-        checking = true
-        addLog("Auto Parry enabled")
-        -- spawn background loop
-        task.spawn(function()
-            while autoParryEnabled do
-                task.wait(0.08) -- check ~12.5 times per second
-                local hrp = getHRP()
-                if not hrp then
-                    -- wait until character exists
-                    task.wait(0.5)
-                else
-                    local radius = tonumber(radiusBox.Text) or 20
-                    -- choose parts to check
-                    local toCheck = {}
-                    if selectedPart and selectedPart.Parent then
-                        table.insert(toCheck, selectedPart)
-                    elseif #partsList > 0 then
-                        for _, p in ipairs(partsList) do
-                            if p and p.Parent then table.insert(toCheck, p) end
-                        end
-                    else
-                        -- fallback: dynamic search of workspace for candidate names nearby
-                        for _, obj in ipairs(workspace:GetDescendants()) do
-                            if obj:IsA("BasePart") and isCandidatePartName(obj.Name) then
-                                table.insert(toCheck, obj)
-                            end
-                        end
-                    end
-
-                    for _, part in ipairs(toCheck) do
-                        if part and part.Parent and part:IsA("BasePart") then
-                            local ok, d = pcall(function()
-                                return (part.Position - hrp.Position).Magnitude
-                            end)
-                            if ok and d and d <= radius then
-                                -- optionally check velocity to detect incoming - many games attach velocity
-                                local incoming = true
-                                -- try to read velocity: if velocity exists and is moving toward player
-                                local velOk, vel = pcall(function() return part.Velocity end)
-                                if velOk and vel then
-                                    -- direction vector from part to player
-                                    local dirToPlayer = (hrp.Position - part.Position).Unit
-                                    local speedTowards = vel:Dot(dirToPlayer)
-                                    -- if speedTowards small negative, maybe it's receding; use threshold
-                                    if speedTowards < 1 then
-                                        -- not strongly incoming, but still allow
-                                        -- keep incoming true
-                                    end
-                                end
-                                if incoming then
-                                    attemptParryForPart(part)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-            checking = false
-            addLog("Auto Parry disabled")
-        end)
-    else
-        addLog("Auto Parry disabled")
+-- Load script chính
+spawn(function()
+    local ok, err = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+    end)
+    if not ok then
+        warn("⚠ Failed to load main script:", err)
     end
 end)
-
--- initial helpful message
-addLog("Ready. Scan remotes & parts, select remote (if known), then enable Auto Parry.")
-
--- End of script
