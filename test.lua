@@ -17,7 +17,7 @@ hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
 
--- helper mở link (ép buộc có thông báo)
+-- helper mở link
 local function openLink(url)
     local copied = false
     if setclipboard then
@@ -120,7 +120,8 @@ local function openBladeBallMenu()
 
     local frame = Instance.new("Frame", subGui)
     frame.Size = UDim2.new(0, 480, 0, 360)
-    frame.Position = UDim2.new(0.5, -240, 0.5, -180)
+    frame.AnchorPoint = Vector2.new(0.5,0.5) -- căn giữa
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
@@ -129,15 +130,9 @@ local function openBladeBallMenu()
     stroke.Color = Color3.fromRGB(200,200,200)
     stroke.Thickness = 2
 
-    local icon = Instance.new("ImageLabel", frame)
-    icon.Size = UDim2.new(0,28,0,28)
-    icon.Position = UDim2.new(0,10,0,6)
-    icon.BackgroundTransparency = 1
-    icon.Image = "rbxassetid://127537802436978" -- icon Blade Ball
-
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1, -40, 0, 40)
-    title.Position = UDim2.new(0, 40, 0, 0)
+    title.Position = UDim2.new(0, 20, 0, 0)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.Gotham
     title.TextSize = 20
@@ -151,7 +146,7 @@ local function openBladeBallMenu()
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
-    list.Padding = UDim.new(0,10)
+
     list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
     end)
@@ -185,35 +180,31 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- Button Premium
+    -- Button Premium sáng hơn
     local function createPremiumBtn(text, theme)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
         btn.Font = Enum.Font.GothamBold
         btn.TextSize = 18
         btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.TextStrokeTransparency = 0
-        btn.TextStrokeColor3 = Color3.fromRGB(255,255,255)
+        btn.TextStrokeTransparency = 0.2
+        btn.TextStrokeColor3 = Color3.fromRGB(0,0,0)
         btn.Text = "Script - "..text
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(255,255,255)
-        stroke.Thickness = 2
 
         local gradient = Instance.new("UIGradient", btn)
         if theme == "Allusive" then
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(180,0,255)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120,0,200)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,100,255))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(200,0,255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160,60,255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,140,255))
             }
         elseif theme == "UwU" then
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,100,180)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,160,220)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,60,140))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,180)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,170,220)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,160))
             }
         end
         gradient.Rotation = 0
