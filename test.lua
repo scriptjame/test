@@ -120,7 +120,7 @@ local function openBladeBallMenu()
 
     local frame = Instance.new("Frame", subGui)
     frame.Size = UDim2.new(0, 480, 0, 360)
-    frame.AnchorPoint = Vector2.new(0.5,0.5) -- căn giữa
+    frame.AnchorPoint = Vector2.new(0.5,0.5)
     frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
     frame.BorderSizePixel = 0
@@ -180,11 +180,11 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- Button Premium sáng hơn
+    -- Button Premium sáng + gradient động
     local function createPremiumBtn(text, theme)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+        btn.BackgroundColor3 = Color3.fromRGB(80,80,80)
         btn.Font = Enum.Font.GothamBold
         btn.TextSize = 18
         btn.TextColor3 = Color3.fromRGB(255,255,255)
@@ -194,24 +194,26 @@ local function openBladeBallMenu()
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
         local gradient = Instance.new("UIGradient", btn)
+        gradient.Rotation = 0
+
         if theme == "Allusive" then
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(200,0,255)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160,60,255)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,140,255))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(180,0,255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120,60,255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,180,255))
             }
         elseif theme == "UwU" then
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,180)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,170,220)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,160))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,150,200)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,200,240)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,120,180))
             }
         end
-        gradient.Rotation = 0
 
+        -- Hiệu ứng xoay
         task.spawn(function()
             while btn.Parent do
-                gradient.Rotation = (gradient.Rotation + 1) % 360
+                gradient.Rotation = (gradient.Rotation + 2) % 360
                 task.wait(0.05)
             end
         end)
