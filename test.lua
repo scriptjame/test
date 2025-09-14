@@ -17,28 +17,25 @@ hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
 
--- helper mở link (executor hoặc copy link)
+-- helper mở link (ép buộc có thông báo)
 local function openLink(url)
-    if typeof(openbrowser) == "function" then
-        pcall(openbrowser, url)
-        return
-    end
-    if typeof(syn) == "table" and typeof(syn.request) == "function" then
-        pcall(syn.request, {Url = url, Method = "GET"})
-        return
-    end
-    if typeof(request) == "function" then
-        pcall(request, {Url = url, Method = "GET"})
-        return
-    end
+    local copied = false
+
     if setclipboard then
-        setclipboard(url)
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Link copied",
-            Text = "Đã sao chép link, dán vào trình duyệt để mở.",
-            Duration = 4
-        })
+        pcall(setclipboard, url)
+        copied = true
     end
+    if type(openbrowser) == "function" then
+        pcall(openbrowser, url)
+        copied = true
+    end
+
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Link",
+        Text = copied and "Đã sao chép link, hãy dán vào trình duyệt!" or "Không thể sao chép, copy thủ công: "..url,
+        Duration = 5
+    })
+    warn("Link:", url)
 end
 
 -- loading GUI
@@ -51,20 +48,20 @@ local function showLoading(durationSeconds, onDone)
     local frame = Instance.new("Frame", gui)
     frame.Size = UDim2.new(0.46, 0, 0.14, 0)
     frame.Position = UDim2.new(0.27, 0, 0.42, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
     local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(0, 200, 0)
+    stroke.Color = Color3.fromRGB(120, 120, 255)
     stroke.Thickness = 2
 
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1, -20, 0.45, 0)
     title.Position = UDim2.new(0, 10, 0, 8)
     title.BackgroundTransparency = 1
-    title.Font = Enum.Font.Gotham
-    title.TextSize = 18
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 20
     title.TextColor3 = Color3.fromRGB(255,255,255)
     title.Text = "Preparing script..."
     title.TextXAlignment = Enum.TextXAlignment.Center
@@ -78,7 +75,7 @@ local function showLoading(durationSeconds, onDone)
 
     local bar = Instance.new("Frame", barBG)
     bar.Size = UDim2.new(0, 0, 1, 0)
-    bar.BackgroundColor3 = Color3.fromRGB(0, 200, 130)
+    bar.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
     Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
 
     local phrases = {
@@ -124,22 +121,30 @@ local function openBladeBallMenu()
     subGui.ResetOnSpawn = false
 
     local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0, 460, 0, 360)
-    frame.Position = UDim2.new(0.5, -230, 0.5, -180)
-    frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    frame.Size = UDim2.new(0, 480, 0, 360)
+    frame.Position = UDim2.new(0.5, -240, 0.5, -180)
+    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
 
     local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(0, 255, 0)
+    stroke.Color = Color3.fromRGB(200,200,200)
     stroke.Thickness = 2
 
+    local icon = Instance.new("ImageLabel", frame)
+    icon.Size = UDim2.new(0,28,0,28)
+    icon.Position = UDim2.new(0,10,0,6)
+    icon.BackgroundTransparency = 1
+    icon.Image = "rbxassetid://127537802436978" -- icon Blade Ball
+
     local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1,0,0,40)
+    title.Size = UDim2.new(1, -40, 0, 40)
+    title.Position = UDim2.new(0, 40, 0, 0)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.Gotham
     title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(200,255,200)
+    title.TextColor3 = Color3.fromRGB(230,230,230)
+    title.TextXAlignment = Enum.TextXAlignment.Left
     title.Text = "Blade Ball Scripts"
 
     local list = Instance.new("UIListLayout", frame)
@@ -148,19 +153,23 @@ local function openBladeBallMenu()
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
+    list.Padding = UDim.new(0,10)
+    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
+    end)
 
     local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,46)
-        btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        btn.Size = UDim2.new(0.9,0,0,50)
+        btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
         btn.Font = Enum.Font.Gotham
-        btn.TextSize = 15
-        btn.TextColor3 = Color3.fromRGB(240,240,240)
-        btn.Text = "Script – "..text
+        btn.TextSize = 16
+        btn.TextColor3 = Color3.fromRGB(255,255,255)
+        btn.Text = "Script - "..text
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
         local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(0,255,0)
+        stroke.Color = Color3.fromRGB(180,180,180)
         stroke.Thickness = 1
 
         btn.MouseButton1Click:Connect(function()
@@ -184,7 +193,7 @@ local function openBladeBallMenu()
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
     backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
-    backBtn.Font = Enum.Font.Gotham
+    backBtn.Font = Enum.Font.GothamBold
     backBtn.TextSize = 16
     backBtn.TextColor3 = Color3.fromRGB(255,255,255)
     backBtn.Text = "← Back"
