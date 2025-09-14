@@ -4,24 +4,26 @@ local playerGui = player:WaitForChild("PlayerGui")
 local old = playerGui:FindFirstChild("MainMenu")
 if old then old:Destroy() end
 
--- Tạo ScreenGui
+-- ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MainMenu"
 screenGui.Parent = playerGui
+screenGui.IgnoreGuiInset = true
 
--- Tạo Frame chính
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(1, 0, 1, 0)
-mainFrame.BackgroundTransparency = 1
-mainFrame.Parent = screenGui
+-- Frame chứa game
+local gameFrame = Instance.new("Frame")
+gameFrame.Size = UDim2.new(1, 0, 0.8, 0)
+gameFrame.Position = UDim2.new(0, 0, 0, 20)
+gameFrame.BackgroundTransparency = 1
+gameFrame.Parent = screenGui
 
--- UIGrid cho game list
 local grid = Instance.new("UIGridLayout")
 grid.CellSize = UDim2.new(0, 280, 0, 220)
-grid.CellPadding = UDim2.new(0, 15, 0, 15)
+grid.CellPadding = UDim2.new(0, 20, 0, 20)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
-grid.VerticalAlignment = Enum.VerticalAlignment.Center
-grid.Parent = mainFrame
+grid.VerticalAlignment = Enum.VerticalAlignment.Top
+grid.FillDirectionMaxCells = 4
+grid.Parent = gameFrame
 
 -- Danh sách game
 local games = {
@@ -47,13 +49,15 @@ local games = {
     }
 }
 
--- Hàm tạo card game
+-- Tạo card game
 local function createGameCard(info)
     local card = Instance.new("Frame")
-    card.Size = UDim2.new(0, 280, 0, 220)
-    card.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    card.BackgroundColor3 = Color3.fromRGB(20,20,20)
     card.BorderSizePixel = 0
-    card.Parent = mainFrame
+    card.Parent = gameFrame
+
+    local uic = Instance.new("UICorner", card)
+    uic.CornerRadius = UDim.new(0, 12)
 
     local img = Instance.new("ImageLabel")
     img.Size = UDim2.new(1, 0, 0.6, 0)
@@ -62,7 +66,7 @@ local function createGameCard(info)
     img.Parent = card
 
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, -10, 0, 25)
+    title.Size = UDim2.new(1, -10, 0, 28)
     title.Position = UDim2.new(0, 5, 0.65, 0)
     title.BackgroundTransparency = 1
     title.Text = info.name
@@ -85,56 +89,60 @@ local function createGameCard(info)
     desc.Parent = card
 end
 
--- Tạo card cho từng game
-for _, gameInfo in ipairs(games) do
-    createGameCard(gameInfo)
+for _, g in ipairs(games) do
+    createGameCard(g)
 end
 
--- ===== Nút Discord + YouTube =====
-local function createSocialButton(text, color, link, icon)
+-- Hàm tạo nút social
+local function createSocialButton(text, color, link, icon, posX)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 200, 0, 50)
+    btn.Size = UDim2.new(0, 220, 0, 55)
+    btn.Position = UDim2.new(posX, -110, 0.9, 0)
     btn.BackgroundColor3 = Color3.fromRGB(20,20,20)
-    btn.BorderSizePixel = 2
-    btn.Text = "  " .. text
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 18
-    btn.TextColor3 = color
+    btn.Text = ""
     btn.Parent = screenGui
 
-    -- bo tròn
-    local uic = Instance.new("UICorner")
+    local uic = Instance.new("UICorner", btn)
     uic.CornerRadius = UDim.new(0, 12)
-    uic.Parent = btn
 
-    -- viền
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 2
+    local stroke = Instance.new("UIStroke", btn)
+    stroke.Thickness = 3
     stroke.Color = color
-    stroke.Parent = btn
 
-    -- icon
     local img = Instance.new("ImageLabel")
-    img.Size = UDim2.new(0, 28, 0, 28)
-    img.Position = UDim2.new(0, 10, 0.5, -14)
+    img.Size = UDim2.new(0, 30, 0, 30)
+    img.Position = UDim2.new(0, 15, 0.5, -15)
     img.BackgroundTransparency = 1
     img.Image = icon
     img.Parent = btn
 
-    -- khi bấm mở link
-    btn.MouseButton1Click:Connect(function()
-        game:GetService("GuiService"):OpenBrowserWindow(link)
-    end)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -60, 1, 0)
+    label.Position = UDim2.new(0, 55, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 20
+    label.TextColor3 = color
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = btn
 
-    return btn
+    btn.MouseButton1Click:Connect(function()
+        if setclipboard then
+            setclipboard(link)
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "📌 Link Copied",
+                Text = "Paste vào trình duyệt để mở: "..link,
+                Duration = 5
+            })
+        end
+    end)
 end
 
 -- Nút Discord
-local discordBtn = createSocialButton("Join Discord", Color3.fromRGB(88, 101, 242), 
-    "https://discord.gg/fkDMHngGCk", "rbxassetid://6031075938")
-discordBtn.Position = UDim2.new(0.25, -100, 0.9, 0)
+createSocialButton("Join Discord", Color3.fromRGB(88, 101, 242),
+    "https://discord.gg/fkDMHngGCk", "rbxassetid://6031075938", 0.3)
 
 -- Nút YouTube
-local ytBtn = createSocialButton("Subscribe", Color3.fromRGB(255,0,0), 
-    "https://www.youtube.com/@user-qe3dv7iy2j", "rbxassetid://6031075939")
-ytBtn.Position = UDim2.new(0.75, -100, 0.9, 0)
+createSocialButton("Subscribe", Color3.fromRGB(255,0,0),
+    "https://www.youtube.com/@user-qe3dv7iy2j", "rbxassetid://6031075939", 0.7)
