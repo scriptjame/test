@@ -19,20 +19,20 @@ hubGui.IgnoreGuiInset = true
 
 -- helper mở link (executor hoặc copy link)
 local function openLink(url)
-    if type(openbrowser) == "function" then
+    if typeof(openbrowser) == "function" then
         pcall(openbrowser, url)
         return
     end
-    if type(syn) == "table" and type(syn.request) == "function" then
+    if typeof(syn) == "table" and typeof(syn.request) == "function" then
         pcall(syn.request, {Url = url, Method = "GET"})
         return
     end
-    if type(request) == "function" then
+    if typeof(request) == "function" then
         pcall(request, {Url = url, Method = "GET"})
         return
     end
     if setclipboard then
-        pcall(setclipboard, url)
+        setclipboard(url)
         game.StarterGui:SetCore("SendNotification", {
             Title = "Link copied",
             Text = "Đã sao chép link, dán vào trình duyệt để mở.",
@@ -63,8 +63,8 @@ local function showLoading(durationSeconds, onDone)
     title.Size = UDim2.new(1, -20, 0.45, 0)
     title.Position = UDim2.new(0, 10, 0, 8)
     title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 18
     title.TextColor3 = Color3.fromRGB(255,255,255)
     title.Text = "Preparing script..."
     title.TextXAlignment = Enum.TextXAlignment.Center
@@ -132,16 +132,15 @@ local function openBladeBallMenu()
 
     local stroke = Instance.new("UIStroke", frame)
     stroke.Color = Color3.fromRGB(0, 255, 0)
-    stroke.Thickness = 3
+    stroke.Thickness = 2
 
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1,0,0,40)
     title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 22
-    title.TextColor3 = Color3.fromRGB(0,255,0)
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 20
+    title.TextColor3 = Color3.fromRGB(200,255,200)
     title.Text = "Blade Ball Scripts"
-    title.Parent = frame
 
     local list = Instance.new("UIListLayout", frame)
     list.Padding = UDim.new(0,10)
@@ -149,24 +148,20 @@ local function openBladeBallMenu()
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
-    list.Padding = UDim.new(0,10)
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0,460,0,list.AbsoluteContentSize.Y+60)
-    end)
 
     local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
+        btn.Size = UDim2.new(0.9,0,0,46)
         btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 16
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Text = "Script – "..text.." 👇"
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 15
+        btn.TextColor3 = Color3.fromRGB(240,240,240)
+        btn.Text = "Script – "..text
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
         local stroke = Instance.new("UIStroke", btn)
         stroke.Color = Color3.fromRGB(0,255,0)
-        stroke.Thickness = 2
+        stroke.Thickness = 1
 
         btn.MouseButton1Click:Connect(function()
             subGui.Enabled = false
@@ -182,14 +177,14 @@ local function openBladeBallMenu()
         end)
     end
 
-    createScriptBtn("BLADE BALL AUTO PARRY SUPPORT FOR HIGH PING", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
+    createScriptBtn("AUTO PARRY SUPPORT FOR HIGH PING", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("AUTO PARRY, Unlock All Sword, Explosion, Emote", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("AUTO PARRY, Spam – I Think U Like ❤️", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
 
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
     backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
-    backBtn.Font = Enum.Font.GothamBold
+    backBtn.Font = Enum.Font.Gotham
     backBtn.TextSize = 16
     backBtn.TextColor3 = Color3.fromRGB(255,255,255)
     backBtn.Text = "← Back"
