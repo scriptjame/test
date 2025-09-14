@@ -1,7 +1,6 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local TweenService = game:GetService("TweenService")
 
 -- auto chạy script chính khi mở menu
 pcall(function()
@@ -18,7 +17,7 @@ hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
 
--- helper mở link
+-- helper mở link (ép buộc có thông báo)
 local function openLink(url)
     local copied = false
     if setclipboard then
@@ -29,10 +28,9 @@ local function openLink(url)
         pcall(openbrowser, url)
         copied = true
     end
-
     game.StarterGui:SetCore("SendNotification", {
         Title = "Link",
-        Text = copied and "Copied link, paste it in your browser!" or "Cannot copy automatically. Copy this manually: "..url,
+        Text = copied and "Link copied, paste it in your browser!" or "Cannot copy, copy manually: "..url,
         Duration = 5
     })
     warn("Link:", url)
@@ -131,6 +129,12 @@ local function openBladeBallMenu()
     stroke.Color = Color3.fromRGB(200,200,200)
     stroke.Thickness = 2
 
+    local icon = Instance.new("ImageLabel", frame)
+    icon.Size = UDim2.new(0,28,0,28)
+    icon.Position = UDim2.new(0,10,0,6)
+    icon.BackgroundTransparency = 1
+    icon.Image = "rbxassetid://127537802436978" -- icon Blade Ball
+
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1, -40, 0, 40)
     title.Position = UDim2.new(0, 40, 0, 0)
@@ -147,8 +151,12 @@ local function openBladeBallMenu()
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
+    list.Padding = UDim.new(0,10)
+    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
+    end)
 
-    -- Normal button
+    -- Button thường
     local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
@@ -177,14 +185,16 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- Premium button
-    local function createPremiumBtn(text)
+    -- Button Premium
+    local function createPremiumBtn(text, theme)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
         btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
         btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 16
+        btn.TextSize = 18
         btn.TextColor3 = Color3.fromRGB(255,255,255)
+        btn.TextStrokeTransparency = 0
+        btn.TextStrokeColor3 = Color3.fromRGB(255,255,255)
         btn.Text = "Script - "..text
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
@@ -193,11 +203,19 @@ local function openBladeBallMenu()
         stroke.Thickness = 2
 
         local gradient = Instance.new("UIGradient", btn)
-        gradient.Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,200)),
-            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170,0,255)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(0,170,255))
-        }
+        if theme == "Allusive" then
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(180,0,255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120,0,200)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,100,255))
+            }
+        elseif theme == "UwU" then
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,100,180)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,160,220)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,60,140))
+            }
+        end
         gradient.Rotation = 0
 
         task.spawn(function()
@@ -216,12 +234,12 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- Add scripts
+    -- Tạo các script
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createPremiumBtn("Allusive")
-    createPremiumBtn("UwU")
+    createPremiumBtn("Allusive", "Allusive")
+    createPremiumBtn("UwU", "UwU")
 
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
@@ -245,7 +263,7 @@ local games = {
         desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
         img = "rbxassetid://103879354899468",
         openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="Script not added yet!", Duration=3})
+            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script attached yet!", Duration=3})
         end
     },
     {
@@ -253,7 +271,7 @@ local games = {
         desc = "Script Auto Plant, Auto Sell, Auto Upgrade...",
         img = "rbxassetid://110811575269598",
         openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="Script not added yet!", Duration=3})
+            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script attached yet!", Duration=3})
         end
     },
     {
@@ -261,7 +279,7 @@ local games = {
         desc = "Script ESP, Auto Farm, Knife Aura...",
         img = "rbxassetid://120257957010430",
         openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="Script not added yet!", Duration=3})
+            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script attached yet!", Duration=3})
         end
     },
     {
