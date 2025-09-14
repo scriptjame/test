@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
 
 -- auto chạy script chính khi mở menu
 pcall(function()
@@ -28,11 +29,13 @@ local function openLink(url)
         pcall(openbrowser, url)
         copied = true
     end
+
     game.StarterGui:SetCore("SendNotification", {
         Title = "Link",
-        Text = copied and "Link copied, paste it in your browser!" or "Cannot copy, please copy manually: "..url,
+        Text = copied and "Copied link, paste it in your browser!" or "Cannot copy automatically. Copy this manually: "..url,
         Duration = 5
     })
+    warn("Link:", url)
 end
 
 -- loading GUI
@@ -144,12 +147,9 @@ local function openBladeBallMenu()
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
-    list.Padding = UDim.new(0,10)
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
-    end)
 
-    local function createScriptBtn(text, url, isPremium)
+    -- Normal button
+    local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
         btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
@@ -164,14 +164,6 @@ local function openBladeBallMenu()
         stroke.Thickness = 1
 
         btn.MouseButton1Click:Connect(function()
-            if isPremium then
-                game.StarterGui:SetCore("SendNotification", {
-                    Title = "Coming Soon",
-                    Text = "We will update soon",
-                    Duration = 4
-                })
-                return
-            end
             subGui.Enabled = false
             showLoading(5, function()
                 local ok, err = pcall(function()
@@ -185,12 +177,51 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- scripts
+    -- Premium button
+    local function createPremiumBtn(text)
+        local btn = Instance.new("TextButton", frame)
+        btn.Size = UDim2.new(0.9,0,0,50)
+        btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        btn.Font = Enum.Font.GothamBold
+        btn.TextSize = 16
+        btn.TextColor3 = Color3.fromRGB(255,255,255)
+        btn.Text = "Script - "..text
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+
+        local stroke = Instance.new("UIStroke", btn)
+        stroke.Color = Color3.fromRGB(255,255,255)
+        stroke.Thickness = 2
+
+        local gradient = Instance.new("UIGradient", btn)
+        gradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,200)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170,0,255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0,170,255))
+        }
+        gradient.Rotation = 0
+
+        task.spawn(function()
+            while btn.Parent do
+                gradient.Rotation = (gradient.Rotation + 1) % 360
+                task.wait(0.05)
+            end
+        end)
+
+        btn.MouseButton1Click:Connect(function()
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Coming Soon",
+                Text = "We will update soon",
+                Duration = 4
+            })
+        end)
+    end
+
+    -- Add scripts
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createScriptBtn("Allusive", nil, true)
-    createScriptBtn("UwU", nil, true)
+    createPremiumBtn("Allusive")
+    createPremiumBtn("UwU")
 
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
@@ -214,7 +245,7 @@ local games = {
         desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
         img = "rbxassetid://103879354899468",
         openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script linked yet!", Duration=3})
+            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="Script not added yet!", Duration=3})
         end
     },
     {
@@ -222,7 +253,7 @@ local games = {
         desc = "Script Auto Plant, Auto Sell, Auto Upgrade...",
         img = "rbxassetid://110811575269598",
         openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script linked yet!", Duration=3})
+            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="Script not added yet!", Duration=3})
         end
     },
     {
@@ -230,7 +261,7 @@ local games = {
         desc = "Script ESP, Auto Farm, Knife Aura...",
         img = "rbxassetid://120257957010430",
         openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script linked yet!", Duration=3})
+            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="Script not added yet!", Duration=3})
         end
     },
     {
