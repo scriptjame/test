@@ -1,273 +1,118 @@
--- // Game Hub Full Script // --
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+--// Loading GUI
+local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- auto chạy script chính khi mở menu
-pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-end)
-
--- xoá hub cũ nếu có
-local old = playerGui:FindFirstChild("MainMenu")
+local old = playerGui:FindFirstChild("ScriptHubGUI")
 if old then old:Destroy() end
 
--- tạo hub gui
-local hubGui = Instance.new("ScreenGui", playerGui)
-hubGui.Name = "MainMenu"
-hubGui.ResetOnSpawn = false
-hubGui.IgnoreGuiInset = true
+local loadingGui = Instance.new("ScreenGui", playerGui)
+loadingGui.Name = "ScriptHubGUI"
 
--- helper mở link (executor hoặc copy link)
-local function openLink(url)
-    if type(openbrowser) == "function" then
-        pcall(openbrowser, url)
-        return
-    end
-    if type(syn) == "table" and type(syn.request) == "function" then
-        pcall(syn.request, {Url = url, Method = "GET"})
-        return
-    end
-    if type(request) == "function" then
-        pcall(request, {Url = url, Method = "GET"})
-        return
-    end
-    if setclipboard then
-        pcall(setclipboard, url)
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Link copied",
-            Text = "Đã sao chép link, dán vào trình duyệt để mở.",
-            Duration = 4
-        })
-    end
+local loadingFrame = Instance.new("Frame", loadingGui)
+loadingFrame.Size = UDim2.new(0, 300, 0, 100)
+loadingFrame.Position = UDim2.new(0.5, -150, 0.5, -50)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+loadingFrame.BorderSizePixel = 0
+Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0,12)
+
+local loadingText = Instance.new("TextLabel", loadingFrame)
+loadingText.Size = UDim2.new(1,0,1,0)
+loadingText.BackgroundTransparency = 1
+loadingText.Font = Enum.Font.GothamBold
+loadingText.TextSize = 20
+loadingText.TextColor3 = Color3.fromRGB(255,255,255)
+loadingText.Text = "Đang tải Script Hub..."
+Instance.new("UIStroke", loadingText).Thickness = 1.5
+
+task.wait(5)
+loadingGui:ClearAllChildren()
+
+--// Main Hub
+local hubFrame = Instance.new("Frame", loadingGui)
+hubFrame.Size = UDim2.new(0, 520, 0, 340)
+hubFrame.Position = UDim2.new(0.5, -260, 0.5, -170)
+hubFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+hubFrame.BorderSizePixel = 0
+Instance.new("UICorner", hubFrame).CornerRadius = UDim.new(0,16)
+
+local title = Instance.new("TextLabel", hubFrame)
+title.Size = UDim2.new(1,0,0,50)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 28
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.Text = "🔥 Script Hub Menu"
+Instance.new("UIStroke", title).Thickness = 1.6
+
+-- helper tạo nút
+local function createBtn(parent, text, color3, yPos, callback)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(0.9,0,0,50)
+    btn.Position = UDim2.new(0.05,0,0,yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(25,25,25)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 20
+    btn.TextColor3 = color3
+    btn.Text = text
+    btn.AutoButtonColor = true
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,12)
+    local stroke = Instance.new("UIStroke", btn)
+    stroke.Color = color3
+    stroke.Thickness = 2
+    btn.MouseButton1Click:Connect(callback)
+    return btn
 end
 
--- loading GUI
-local function showLoading(durationSeconds, onDone)
-    durationSeconds = durationSeconds or 5
-    local gui = Instance.new("ScreenGui", playerGui)
-    gui.Name = "Hub_LoadingGui"
-    gui.ResetOnSpawn = false
+--// Sub-GUI Blade Ball
+local bladeGui = Instance.new("Frame", loadingGui)
+bladeGui.Size = UDim2.new(0, 500, 0, 320)
+bladeGui.Position = UDim2.new(0.5, -250, 0.5, -160)
+bladeGui.BackgroundColor3 = Color3.fromRGB(18,18,18)
+bladeGui.BorderSizePixel = 0
+bladeGui.Visible = false
+Instance.new("UICorner", bladeGui).CornerRadius = UDim.new(0,14)
 
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.46, 0, 0.14, 0)
-    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+local bladeTitle = Instance.new("TextLabel", bladeGui)
+bladeTitle.Size = UDim2.new(1,0,0,50)
+bladeTitle.BackgroundTransparency = 1
+bladeTitle.Font = Enum.Font.GothamBold
+bladeTitle.TextSize = 24
+bladeTitle.TextColor3 = Color3.fromRGB(255,255,255)
+bladeTitle.Text = "⚔️ Blade Ball Scripts"
+Instance.new("UIStroke", bladeTitle).Thickness = 1.5
 
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -20, 0.45, 0)
-    title.Position = UDim2.new(0, 10, 0, 8)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.Text = "Preparing script..."
-    title.TextXAlignment = Enum.TextXAlignment.Center
-
-    local barBG = Instance.new("Frame", frame)
-    barBG.Size = UDim2.new(0.9, 0, 0.28, 0)
-    barBG.Position = UDim2.new(0.05, 0, 0.55, 0)
-    barBG.BackgroundColor3 = Color3.fromRGB(45,45,45)
-    barBG.BorderSizePixel = 0
-    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
-
-    local bar = Instance.new("Frame", barBG)
-    bar.Size = UDim2.new(0, 0, 1, 0)
-    bar.BackgroundColor3 = Color3.fromRGB(0, 200, 130)
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
-
-    local phrases = {
-        "Injecting magic modules...",
-        "Optimizing local hooks...",
-        "Calibrating anti-miss...",
-        "Loading GUI components...",
-        "Almost ready — hold on..."
-    }
-
-    local steps = 100
-    local stepTime = durationSeconds / steps
-    task.spawn(function()
-        for i = 1, steps do
-            local pct = i/steps
-            bar:TweenSize(UDim2.new(pct,0,1,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, stepTime, true)
-            title.Text = phrases[math.random(1, #phrases)]
-            task.wait(stepTime)
-        end
-        gui:Destroy()
-        if onDone then onDone() end
+local function createBladeBtn(name, link, order)
+    return createBtn(bladeGui, name, Color3.fromRGB(0,200,255), 60 + (order*60), function()
+        loadstring(game:HttpGet(link))()
     end)
 end
 
--- container chính
-local container = Instance.new("Frame", hubGui)
-container.Size = UDim2.new(1, -60, 0.78, 0)
-container.Position = UDim2.new(0, 30, 0.06, 0)
-container.BackgroundTransparency = 1
+createBladeBtn("AUTO PARRY SUPPORT HIGH PING", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua", 0)
+createBladeBtn("AUTO PARRY + UNLOCK ALL + EXPLOSION", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua", 1)
+createBladeBtn("AUTO PARRY + SPAM (FUN)", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua", 2)
 
-local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0, 300, 0, 240)
-grid.CellPadding = UDim2.new(0, 18, 0, 18)
-grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
-grid.VerticalAlignment = Enum.VerticalAlignment.Top
-grid.FillDirectionMaxCells = 4
+createBtn(bladeGui, "⬅️ Quay lại Menu", Color3.fromRGB(255,120,120), 250, function()
+    bladeGui.Visible = false
+    hubFrame.Visible = true
+end)
 
--- Blade Ball menu phụ
-local function openBladeBallMenu()
-    hubGui.Enabled = false
+--// Main Hub Buttons
+createBtn(hubFrame, "⚔️ Blade Ball", Color3.fromRGB(0,200,255), 60, function()
+    hubFrame.Visible = false
+    bladeGui.Visible = true
+end)
 
-    local subGui = Instance.new("ScreenGui", playerGui)
-    subGui.Name = "BladeBallMenu"
-    subGui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0, 440, 0, 320)
-    frame.Position = UDim2.new(0.5, -220, 0.5, -160)
-    frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
-
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1,0,0,40)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 22
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.Text = "Blade Ball Scripts"
-    title.Parent = frame
-
-    local list = Instance.new("UIListLayout", frame)
-    list.Padding = UDim.new(0,10)
-    list.FillDirection = Enum.FillDirection.Vertical
-    list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    list.VerticalAlignment = Enum.VerticalAlignment.Top
-    list.SortOrder = Enum.SortOrder.LayoutOrder
-    list.Padding = UDim.new(0,10)
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0,440,0,list.AbsoluteContentSize.Y+60)
-    end)
-
-    local function createScriptBtn(text, url)
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,40)
-        btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 16
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Text = text
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        btn.MouseButton1Click:Connect(function()
-            subGui:Destroy()
-            showLoading(5, function()
-                local ok, err = pcall(function()
-                    loadstring(game:HttpGet(url))()
-                end)
-                if not ok then
-                    warn("BladeBall script failed:", err)
-                    hubGui.Enabled = true
-                end
-            end)
-        end)
-    end
-
-    createScriptBtn("AUTO PARRY Support for High Ping", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-    createScriptBtn("AUTO PARRY, Unlock All Sword, Explosion, Emote", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
-    createScriptBtn("AUTO PARRY, Spam – I Think U Like ❤️", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-
-    local backBtn = Instance.new("TextButton", frame)
-    backBtn.Size = UDim2.new(0.9,0,0,40)
-    backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
-    backBtn.Font = Enum.Font.GothamBold
-    backBtn.TextSize = 16
-    backBtn.TextColor3 = Color3.fromRGB(255,255,255)
-    backBtn.Text = "← Back"
-    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0,8)
-
-    backBtn.MouseButton1Click:Connect(function()
-        subGui:Destroy()
-        hubGui.Enabled = true
-    end)
-end
-
--- danh sách game
-local games = {
-    {
-        name = "Pet Simulator 99",
-        desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
-        img = "rbxassetid://103879354899468",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="Chưa gắn script!", Duration=3})
-        end
-    },
-    {
-        name = "Grow a Garden",
-        desc = "Script Auto Plant, Auto Sell, Auto Upgrade...",
-        img = "rbxassetid://110811575269598",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="Chưa gắn script!", Duration=3})
-        end
-    },
-    {
-        name = "Murder Mystery 2",
-        desc = "Script ESP, Auto Farm, Knife Aura...",
-        img = "rbxassetid://120257957010430",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="Chưa gắn script!", Duration=3})
-        end
-    },
-    {
-        name = "Blade Ball",
-        desc = "Auto Parry no miss, Changer Skin, Dupe...",
-        img = "rbxassetid://127537802436978",
-        openFn = openBladeBallMenu
-    }
-}
-
-for _, info in ipairs(games) do
-    local card = Instance.new("Frame", container)
-    card.BackgroundColor3 = Color3.fromRGB(24,24,24)
-    card.Size = UDim2.new(0, 300, 0, 240)
-    Instance.new("UICorner", card).CornerRadius = UDim.new(0,10)
-
-    local img = Instance.new("ImageButton", card)
-    img.Size = UDim2.new(1,0,0.62,0)
-    img.BackgroundTransparency = 1
-    img.Image = info.img
-
-    local title = Instance.new("TextLabel", card)
-    title.Size = UDim2.new(1,-18,0,30)
-    title.Position = UDim2.new(0,10,0.64,0)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Text = info.name
-
-    local desc = Instance.new("TextLabel", card)
-    desc.Size = UDim2.new(1,-18,0,54)
-    desc.Position = UDim2.new(0,10,0.74,0)
-    desc.BackgroundTransparency = 1
-    desc.Font = Enum.Font.Gotham
-    desc.TextSize = 14
-    desc.TextColor3 = Color3.fromRGB(190,190,190)
-    desc.TextWrapped = true
-    desc.TextXAlignment = Enum.TextXAlignment.Left
-    desc.Text = info.desc
-
-    img.MouseButton1Click:Connect(info.openFn)
-end
-
--- Social buttons
+--// Social Buttons
 local function createSocialBtn(xScale, text, color3, link, iconAsset)
-    local btn = Instance.new("TextButton", hubGui)
+    local btn = Instance.new("TextButton", hubFrame)
     btn.Size = UDim2.new(0, 220, 0, 54)
-    btn.Position = UDim2.new(xScale, -110, 0.9, 0)
+    btn.Position = UDim2.new(xScale, -110, 0.85, 0)
     btn.BackgroundColor3 = Color3.fromRGB(10,10,10)
-    btn.BorderSizePixel = 0
-    btn.Text = ""
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 20
+    btn.TextColor3 = color3
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.Text = "   " .. text
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0,14)
 
     local stroke = Instance.new("UIStroke", btn)
@@ -280,20 +125,20 @@ local function createSocialBtn(xScale, text, color3, link, iconAsset)
     icon.BackgroundTransparency = 1
     icon.Image = iconAsset
 
-    local lbl = Instance.new("TextLabel", btn)
-    lbl.Size = UDim2.new(1,-70,1,0)
-    lbl.Position = UDim2.new(0,60,0,0)
-    lbl.BackgroundTransparency = 1
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextSize = 20
-    lbl.TextColor3 = color3
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Text = text
-
     btn.MouseButton1Click:Connect(function()
-        openLink(link)
+        if setclipboard then
+            setclipboard(link)
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "🌐 Link Copied";
+                Text = "Đã sao chép: " .. text;
+                Duration = 4;
+            })
+        end
     end)
 end
 
 createSocialBtn(0.25, "Join Discord", Color3.fromRGB(88,101,242), "https://discord.gg/fkDMHngGCk", "rbxassetid://6031075938")
-createSocialBtn(0.75, "Subscribe", Color3.fromRGB(255,0,0), "https://www.youtube.com/@user-qe3dv7iy2j", "rbxassetid://6031075939")
+createSocialBtn(0.75, "Subscribe YouTube", Color3.fromRGB(255,0,0), "https://www.youtube.com/@user-qe3dv7iy2j", "rbxassetid://6031075939")
+
+--// Script chính tự chạy khi mở Hub
+loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
