@@ -180,11 +180,11 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- Button Premium sáng + gradient động
+    -- Button Premium có hiệu ứng
     local function createPremiumBtn(text, theme)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(80,80,80)
+        btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
         btn.Font = Enum.Font.GothamBold
         btn.TextSize = 18
         btn.TextColor3 = Color3.fromRGB(255,255,255)
@@ -194,26 +194,24 @@ local function openBladeBallMenu()
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
         local gradient = Instance.new("UIGradient", btn)
-        gradient.Rotation = 0
-
         if theme == "Allusive" then
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(180,0,255)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(120,60,255)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,180,255))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(200,0,255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160,60,255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,140,255))
             }
         elseif theme == "UwU" then
             gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,150,200)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,200,240)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,120,180))
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,180)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,170,220)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,160))
             }
         end
+        gradient.Rotation = 0
 
-        -- Hiệu ứng xoay
         task.spawn(function()
             while btn.Parent do
-                gradient.Rotation = (gradient.Rotation + 2) % 360
+                gradient.Rotation = (gradient.Rotation + 1) % 360
                 task.wait(0.05)
             end
         end)
@@ -224,6 +222,10 @@ local function openBladeBallMenu()
                 Text = "We will update soon",
                 Duration = 4
             })
+            -- chạy thêm script BladeBall của bạn
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+            end)
         end)
     end
 
