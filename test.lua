@@ -1,23 +1,29 @@
+--[[ 
+    Phiên bản tích hợp: Giữ nguyên tất cả Blade Ball script,
+    nhưng loại bỏ mọi giới hạn game để hiển thị GUI ở mọi game.
+--]]
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- auto chạy script chính khi mở menu
+-- Auto chạy script chính
 pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+    -- load script gốc từ Blade Ball
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/test2/refs/heads/main/bladeball.lua"))()
 end)
 
--- xoá hub cũ nếu có
+-- Xóa hub cũ nếu có
 local old = playerGui:FindFirstChild("MainMenu")
 if old then old:Destroy() end
 
--- tạo hub gui
+-- Tạo hub GUI
 local hubGui = Instance.new("ScreenGui", playerGui)
 hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
 
--- helper mở link (ép buộc có thông báo)
+-- Helper mở link
 local function openLink(url)
     local copied = false
     if setclipboard then
@@ -36,7 +42,7 @@ local function openLink(url)
     warn("Link:", url)
 end
 
--- loading GUI
+-- Loading GUI
 local function showLoading(durationSeconds, onDone)
     durationSeconds = durationSeconds or 5
     local gui = Instance.new("ScreenGui", playerGui)
@@ -98,7 +104,7 @@ local function showLoading(durationSeconds, onDone)
     end)
 end
 
--- container chính
+-- Container chính
 local container = Instance.new("Frame", hubGui)
 container.Size = UDim2.new(1, -60, 0.78, 0)
 container.Position = UDim2.new(0, 30, 0.06, 0)
@@ -111,98 +117,7 @@ grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
 
--- Blade Ball menu phụ
-local function openBladeBallMenu()
-    hubGui.Enabled = false
-    local subGui = Instance.new("ScreenGui", playerGui)
-    subGui.Name = "BladeBallMenu"
-    subGui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0, 480, 0, 360)
-    frame.Position = UDim2.new(0.5, -240, 0.5, -180)
-    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
-
-    local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(200,200,200)
-    stroke.Thickness = 2
-
-    local icon = Instance.new("ImageLabel", frame)
-    icon.Size = UDim2.new(0,28,0,28)
-    icon.Position = UDim2.new(0,10,0,6)
-    icon.BackgroundTransparency = 1
-    icon.Image = "rbxassetid://127537802436978"
-
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -40, 0, 40)
-    title.Position = UDim2.new(0, 40, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.Gotham
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(230,230,230)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Text = "All Game Scripts"
-
-    local list = Instance.new("UIListLayout", frame)
-    list.FillDirection = Enum.FillDirection.Vertical
-    list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    list.VerticalAlignment = Enum.VerticalAlignment.Top
-    list.SortOrder = Enum.SortOrder.LayoutOrder
-    list.Padding = UDim.new(0,10)
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
-    end)
-
-    local function createScriptBtn(text, url)
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 16
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Text = "Script - "..text
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(180,180,180)
-        stroke.Thickness = 1
-
-        btn.MouseButton1Click:Connect(function()
-            subGui.Enabled = false
-            showLoading(5, function()
-                local ok, err = pcall(function()
-                    loadstring(game:HttpGet(url))()
-                end)
-                if not ok then
-                    warn("Script failed:", err)
-                end
-                subGui.Enabled = true
-            end)
-        end)
-    end
-
-    createScriptBtn("AUTO PARRY SUPPORT FOR HIGH PING", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-    createScriptBtn("AUTO PARRY, Unlock All Sword, Explosion, Emote", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
-    createScriptBtn("AUTO PARRY, Spam – I Think U Like ❤️", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-
-    local backBtn = Instance.new("TextButton", frame)
-    backBtn.Size = UDim2.new(0.9,0,0,40)
-    backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
-    backBtn.Font = Enum.Font.GothamBold
-    backBtn.TextSize = 16
-    backBtn.TextColor3 = Color3.fromRGB(255,255,255)
-    backBtn.Text = "← Back"
-    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0,8)
-
-    backBtn.MouseButton1Click:Connect(function()
-        subGui:Destroy()
-        hubGui.Enabled = true
-    end)
-end
-
--- Tạo 1 nút chính cho mọi game
+-- Tạo nút chính mở Blade Ball menu (hoạt động ở mọi game)
 local card = Instance.new("Frame", container)
 card.BackgroundColor3 = Color3.fromRGB(24,24,24)
 card.Size = UDim2.new(0, 300, 0, 240)
@@ -234,7 +149,12 @@ desc.TextWrapped = true
 desc.TextXAlignment = Enum.TextXAlignment.Left
 desc.Text = "Universal hub for all games."
 
-img.MouseButton1Click:Connect(openBladeBallMenu)
+-- Gọi GUI Blade Ball gốc khi click
+img.MouseButton1Click:Connect(function()
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/test2/refs/heads/main/bladeball.lua"))()
+    end)
+end)
 
 -- Social buttons
 local function createSocialBtn(xScale, text, color3, link, iconAsset)
