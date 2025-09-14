@@ -1,4 +1,3 @@
--- // Game Hub Full Script //
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -20,23 +19,23 @@ hubGui.IgnoreGuiInset = true
 
 -- helper mở link (executor hoặc copy link)
 local function openLink(url)
-    if typeof(openbrowser) == "function" then
+    if type(openbrowser) == "function" then
         pcall(openbrowser, url)
         return
     end
-    if syn and typeof(syn.request) == "function" then
+    if type(syn) == "table" and type(syn.request) == "function" then
         pcall(syn.request, {Url = url, Method = "GET"})
         return
     end
-    if typeof(request) == "function" then
+    if type(request) == "function" then
         pcall(request, {Url = url, Method = "GET"})
         return
     end
     if setclipboard then
-        setclipboard(url)
+        pcall(setclipboard, url)
         game.StarterGui:SetCore("SendNotification", {
             Title = "Link copied",
-            Text = "Đã sao chép link, hãy dán vào trình duyệt để mở.",
+            Text = "Đã sao chép link, dán vào trình duyệt để mở.",
             Duration = 4
         })
     end
@@ -55,6 +54,10 @@ local function showLoading(durationSeconds, onDone)
     frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = Color3.fromRGB(0, 200, 0)
+    stroke.Thickness = 2
 
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1, -20, 0.45, 0)
@@ -85,9 +88,9 @@ local function showLoading(durationSeconds, onDone)
         "Loading GUI components...",
         "Almost ready — hold on..."
     }
-
     local steps = 100
     local stepTime = durationSeconds / steps
+
     task.spawn(function()
         for i = 1, steps do
             local pct = i/steps
@@ -116,60 +119,72 @@ grid.FillDirectionMaxCells = 4
 -- Blade Ball menu phụ
 local function openBladeBallMenu()
     hubGui.Enabled = false
-
     local subGui = Instance.new("ScreenGui", playerGui)
     subGui.Name = "BladeBallMenu"
     subGui.ResetOnSpawn = false
 
     local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0, 480, 0, 360)
-    frame.Position = UDim2.new(0.5, -240, 0.5, -180)
+    frame.Size = UDim2.new(0, 460, 0, 360)
+    frame.Position = UDim2.new(0.5, -230, 0.5, -180)
     frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
+
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = Color3.fromRGB(0, 255, 0)
+    stroke.Thickness = 3
 
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1,0,0,40)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
     title.TextSize = 22
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.Text = "⚔️ Blade Ball Scripts"
+    title.TextColor3 = Color3.fromRGB(0,255,0)
+    title.Text = "Blade Ball Scripts"
+    title.Parent = frame
 
     local list = Instance.new("UIListLayout", frame)
-    list.Padding = UDim.new(0,12)
+    list.Padding = UDim.new(0,10)
     list.FillDirection = Enum.FillDirection.Vertical
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
+    list.Padding = UDim.new(0,10)
+    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        frame.Size = UDim2.new(0,460,0,list.AbsoluteContentSize.Y+60)
+    end)
 
     local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,42)
+        btn.Size = UDim2.new(0.9,0,0,50)
         btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
         btn.Font = Enum.Font.GothamBold
         btn.TextSize = 16
         btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Text = "Script - " .. text
+        btn.Text = "Script – "..text.." 👇"
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
         local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(0,255,120)
+        stroke.Color = Color3.fromRGB(0,255,0)
         stroke.Thickness = 2
 
         btn.MouseButton1Click:Connect(function()
-            subGui:Destroy()
+            subGui.Enabled = false
             showLoading(5, function()
-                pcall(function()
+                local ok, err = pcall(function()
                     loadstring(game:HttpGet(url))()
                 end)
+                if not ok then
+                    warn("BladeBall script failed:", err)
+                end
+                subGui.Enabled = true
             end)
         end)
     end
 
-    createScriptBtn("BLADE BALL AUTO PARRY SUPPORT FOR HIGH PING👇", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-    createScriptBtn("BLADE BALL AUTO PARRY, UNLOCK ALL SWORD, EXPLOSION, EMOTE👇", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
-    createScriptBtn("BLADE BALL AUTO PARRY, SPAM ❤️👇", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
+    createScriptBtn("BLADE BALL AUTO PARRY SUPPORT FOR HIGH PING", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
+    createScriptBtn("AUTO PARRY, Unlock All Sword, Explosion, Emote", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
+    createScriptBtn("AUTO PARRY, Spam – I Think U Like ❤️", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
 
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
@@ -188,10 +203,36 @@ end
 
 -- danh sách game
 local games = {
-    {name = "Pet Simulator 99", desc = "Script Auto Farm, Dupe Pets, Unlock Areas...", img = "rbxassetid://103879354899468", openFn = function() end},
-    {name = "Grow a Garden", desc = "Script Auto Plant, Auto Sell, Auto Upgrade...", img = "rbxassetid://110811575269598", openFn = function() end},
-    {name = "Murder Mystery 2", desc = "Script ESP, Auto Farm, Knife Aura...", img = "rbxassetid://120257957010430", openFn = function() end},
-    {name = "Blade Ball", desc = "Auto Parry no miss, Changer Skin, Dupe...", img = "rbxassetid://127537802436978", openFn = openBladeBallMenu}
+    {
+        name = "Pet Simulator 99",
+        desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
+        img = "rbxassetid://103879354899468",
+        openFn = function()
+            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="Chưa gắn script!", Duration=3})
+        end
+    },
+    {
+        name = "Grow a Garden",
+        desc = "Script Auto Plant, Auto Sell, Auto Upgrade...",
+        img = "rbxassetid://110811575269598",
+        openFn = function()
+            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="Chưa gắn script!", Duration=3})
+        end
+    },
+    {
+        name = "Murder Mystery 2",
+        desc = "Script ESP, Auto Farm, Knife Aura...",
+        img = "rbxassetid://120257957010430",
+        openFn = function()
+            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="Chưa gắn script!", Duration=3})
+        end
+    },
+    {
+        name = "Blade Ball",
+        desc = "Auto Parry no miss, Changer Skin, Dupe...",
+        img = "rbxassetid://127537802436978",
+        openFn = openBladeBallMenu
+    }
 }
 
 for _, info in ipairs(games) do
