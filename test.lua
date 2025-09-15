@@ -151,7 +151,6 @@ local function openBladeBallMenu()
         frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
     end)
 
-    -- Button thường
     local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
@@ -180,7 +179,6 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- Button Premium có hiệu ứng
     local function createPremiumBtn(text, theme)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
@@ -222,14 +220,12 @@ local function openBladeBallMenu()
                 Text = "We will update soon",
                 Duration = 4
             })
-            -- chạy thêm script BladeBall của bạn
             pcall(function()
                 loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
             end)
         end)
     end
 
-    -- Tạo các script
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
@@ -251,7 +247,7 @@ local function openBladeBallMenu()
     end)
 end
 
--- danh sách game
+-- danh sách game + gui bổ sung
 local games = {
     {
         name = "Pet Simulator 99",
@@ -283,22 +279,20 @@ local games = {
         img = "rbxassetid://127537802436978",
         openFn = openBladeBallMenu
     },
-    -- Thêm GUI YouTube
-    {
-        name = "YouTube",
-        desc = "My YouTube channel has almost 3k subscribers. Check it out!",
-        img = "rbxassetid://6031075939", -- icon YouTube
-        openFn = function()
-            openLink("https://www.youtube.com/@user-qe3dv7iy2j")
-        end
-    },
-    -- Thêm GUI Discord
     {
         name = "Discord",
-        desc = "Join my Discord group for more scripts and updates!",
-        img = "rbxassetid://6031075938", -- icon Discord
+        desc = "Join our Discord group for updates and exclusive scripts!",
+        img = "rbxassetid://80637427855653",
         openFn = function()
             openLink("https://discord.gg/fkDMHngGCk")
+        end
+    },
+    {
+        name = "YouTube",
+        desc = "Subscribe to my channel with almost 3k subs for more scripts!",
+        img = "rbxassetid://95429734677601",
+        openFn = function()
+            openLink("https://www.youtube.com/@user-qe3dv7iy2j")
         end
     }
 }
@@ -376,13 +370,12 @@ end
 createSocialBtn(0.25, "Join Discord", Color3.fromRGB(88,101,242), "https://discord.gg/fkDMHngGCk", "rbxassetid://6031075938")
 createSocialBtn(0.75, "Subscribe", Color3.fromRGB(255,0,0), "https://www.youtube.com/@user-qe3dv7iy2j", "rbxassetid://6031075939")
 
--- Thêm thông báo ở cuối
-local infoLabel = Instance.new("TextLabel", hubGui)
-infoLabel.Size = UDim2.new(1, 0, 0, 30)
-infoLabel.Position = UDim2.new(0, 0, 0.85, 0)
-infoLabel.BackgroundTransparency = 1
-infoLabel.Font = Enum.Font.GothamBold
-infoLabel.TextSize = 18
-infoLabel.TextColor3 = Color3.fromRGB(255,255,0)
-infoLabel.Text = "If you want more game scripts, please Subscribe and Join Discord!"
-infoLabel.TextXAlignment = Enum.TextXAlignment.Center
+-- Thông báo cuối cùng
+local note = Instance.new("TextLabel", hubGui)
+note.Size = UDim2.new(1,0,0,30)
+note.Position = UDim2.new(0,0,0.85,0)
+note.BackgroundTransparency = 1
+note.Font = Enum.Font.GothamBold
+note.TextSize = 18
+note.TextColor3 = Color3.fromRGB(255,255,100)
+note.Text = "If you want scripts for other games, please subscribe to the channel and join the Discord group!"
