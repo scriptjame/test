@@ -17,7 +17,7 @@ hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
 
--- helper mở link
+-- helper mở link (copy link + thông báo)
 local function openLink(url)
     local copied = false
     if setclipboard then
@@ -235,14 +235,14 @@ note.TextSize = 18
 note.TextColor3 = Color3.fromRGB(255,255,100)
 note.Text = "If you want scripts for other games, subscribe + join Discord!"
 
--- Nút ẩn/hiện hub (draggable)
+-- Nút ẩn/hiện hub (icon tròn, dễ thấy, kéo được)
 local toggleBtn = Instance.new("TextButton", hubGui)
-toggleBtn.Size = UDim2.new(0,40,0,40)
-toggleBtn.Position = UDim2.new(0,10,0.5,-20)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-toggleBtn.Text = "≡"
+toggleBtn.Size = UDim2.new(0,45,0,45)
+toggleBtn.Position = UDim2.new(0,15,1,-70) -- góc dưới trái
+toggleBtn.BackgroundColor3 = Color3.fromRGB(0,120,200)
+toggleBtn.Text = "👁"
 toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.TextSize = 20
+toggleBtn.TextSize = 22
 toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 
@@ -272,6 +272,7 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
+-- Ẩn/hiện menu + note vàng
 toggleBtn.MouseButton1Click:Connect(function()
     container.Visible = not container.Visible
     note.Visible = container.Visible
