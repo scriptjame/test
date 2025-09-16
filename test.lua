@@ -2,11 +2,10 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- chạy script chính ngay khi mở menu
-local ok, err = pcall(function()
+-- auto chạy script chính khi mở menu
+pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
-if not ok then warn("⚠️ Script chính lỗi:", err) end
 
 -- xoá hub cũ nếu có
 local old = playerGui:FindFirstChild("MainMenu")
