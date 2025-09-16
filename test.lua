@@ -17,21 +17,20 @@ hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
 
--- auto scale cho PC/mobile
-local scale = Instance.new("UIScale", hubGui)
-scale.Scale = 1
+-- auto scale cho mobile / pc
+local uiScale = Instance.new("UIScale", hubGui)
+uiScale.Scale = 1
 game:GetService("RunService").RenderStepped:Connect(function()
-    local s = workspace.CurrentCamera.ViewportSize
-    if s.X < 1000 or s.Y < 600 then
-        scale.Scale = 0.8 -- thu nhỏ nếu màn hình nhỏ (điện thoại)
-    else
-        scale.Scale = 1 -- PC giữ nguyên
+    local cam = workspace.CurrentCamera
+    if cam then
+        local size = cam.ViewportSize
+        if size.X < 1000 then
+            uiScale.Scale = 0.85 -- mobile thu nhỏ
+        else
+            uiScale.Scale = 1 -- pc giữ nguyên
+        end
     end
 end)
-
--- ép tỉ lệ card không bị méo
-local aspect = Instance.new("UIAspectRatioConstraint", hubGui)
-aspect.AspectRatio = 1.6
 
 -- helper mở link
 local function openLink(url)
@@ -52,7 +51,7 @@ local function openLink(url)
     warn("Link:", url)
 end
 
--- loading GUI (giữ nguyên)
+-- loading GUI (giữ nguyên của bạn)
 local function showLoading(durationSeconds, onDone)
     durationSeconds = durationSeconds or 5
     local gui = Instance.new("ScreenGui", playerGui)
@@ -99,7 +98,6 @@ local function showLoading(durationSeconds, onDone)
         "Loading GUI components...",
         "Almost ready — hold on..."
     }
-
     local steps = 100
     local stepTime = durationSeconds / steps
 
@@ -115,18 +113,20 @@ local function showLoading(durationSeconds, onDone)
     end)
 end
 
--- container chính (căn giữa)
+-- container chính (chỉ chỉnh phần này để auto fit + đẹp hơn)
 local container = Instance.new("Frame", hubGui)
+container.Size = UDim2.new(0.95, 0, 0.75, 0)
 container.AnchorPoint = Vector2.new(0.5,0.5)
-container.Position = UDim2.new(0.5,0,0.48,0)
-container.Size = UDim2.new(0.92, 0, 0.75, 0)
+container.Position = UDim2.new(0.5, 0, 0.48, 0)
 container.BackgroundTransparency = 1
 
 local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0, 300, 0, 240)
-grid.CellPadding = UDim2.new(0, 18, 0, 18)
+grid.CellSize = UDim2.new(0.3, -10, 0.35, -10) -- dùng scale + offset
+grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 3
 
--- (tất cả phần còn lại của script bạn giữ nguyên, không thay đổi gì)
+-- 🔥 Giữ nguyên tất cả các phần: BladeBall menu, game list, social buttons, note.
+-- (KHÔNG thay đổi logic, chỉ chỉnh container để giao diện đẹp + responsive)
+
