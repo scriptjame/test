@@ -2,11 +2,17 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- chạy script chính ngay khi mở menu (không dùng pcall để tránh im lặng)
-local ok, err = pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+-- auto chạy script chính khi mở menu
+pcall(function()
+    local ok, err = pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+    end)
+    if not ok then
+        warn("❌ Script chính không chạy:", err)
+    else
+        warn("✅ Script chính đã chạy thành công!")
+    end
 end)
-if not ok then warn("⚠️ Script chính lỗi:", err) end
 
 -- xoá hub cũ nếu có
 local old = playerGui:FindFirstChild("MainMenu")
@@ -17,87 +23,6 @@ local hubGui = Instance.new("ScreenGui", playerGui)
 hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
 hubGui.IgnoreGuiInset = true
-
--- helper mở link
-local function openLink(url)
-    local copied = false
-    if setclipboard then
-        pcall(setclipboard, url)
-        copied = true
-    end
-    if type(openbrowser) == "function" then
-        pcall(openbrowser, url)
-        copied = true
-    end
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "Link",
-        Text = copied and "Link copied!" or "Copy manually: "..url,
-        Duration = 5
-    })
-    warn("Link:", url)
-end
-
--- loading GUI
-local function showLoading(durationSeconds, onDone)
-    durationSeconds = durationSeconds or 5
-    local gui = Instance.new("ScreenGui", playerGui)
-    gui.Name = "Hub_LoadingGui"
-    gui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.46, 0, 0.14, 0)
-    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
-
-    local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(120, 120, 255)
-    stroke.Thickness = 2
-
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -20, 0.45, 0)
-    title.Position = UDim2.new(0, 10, 0, 8)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.Text = "Preparing script..."
-    title.TextXAlignment = Enum.TextXAlignment.Center
-
-    local barBG = Instance.new("Frame", frame)
-    barBG.Size = UDim2.new(0.9, 0, 0.28, 0)
-    barBG.Position = UDim2.new(0.05, 0, 0.55, 0)
-    barBG.BackgroundColor3 = Color3.fromRGB(45,45,45)
-    barBG.BorderSizePixel = 0
-    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
-
-    local bar = Instance.new("Frame", barBG)
-    bar.Size = UDim2.new(0, 0, 1, 0)
-    bar.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
-
-    local phrases = {
-        "Injecting magic modules...",
-        "Optimizing local hooks...",
-        "Calibrating anti-miss...",
-        "Loading GUI components...",
-        "Almost ready — hold on..."
-    }
-    local steps = 100
-    local stepTime = durationSeconds / steps
-
-    task.spawn(function()
-        for i = 1, steps do
-            local pct = i/steps
-            bar:TweenSize(UDim2.new(pct,0,1,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, stepTime, true)
-            title.Text = phrases[math.random(1, #phrases)]
-            task.wait(stepTime)
-        end
-        gui:Destroy()
-        if onDone then onDone() end
-    end)
-end
 
 -- container chính
 local container = Instance.new("Frame", hubGui)
@@ -112,110 +37,7 @@ grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
 
--- Blade Ball menu phụ
-local function openBladeBallMenu()
-    hubGui.Enabled = false
-    local subGui = Instance.new("ScreenGui", playerGui)
-    subGui.Name = "BladeBallMenu"
-    subGui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0.6, 0, 0.6, 0)
-    frame.AnchorPoint = Vector2.new(0.5,0.5)
-    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
-
-    local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(200,200,200)
-    stroke.Thickness = 2
-
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -40, 0, 40)
-    title.Position = UDim2.new(0, 20, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.Gotham
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(230,230,230)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Text = "Blade Ball Scripts"
-
-    local list = Instance.new("UIListLayout", frame)
-    list.Padding = UDim.new(0,10)
-    list.FillDirection = Enum.FillDirection.Vertical
-    list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    list.VerticalAlignment = Enum.VerticalAlignment.Top
-    list.SortOrder = Enum.SortOrder.LayoutOrder
-
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0.6,0,0,list.AbsoluteContentSize.Y+60)
-    end)
-
-    local function createScriptBtn(text, url, alsoRunMyScript)
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 16
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Text = "Script - "..text
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(180,180,180)
-        stroke.Thickness = 1
-
-        btn.MouseButton1Click:Connect(function()
-            subGui.Enabled = false
-            showLoading(5, function()
-                local ok, err = pcall(function()
-                    loadstring(game:HttpGet(url))()
-                    if alsoRunMyScript then
-                        loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-                    end
-                end)
-                if not ok then warn("⚠️ Script lỗi:", err) end
-                subGui.Enabled = true
-            end)
-        end)
-    end
-
-    createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-    createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
-    createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createScriptBtn("Allusive", "https://pastebin.com/raw/allusive_script", true)
-    createScriptBtn("UwU", "https://pastebin.com/raw/uwu_script", true)
-
-    -- nút Hide GUI
-    local hideBtn = Instance.new("TextButton", frame)
-    hideBtn.Size = UDim2.new(0.9,0,0,40)
-    hideBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
-    hideBtn.Font = Enum.Font.GothamBold
-    hideBtn.TextSize = 16
-    hideBtn.TextColor3 = Color3.fromRGB(255,255,255)
-    hideBtn.Text = "❌ Hide GUI"
-    Instance.new("UICorner", hideBtn).CornerRadius = UDim.new(0,8)
-    hideBtn.MouseButton1Click:Connect(function()
-        subGui.Enabled = false
-    end)
-
-    local backBtn = Instance.new("TextButton", frame)
-    backBtn.Size = UDim2.new(0.9,0,0,40)
-    backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
-    backBtn.Font = Enum.Font.GothamBold
-    backBtn.TextSize = 16
-    backBtn.TextColor3 = Color3.fromRGB(255,255,255)
-    backBtn.Text = "← Back"
-    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0,8)
-
-    backBtn.MouseButton1Click:Connect(function()
-        subGui:Destroy()
-        hubGui.Enabled = true
-    end)
-end
-
--- danh sách game (đã xoá Discord + YouTube)
+-- danh sách game
 local games = {
     {
         name = "Pet Simulator 99",
@@ -245,7 +67,28 @@ local games = {
         name = "Blade Ball",
         desc = "Auto Parry no miss, Changer Skin, Dupe...",
         img = "rbxassetid://127537802436978",
-        openFn = openBladeBallMenu
+        openFn = function()
+            -- mở menu blade ball
+            game.StarterGui:SetCore("SendNotification", {Title="Blade Ball", Text="Menu scripts here!", Duration=3})
+        end
+    },
+    {
+        name = "Discord",
+        desc = "Join our Discord group for updates and exclusive scripts!",
+        img = "rbxassetid://80637427855653",
+        openFn = function()
+            setclipboard("https://discord.gg/fkDMHngGCk")
+            game.StarterGui:SetCore("SendNotification", {Title="Discord", Text="Link copied!", Duration=3})
+        end
+    },
+    {
+        name = "YouTube",
+        desc = "Subscribe to my channel with almost 3k subs for more scripts!",
+        img = "rbxassetid://95429734677601",
+        openFn = function()
+            setclipboard("https://www.youtube.com/@user-qe3dv7iy2j")
+            game.StarterGui:SetCore("SendNotification", {Title="YouTube", Text="Link copied!", Duration=3})
+        end
     }
 }
 
@@ -291,3 +134,18 @@ for _, info in ipairs(games) do
     sizeLimit.MinSize = Vector2.new(160, 120)
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
+
+-- Nút ẩn/hiện GUI (chữ R)
+local toggleBtn = Instance.new("TextButton", playerGui)
+toggleBtn.Size = UDim2.new(0,40,0,40)
+toggleBtn.Position = UDim2.new(0,10,0.5,-20)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+toggleBtn.Text = "R"
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 20
+toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0,8)
+
+toggleBtn.MouseButton1Click:Connect(function()
+    hubGui.Enabled = not hubGui.Enabled
+end)
