@@ -2,10 +2,11 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- auto chạy script chính khi mở menu
-pcall(function()
+-- chạy script chính ngay khi mở menu (không dùng pcall để tránh im lặng)
+local ok, err = pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
+if not ok then warn("⚠️ Script chính lỗi:", err) end
 
 -- xoá hub cũ nếu có
 local old = playerGui:FindFirstChild("MainMenu")
@@ -30,7 +31,7 @@ local function openLink(url)
     end
     game.StarterGui:SetCore("SendNotification", {
         Title = "Link",
-        Text = copied and "Link copied, paste it in your browser!" or "Cannot copy, copy manually: "..url,
+        Text = copied and "Link copied!" or "Copy manually: "..url,
         Duration = 5
     })
     warn("Link:", url)
@@ -105,7 +106,7 @@ container.Position = UDim2.new(0, 30, 0.06, 0)
 container.BackgroundTransparency = 1
 
 local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0.25, 0, 0.3, 0) -- dùng scale thay vì pixel để tự động co
+grid.CellSize = UDim2.new(0.25, 0, 0.3, 0)
 grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
@@ -119,7 +120,7 @@ local function openBladeBallMenu()
     subGui.ResetOnSpawn = false
 
     local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0.6, 0, 0.6, 0) -- scale để PC/Mobile đều vừa
+    frame.Size = UDim2.new(0.6, 0, 0.6, 0)
     frame.AnchorPoint = Vector2.new(0.5,0.5)
     frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
@@ -151,7 +152,7 @@ local function openBladeBallMenu()
         frame.Size = UDim2.new(0.6,0,0,list.AbsoluteContentSize.Y+60)
     end)
 
-    local function createScriptBtn(text, url)
+    local function createScriptBtn(text, url, alsoRunMyScript)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
         btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
@@ -170,58 +171,12 @@ local function openBladeBallMenu()
             showLoading(5, function()
                 local ok, err = pcall(function()
                     loadstring(game:HttpGet(url))()
+                    if alsoRunMyScript then
+                        loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+                    end
                 end)
-                if not ok then
-                    warn("BladeBall script failed:", err)
-                end
+                if not ok then warn("⚠️ Script lỗi:", err) end
                 subGui.Enabled = true
-            end)
-        end)
-    end
-
-    local function createPremiumBtn(text, theme)
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 18
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.TextStrokeTransparency = 0.2
-        btn.TextStrokeColor3 = Color3.fromRGB(0,0,0)
-        btn.Text = "Script - "..text
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        local gradient = Instance.new("UIGradient", btn)
-        if theme == "Allusive" then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(200,0,255)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160,60,255)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,140,255))
-            }
-        elseif theme == "UwU" then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,180)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,170,220)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,160))
-            }
-        end
-        gradient.Rotation = 0
-
-        task.spawn(function()
-            while btn.Parent do
-                gradient.Rotation = (gradient.Rotation + 1) % 360
-                task.wait(0.05)
-            end
-        end)
-
-        btn.MouseButton1Click:Connect(function()
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Coming Soon",
-                Text = "We will update soon",
-                Duration = 4
-            })
-            pcall(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
             end)
         end)
     end
@@ -229,8 +184,21 @@ local function openBladeBallMenu()
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createPremiumBtn("Allusive", "Allusive")
-    createPremiumBtn("UwU", "UwU")
+    createScriptBtn("Allusive", "https://pastebin.com/raw/allusive_script", true)
+    createScriptBtn("UwU", "https://pastebin.com/raw/uwu_script", true)
+
+    -- nút Hide GUI
+    local hideBtn = Instance.new("TextButton", frame)
+    hideBtn.Size = UDim2.new(0.9,0,0,40)
+    hideBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+    hideBtn.Font = Enum.Font.GothamBold
+    hideBtn.TextSize = 16
+    hideBtn.TextColor3 = Color3.fromRGB(255,255,255)
+    hideBtn.Text = "❌ Hide GUI"
+    Instance.new("UICorner", hideBtn).CornerRadius = UDim.new(0,8)
+    hideBtn.MouseButton1Click:Connect(function()
+        subGui.Enabled = false
+    end)
 
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
@@ -247,7 +215,7 @@ local function openBladeBallMenu()
     end)
 end
 
--- danh sách game + gui bổ sung
+-- danh sách game (đã xoá Discord + YouTube)
 local games = {
     {
         name = "Pet Simulator 99",
@@ -278,29 +246,13 @@ local games = {
         desc = "Auto Parry no miss, Changer Skin, Dupe...",
         img = "rbxassetid://127537802436978",
         openFn = openBladeBallMenu
-    },
-    {
-        name = "Discord",
-        desc = "Join our Discord group for updates and exclusive scripts!",
-        img = "rbxassetid://80637427855653",
-        openFn = function()
-            openLink("https://discord.gg/fkDMHngGCk")
-        end
-    },
-    {
-        name = "YouTube",
-        desc = "Subscribe to my channel with almost 3k subs for more scripts!",
-        img = "rbxassetid://95429734677601",
-        openFn = function()
-            openLink("https://www.youtube.com/@user-qe3dv7iy2j")
-        end
     }
 }
 
 for _, info in ipairs(games) do
     local card = Instance.new("Frame", container)
     card.BackgroundColor3 = Color3.fromRGB(24,24,24)
-    card.Size = UDim2.new(1, 0, 1, 0) -- UIGridLayout sẽ quyết định size
+    card.Size = UDim2.new(1, 0, 1, 0)
     card.ZIndex = 1
     Instance.new("UICorner", card).CornerRadius = UDim.new(0,10)
 
@@ -339,44 +291,3 @@ for _, info in ipairs(games) do
     sizeLimit.MinSize = Vector2.new(160, 120)
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
-
--- Social buttons
-local function createSocialBtn(xScale, text, color3, link, iconAsset)
-    local btn = Instance.new("TextButton", hubGui)
-    btn.AnchorPoint = Vector2.new(0.5,1)
-    btn.Size = UDim2.new(0.3, 0, 0.07, 0)
-    btn.Position = UDim2.new(xScale, 0, 1, -10)
-    btn.BackgroundColor3 = Color3.fromRGB(10,10,10)
-    btn.BorderSizePixel = 0
-    btn.Text = ""
-    btn.ZIndex = 10
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,14)
-
-    local stroke = Instance.new("UIStroke", btn)
-    stroke.Color = color3
-    stroke.Thickness = 3
-
-    local icon = Instance.new("ImageLabel", btn)
-    icon.Size = UDim2.new(0,36,0,36)
-    icon.Position = UDim2.new(0,12,0.5,-18)
-    icon.BackgroundTransparency = 1
-    icon.Image = iconAsset
-
-    local lbl = Instance.new("TextLabel", btn)
-    lbl.Size = UDim2.new(1,-70,1,0)
-    lbl.Position = UDim2.new(0,60,0,0)
-    lbl.BackgroundTransparency = 1
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextSize = 20
-    lbl.TextColor3 = color3
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Text = text
-
-    btn.MouseButton1Click:Connect(function()
-        openLink(link)
-    end)
-end
-
-createSocialBtn(0.25, "Join Discord", Color3.fromRGB(88,101,242), "https://discord.gg/fkDMHngGCk", "rbxassetid://6031075938")
-createSocialBtn(0.75, "Subscribe", Color3.fromRGB(255,0,0), "https://www.youtube.com/@user-qe3dv7iy2j", "rbxassetid://6031075939")
-
