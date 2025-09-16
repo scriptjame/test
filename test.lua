@@ -45,7 +45,8 @@ local function showLoading(durationSeconds, onDone)
 
     local frame = Instance.new("Frame", gui)
     frame.Size = UDim2.new(0.46, 0, 0.14, 0)
-    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
@@ -100,16 +101,20 @@ end
 
 -- container chính
 local container = Instance.new("Frame", hubGui)
-container.Size = UDim2.new(1, -60, 0.78, 0)
-container.Position = UDim2.new(0, 30, 0.06, 0)
+container.Size = UDim2.new(0.9, 0, 0.8, 0)
+container.Position = UDim2.new(0.5, 0, 0.5, 0)
+container.AnchorPoint = Vector2.new(0.5, 0.5)
 container.BackgroundTransparency = 1
 
 local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0, 300, 0, 240)
-grid.CellPadding = UDim2.new(0, 18, 0, 18)
+grid.CellSize = UDim2.new(0.45, 0, 0.28, 0)
+grid.CellPadding = UDim2.new(0.03, 0, 0.03, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
-grid.FillDirectionMaxCells = 4
+grid.FillDirectionMaxCells = 2
+
+local aspect = Instance.new("UIAspectRatioConstraint", container)
+aspect.AspectRatio = 1.3
 
 -- Blade Ball menu phụ
 local function openBladeBallMenu()
@@ -119,7 +124,7 @@ local function openBladeBallMenu()
     subGui.ResetOnSpawn = false
 
     local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0, 480, 0, 360)
+    frame.Size = UDim2.new(0.7, 0, 0.7, 0)
     frame.AnchorPoint = Vector2.new(0.5,0.5)
     frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
@@ -131,7 +136,7 @@ local function openBladeBallMenu()
     stroke.Thickness = 2
 
     local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -40, 0, 40)
+    title.Size = UDim2.new(1, -40, 0, 0.1)
     title.Position = UDim2.new(0, 20, 0, 0)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.Gotham
@@ -147,13 +152,9 @@ local function openBladeBallMenu()
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
 
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0,480,0,list.AbsoluteContentSize.Y+60)
-    end)
-
     local function createScriptBtn(text, url)
         local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
+        btn.Size = UDim2.new(0.9,0,0.08,0)
         btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
         btn.Font = Enum.Font.Gotham
         btn.TextSize = 16
@@ -179,63 +180,12 @@ local function openBladeBallMenu()
         end)
     end
 
-    local function createPremiumBtn(text, theme)
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
-        btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 18
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.TextStrokeTransparency = 0.2
-        btn.TextStrokeColor3 = Color3.fromRGB(0,0,0)
-        btn.Text = "Script - "..text
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        local gradient = Instance.new("UIGradient", btn)
-        if theme == "Allusive" then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(200,0,255)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160,60,255)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,140,255))
-            }
-        elseif theme == "UwU" then
-            gradient.Color = ColorSequence.new{
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,180)),
-                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,170,220)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,160))
-            }
-        end
-        gradient.Rotation = 0
-
-        task.spawn(function()
-            while btn.Parent do
-                gradient.Rotation = (gradient.Rotation + 1) % 360
-                task.wait(0.05)
-            end
-        end)
-
-        btn.MouseButton1Click:Connect(function()
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Coming Soon",
-                Text = "We will update soon",
-                Duration = 4
-            })
-            pcall(function()
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-            end)
-        end)
-    end
-
-    -- Menu scripts
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createScriptBtn("PawsThePaw", "https://raw.githubusercontent.com/PawsThePaw/Scripts/main/Loader.lua")
-    createPremiumBtn("Allusive", "Allusive")
-    createPremiumBtn("UwU", "UwU")
 
     local backBtn = Instance.new("TextButton", frame)
-    backBtn.Size = UDim2.new(0.9,0,0,40)
+    backBtn.Size = UDim2.new(0.9,0,0.08,0)
     backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
     backBtn.Font = Enum.Font.GothamBold
     backBtn.TextSize = 16
@@ -249,7 +199,7 @@ local function openBladeBallMenu()
     end)
 end
 
--- danh sách game + gui bổ sung
+-- danh sách game
 local games = {
     {
         name = "Pet Simulator 99",
@@ -291,7 +241,7 @@ local games = {
     },
     {
         name = "YouTube",
-        desc = "Subscribe to my channel with almost 3k subs for more scripts!",
+        desc = "Subscribe to my channel for more scripts!",
         img = "rbxassetid://95429734677601",
         openFn = function()
             openLink("https://www.youtube.com/@user-qe3dv7iy2j")
@@ -302,7 +252,7 @@ local games = {
 for _, info in ipairs(games) do
     local card = Instance.new("Frame", container)
     card.BackgroundColor3 = Color3.fromRGB(24,24,24)
-    card.Size = UDim2.new(0, 300, 0, 240)
+    card.Size = UDim2.new(1, 0, 1, 0)
     Instance.new("UICorner", card).CornerRadius = UDim.new(0,10)
 
     local img = Instance.new("ImageButton", card)
@@ -321,7 +271,7 @@ for _, info in ipairs(games) do
     title.Text = info.name
 
     local desc = Instance.new("TextLabel", card)
-    desc.Size = UDim2.new(1,-18,0,54)
+    desc.Size = UDim2.new(1,-18,0.25,0)
     desc.Position = UDim2.new(0,10,0.74,0)
     desc.BackgroundTransparency = 1
     desc.Font = Enum.Font.Gotham
@@ -337,8 +287,9 @@ end
 -- Social buttons
 local function createSocialBtn(xScale, text, color3, link, iconAsset)
     local btn = Instance.new("TextButton", hubGui)
-    btn.Size = UDim2.new(0, 220, 0, 54)
-    btn.Position = UDim2.new(xScale, -110, 0.9, 0)
+    btn.Size = UDim2.new(0.35, 0, 0.08, 0)
+    btn.Position = UDim2.new(xScale, -110, 0.92, 0)
+    btn.AnchorPoint = Vector2.new(0.5,0.5)
     btn.BackgroundColor3 = Color3.fromRGB(10,10,10)
     btn.BorderSizePixel = 0
     btn.Text = ""
@@ -349,14 +300,14 @@ local function createSocialBtn(xScale, text, color3, link, iconAsset)
     stroke.Thickness = 3
 
     local icon = Instance.new("ImageLabel", btn)
-    icon.Size = UDim2.new(0,36,0,36)
-    icon.Position = UDim2.new(0,12,0.5,-18)
+    icon.Size = UDim2.new(0.18,0,0.8,0)
+    icon.Position = UDim2.new(0.05,0,0.1,0)
     icon.BackgroundTransparency = 1
     icon.Image = iconAsset
 
     local lbl = Instance.new("TextLabel", btn)
-    lbl.Size = UDim2.new(1,-70,1,0)
-    lbl.Position = UDim2.new(0,60,0,0)
+    lbl.Size = UDim2.new(0.7,0,1,0)
+    lbl.Position = UDim2.new(0.25,0,0,0)
     lbl.BackgroundTransparency = 1
     lbl.Font = Enum.Font.GothamBold
     lbl.TextSize = 20
@@ -374,10 +325,10 @@ createSocialBtn(0.75, "Subscribe", Color3.fromRGB(255,0,0), "https://www.youtube
 
 -- Thông báo cuối cùng
 local note = Instance.new("TextLabel", hubGui)
-note.Size = UDim2.new(1,0,0,30)
+note.Size = UDim2.new(1,0,0.05,0)
 note.Position = UDim2.new(0,0,0.85,0)
 note.BackgroundTransparency = 1
 note.Font = Enum.Font.GothamBold
 note.TextSize = 18
 note.TextColor3 = Color3.fromRGB(255,255,100)
-note.Text = "If you want scripts for other games, please subscribe to the channel and join the Discord group!"
+note.Text = "If you want scripts for other games, please subscribe and join Discord!"
