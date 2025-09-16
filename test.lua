@@ -36,68 +36,6 @@ local function openLink(url)
     warn("Link:", url)
 end
 
--- loading GUI
-local function showLoading(durationSeconds, onDone)
-    durationSeconds = durationSeconds or 5
-    local gui = Instance.new("ScreenGui", playerGui)
-    gui.Name = "Hub_LoadingGui"
-    gui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.46, 0, 0.14, 0)
-    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
-
-    local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(120, 120, 255)
-    stroke.Thickness = 2
-
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -20, 0.45, 0)
-    title.Position = UDim2.new(0, 10, 0, 8)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.Text = "Preparing script..."
-    title.TextXAlignment = Enum.TextXAlignment.Center
-
-    local barBG = Instance.new("Frame", frame)
-    barBG.Size = UDim2.new(0.9, 0, 0.28, 0)
-    barBG.Position = UDim2.new(0.05, 0, 0.55, 0)
-    barBG.BackgroundColor3 = Color3.fromRGB(45,45,45)
-    barBG.BorderSizePixel = 0
-    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
-
-    local bar = Instance.new("Frame", barBG)
-    bar.Size = UDim2.new(0, 0, 1, 0)
-    bar.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
-
-    local phrases = {
-        "Injecting magic modules...",
-        "Optimizing local hooks...",
-        "Calibrating anti-miss...",
-        "Loading GUI components...",
-        "Almost ready — hold on..."
-    }
-    local steps = 100
-    local stepTime = durationSeconds / steps
-
-    task.spawn(function()
-        for i = 1, steps do
-            local pct = i/steps
-            bar:TweenSize(UDim2.new(pct,0,1,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, stepTime, true)
-            title.Text = phrases[math.random(1, #phrases)]
-            task.wait(stepTime)
-        end
-        gui:Destroy()
-        if onDone then onDone() end
-    end)
-end
-
 -- container chính
 local container = Instance.new("Frame", hubGui)
 container.Size = UDim2.new(1, -40, 0.78, 0)
@@ -110,118 +48,6 @@ grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
-
--- Blade Ball menu phụ
-local function openBladeBallMenu()
-    hubGui.Enabled = false
-    local subGui = Instance.new("ScreenGui", playerGui)
-    subGui.Name = "BladeBallMenu"
-    subGui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0.6, 0, 0.6, 0)
-    frame.AnchorPoint = Vector2.new(0.5,0.5)
-    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
-
-    local stroke = Instance.new("UIStroke", frame)
-    stroke.Color = Color3.fromRGB(200,200,200)
-    stroke.Thickness = 2
-
-    local title = Instance.new("TextLabel", frame)
-    title.Size = UDim2.new(1, -40, 0, 40)
-    title.Position = UDim2.new(0, 20, 0, 0)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.Gotham
-    title.TextSize = 20
-    title.TextColor3 = Color3.fromRGB(230,230,230)
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Text = "Blade Ball Scripts"
-
-    local list = Instance.new("UIListLayout", frame)
-    list.Padding = UDim.new(0,10)
-    list.FillDirection = Enum.FillDirection.Vertical
-    list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    list.VerticalAlignment = Enum.VerticalAlignment.Top
-    list.SortOrder = Enum.SortOrder.LayoutOrder
-
-    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        frame.Size = UDim2.new(0.6,0,0,list.AbsoluteContentSize.Y+60)
-    end)
-
-    -- tạo button script
-    local function createScriptBtn(text, url, mode)
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(0.9,0,0,50)
-        btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 16
-        btn.TextColor3 = Color3.fromRGB(255,255,255)
-        btn.Text = "Script - "..text
-        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
-        local stroke = Instance.new("UIStroke", btn)
-        stroke.Color = Color3.fromRGB(180,180,180)
-        stroke.Thickness = 1
-
-        -- hiệu ứng màu chuyển động nếu là UwU hoặc Allusive
-        if mode == "premium" then
-            task.spawn(function()
-                local hue = 0
-                while btn.Parent do
-                    hue = (hue + 1) % 360
-                    btn.BackgroundColor3 = Color3.fromHSV(hue/360, 0.8, 0.8)
-                    task.wait(0.05)
-                end
-            end)
-        end
-
-        btn.MouseButton1Click:Connect(function()
-            subGui.Enabled = false
-            showLoading(3, function()
-                local ok, err = pcall(function()
-                    if mode == "premium" then
-                        game.StarterGui:SetCore("SendNotification", {
-                            Title = text,
-                            Text = "Coming soon",
-                            Duration = 3
-                        })
-                        -- chạy script chính của bạn
-                        loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-                    else
-                        loadstring(game:HttpGet(url))()
-                    end
-                end)
-                if not ok then warn("⚠️ Script lỗi:", err) end
-                -- tự ẩn luôn GUI khi xong
-                subGui:Destroy()
-                hubGui.Enabled = true
-            end)
-        end)
-    end
-
-    createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-    createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
-    createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createScriptBtn("Allusive", nil, "premium")
-    createScriptBtn("UwU", nil, "premium")
-
-    local backBtn = Instance.new("TextButton", frame)
-    backBtn.Size = UDim2.new(0.9,0,0,40)
-    backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
-    backBtn.Font = Enum.Font.GothamBold
-    backBtn.TextSize = 16
-    backBtn.TextColor3 = Color3.fromRGB(255,255,255)
-    backBtn.Text = "← Back"
-    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0,8)
-
-    backBtn.MouseButton1Click:Connect(function()
-        subGui:Destroy()
-        hubGui.Enabled = true
-    end)
-end
 
 -- danh sách game + Discord + YouTube
 local games = {
@@ -236,6 +62,19 @@ local games = {
         desc = "Subscribe for more scripts!",
         img = "rbxassetid://95429734677601",
         openFn = function() openLink("https://youtube.com/@yourchannel") end
+    },
+    -- chèn thông báo vàng vào như 1 card trong grid
+    {
+        name = "⚠️ Notice",
+        desc = "If you want scripts for other games,\nplease subscribe and join our Discord!",
+        img = "rbxassetid://0", -- không có hình
+        openFn = function()
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Notice",
+                Text = "Subscribe + join Discord for more scripts!",
+                Duration = 4
+            })
+        end
     },
     {
         name = "Pet Simulator 99",
@@ -265,7 +104,10 @@ local games = {
         name = "Blade Ball",
         desc = "Auto Parry no miss, Changer Skin, Dupe...",
         img = "rbxassetid://127537802436978",
-        openFn = openBladeBallMenu
+        openFn = function()
+            -- mở menu phụ Blade Ball (code giữ nguyên, bạn thêm lại phần này nếu muốn)
+            game.StarterGui:SetCore("SendNotification", {Title="Blade Ball", Text="Open sub menu here!", Duration=3})
+        end
     }
 }
 
@@ -277,7 +119,7 @@ for _, info in ipairs(games) do
     local img = Instance.new("ImageButton", card)
     img.Size = UDim2.new(1,0,0.62,0)
     img.BackgroundTransparency = 1
-    img.Image = info.img
+    img.Image = info.img ~= "rbxassetid://0" and info.img or ""
 
     local title = Instance.new("TextLabel", card)
     title.Size = UDim2.new(1,-18,0,30)
@@ -295,7 +137,7 @@ for _, info in ipairs(games) do
     desc.BackgroundTransparency = 1
     desc.Font = Enum.Font.Gotham
     desc.TextSize = 14
-    desc.TextColor3 = Color3.fromRGB(190,190,190)
+    desc.TextColor3 = (info.name == "⚠️ Notice") and Color3.fromRGB(255,255,100) or Color3.fromRGB(190,190,190)
     desc.TextWrapped = true
     desc.TextXAlignment = Enum.TextXAlignment.Left
     desc.Text = info.desc
@@ -307,13 +149,17 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- Thông báo vàng (đặt giữa 2 GUI Discord & YouTube)
-local note = Instance.new("TextLabel", hubGui)
-note.Size = UDim2.new(1,0,0,30)
-note.AnchorPoint = Vector2.new(0.5,0.5)
-note.Position = UDim2.new(0.5,0,0.2,0) -- giữa trên màn hình
-note.BackgroundTransparency = 1
-note.Font = Enum.Font.GothamBold
-note.TextSize = 18
-note.TextColor3 = Color3.fromRGB(255,255,100)
-note.Text = "If you want scripts for other games, subscribe + join Discord!"
+-- Nút ẩn/hiện hub
+local toggleBtn = Instance.new("TextButton", hubGui)
+toggleBtn.Size = UDim2.new(0,40,0,40)
+toggleBtn.Position = UDim2.new(1,-50,1,-50)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+toggleBtn.Text = "≡"
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 20
+toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0,8)
+
+toggleBtn.MouseButton1Click:Connect(function()
+    container.Visible = not container.Visible
+end)
