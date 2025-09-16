@@ -151,7 +151,8 @@ local function openBladeBallMenu()
         frame.Size = UDim2.new(0.6,0,0,list.AbsoluteContentSize.Y+60)
     end)
 
-    local function createScriptBtn(text, url, alsoRunMyScript)
+    -- tạo button script
+    local function createScriptBtn(text, url, mode)
         local btn = Instance.new("TextButton", frame)
         btn.Size = UDim2.new(0.9,0,0,50)
         btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
@@ -165,17 +166,38 @@ local function openBladeBallMenu()
         stroke.Color = Color3.fromRGB(180,180,180)
         stroke.Thickness = 1
 
+        -- hiệu ứng màu chuyển động nếu là UwU hoặc Allusive
+        if mode == "premium" then
+            task.spawn(function()
+                local hue = 0
+                while btn.Parent do
+                    hue = (hue + 1) % 360
+                    btn.BackgroundColor3 = Color3.fromHSV(hue/360, 0.8, 0.8)
+                    task.wait(0.05)
+                end
+            end)
+        end
+
         btn.MouseButton1Click:Connect(function()
             subGui.Enabled = false
-            showLoading(5, function()
+            showLoading(3, function()
                 local ok, err = pcall(function()
-                    loadstring(game:HttpGet(url))()
-                    if alsoRunMyScript then
+                    if mode == "premium" then
+                        game.StarterGui:SetCore("SendNotification", {
+                            Title = text,
+                            Text = "Coming soon",
+                            Duration = 3
+                        })
+                        -- chạy script chính của bạn
                         loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+                    else
+                        loadstring(game:HttpGet(url))()
                     end
                 end)
                 if not ok then warn("⚠️ Script lỗi:", err) end
-                subGui.Enabled = true
+                -- tự ẩn luôn GUI khi xong
+                subGui:Destroy()
+                hubGui.Enabled = true
             end)
         end)
     end
@@ -183,8 +205,8 @@ local function openBladeBallMenu()
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-    createScriptBtn("Allusive", "https://pastebin.com/raw/allusive_script", true)
-    createScriptBtn("UwU", "https://pastebin.com/raw/uwu_script", true)
+    createScriptBtn("Allusive", nil, "premium")
+    createScriptBtn("UwU", nil, "premium")
 
     local backBtn = Instance.new("TextButton", frame)
     backBtn.Size = UDim2.new(0.9,0,0,40)
@@ -285,12 +307,13 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- Thông báo cuối cùng
+-- Thông báo vàng (đặt giữa 2 GUI Discord & YouTube)
 local note = Instance.new("TextLabel", hubGui)
 note.Size = UDim2.new(1,0,0,30)
-note.Position = UDim2.new(0,0,0.85,0)
+note.AnchorPoint = Vector2.new(0.5,0.5)
+note.Position = UDim2.new(0.5,0,0.2,0) -- giữa trên màn hình
 note.BackgroundTransparency = 1
 note.Font = Enum.Font.GothamBold
 note.TextSize = 18
 note.TextColor3 = Color3.fromRGB(255,255,100)
-note.Text = "If you want scripts for other games, please subscribe to the channel and join the Discord group!"
+note.Text = "If you want scripts for other games, subscribe + join Discord!"
