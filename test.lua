@@ -1,115 +1,132 @@
--- Xóa GUI cũ nếu có
-local player = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local old = playerGui:FindFirstChild("HubUI")
+
+-- auto chạy script chính khi mở menu
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+end)
+
+-- xoá hub cũ nếu có
+local old = playerGui:FindFirstChild("MainMenu")
 if old then old:Destroy() end
 
--- Tạo ScreenGui
+-- tạo hub gui
 local hubGui = Instance.new("ScreenGui", playerGui)
-hubGui.Name = "HubUI"
-hubGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+hubGui.Name = "MainMenu"
 hubGui.ResetOnSpawn = false
+hubGui.IgnoreGuiInset = true
 
--- Container chính
-local container = Instance.new("Frame", hubGui)
-container.Size = UDim2.new(0.9, 0, 0.8, 0)
-container.Position = UDim2.new(0.5, 0, 0.5, 0)
-container.AnchorPoint = Vector2.new(0.5, 0.5)
-container.BackgroundTransparency = 1
+-- auto scale cho PC/mobile
+local scale = Instance.new("UIScale", hubGui)
+scale.Scale = 1
+game:GetService("RunService").RenderStepped:Connect(function()
+    local s = workspace.CurrentCamera.ViewportSize
+    if s.X < 1000 or s.Y < 600 then
+        scale.Scale = 0.8 -- thu nhỏ nếu màn hình nhỏ (điện thoại)
+    else
+        scale.Scale = 1 -- PC giữ nguyên
+    end
+end)
 
--- Layout dạng lưới
-local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0.45, -10, 0.28, -10)
-grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
-grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
-grid.VerticalAlignment = Enum.VerticalAlignment.Top
-grid.FillDirectionMaxCells = 2
+-- ép tỉ lệ card không bị méo
+local aspect = Instance.new("UIAspectRatioConstraint", hubGui)
+aspect.AspectRatio = 1.6
 
--- Hàm tạo card đẹp
-local function createCard(title, desc, imageId, callback)
-    local card = Instance.new("Frame")
-    card.Parent = container
-    card.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    card.BackgroundTransparency = 0.15
-    card.ClipsDescendants = true
-
-    -- Bo góc
-    local corner = Instance.new("UICorner", card)
-    corner.CornerRadius = UDim.new(0, 12)
-
-    -- Viền sáng
-    local stroke = Instance.new("UIStroke", card)
-    stroke.Thickness = 2
-    stroke.Color = Color3.fromRGB(255, 255, 255)
-    stroke.Transparency = 0.5
-
-    -- Giữ tỉ lệ card
-    local aspect = Instance.new("UIAspectRatioConstraint", card)
-    aspect.AspectRatio = 1.6
-
-    -- Ảnh thumbnail
-    local thumb = Instance.new("ImageLabel", card)
-    thumb.Size = UDim2.new(1, 0, 0.6, 0)
-    thumb.Position = UDim2.new(0, 0, 0, 0)
-    thumb.BackgroundTransparency = 1
-    thumb.Image = imageId
-    thumb.ScaleType = Enum.ScaleType.Crop
-
-    -- Nền mờ chữ
-    local bottomBar = Instance.new("Frame", card)
-    bottomBar.Size = UDim2.new(1, 0, 0.4, 0)
-    bottomBar.Position = UDim2.new(0, 0, 0.6, 0)
-    bottomBar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    bottomBar.BackgroundTransparency = 0.25
-
-    local bCorner = Instance.new("UICorner", bottomBar)
-    bCorner.CornerRadius = UDim.new(0, 12)
-
-    -- Tiêu đề
-    local titleLabel = Instance.new("TextLabel", bottomBar)
-    titleLabel.Size = UDim2.new(1, -10, 0.4, 0)
-    titleLabel.Position = UDim2.new(0, 5, 0, 2)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 20
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Text = title
-
-    -- Mô tả
-    local descLabel = Instance.new("TextLabel", bottomBar)
-    descLabel.Size = UDim2.new(1, -10, 0.6, -5)
-    descLabel.Position = UDim2.new(0, 5, 0.4, 0)
-    descLabel.BackgroundTransparency = 1
-    descLabel.Font = Enum.Font.Gotham
-    descLabel.TextSize = 16
-    descLabel.TextXAlignment = Enum.TextXAlignment.Left
-    descLabel.TextYAlignment = Enum.TextYAlignment.Top
-    descLabel.TextWrapped = true
-    descLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    descLabel.Text = desc
-
-    -- Nút click (toàn card)
-    local button = Instance.new("TextButton", card)
-    button.Size = UDim2.new(1, 0, 1, 0)
-    button.BackgroundTransparency = 1
-    button.Text = ""
-    button.MouseButton1Click:Connect(callback)
+-- helper mở link
+local function openLink(url)
+    local copied = false
+    if setclipboard then
+        pcall(setclipboard, url)
+        copied = true
+    end
+    if type(openbrowser) == "function" then
+        pcall(openbrowser, url)
+        copied = true
+    end
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Link",
+        Text = copied and "Link copied, paste it in your browser!" or "Cannot copy, copy manually: "..url,
+        Duration = 5
+    })
+    warn("Link:", url)
 end
 
--- Ví dụ các card
-createCard("Pet Simulator 99", "Script Auto Farm, Dupe Pets, Unlock Areas...", "rbxassetid://12345678", function()
-    print("Pet Simulator script chạy")
-end)
+-- loading GUI (giữ nguyên)
+local function showLoading(durationSeconds, onDone)
+    durationSeconds = durationSeconds or 5
+    local gui = Instance.new("ScreenGui", playerGui)
+    gui.Name = "Hub_LoadingGui"
+    gui.ResetOnSpawn = false
 
-createCard("Blade Ball", "Auto Parry, No Miss, Skin Changer...", "rbxassetid://23456789", function()
-    print("Blade Ball script chạy")
-end)
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(0.46, 0, 0.14, 0)
+    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
-createCard("Discord", "Join our Discord group for exclusive scripts!", "rbxassetid://80637427855653", function()
-    setclipboard("https://discord.gg/yourdiscord")
-end)
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = Color3.fromRGB(120, 120, 255)
+    stroke.Thickness = 2
 
-createCard("YouTube", "Subscribe for more scripts!", "rbxassetid://95429734677601", function()
-    setclipboard("https://youtube.com/yourchannel")
-end)
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, -20, 0.45, 0)
+    title.Position = UDim2.new(0, 10, 0, 8)
+    title.BackgroundTransparency = 1
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 20
+    title.TextColor3 = Color3.fromRGB(255,255,255)
+    title.Text = "Preparing script..."
+    title.TextXAlignment = Enum.TextXAlignment.Center
+
+    local barBG = Instance.new("Frame", frame)
+    barBG.Size = UDim2.new(0.9, 0, 0.28, 0)
+    barBG.Position = UDim2.new(0.05, 0, 0.55, 0)
+    barBG.BackgroundColor3 = Color3.fromRGB(45,45,45)
+    barBG.BorderSizePixel = 0
+    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
+
+    local bar = Instance.new("Frame", barBG)
+    bar.Size = UDim2.new(0, 0, 1, 0)
+    bar.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
+
+    local phrases = {
+        "Injecting magic modules...",
+        "Optimizing local hooks...",
+        "Calibrating anti-miss...",
+        "Loading GUI components...",
+        "Almost ready — hold on..."
+    }
+
+    local steps = 100
+    local stepTime = durationSeconds / steps
+
+    task.spawn(function()
+        for i = 1, steps do
+            local pct = i/steps
+            bar:TweenSize(UDim2.new(pct,0,1,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, stepTime, true)
+            title.Text = phrases[math.random(1, #phrases)]
+            task.wait(stepTime)
+        end
+        gui:Destroy()
+        if onDone then onDone() end
+    end)
+end
+
+-- container chính (căn giữa)
+local container = Instance.new("Frame", hubGui)
+container.AnchorPoint = Vector2.new(0.5,0.5)
+container.Position = UDim2.new(0.5,0,0.48,0)
+container.Size = UDim2.new(0.92, 0, 0.75, 0)
+container.BackgroundTransparency = 1
+
+local grid = Instance.new("UIGridLayout", container)
+grid.CellSize = UDim2.new(0, 300, 0, 240)
+grid.CellPadding = UDim2.new(0, 18, 0, 18)
+grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+grid.VerticalAlignment = Enum.VerticalAlignment.Top
+grid.FillDirectionMaxCells = 3
+
+-- (tất cả phần còn lại của script bạn giữ nguyên, không thay đổi gì)
