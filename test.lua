@@ -99,14 +99,14 @@ local function showLoading(durationSeconds, onDone)
     end)
 end
 
--- container chính (tự co dãn mobile + PC)
+-- container chính
 local container = Instance.new("Frame", hubGui)
 container.Size = UDim2.new(1, -40, 0.78, 0)
 container.Position = UDim2.new(0, 20, 0.06, 0)
 container.BackgroundTransparency = 1
 
 local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0.25, 0, 0.3, 0) -- tự co
+grid.CellSize = UDim2.new(0.25, 0, 0.3, 0)
 grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
@@ -202,8 +202,20 @@ local function openBladeBallMenu()
     end)
 end
 
--- danh sách game (xoá Discord + YouTube)
+-- danh sách game + Discord + YouTube
 local games = {
+    {
+        name = "Discord",
+        desc = "Join our Discord community!",
+        img = "rbxassetid://80637427855653",
+        openFn = function() openLink("https://discord.gg/your_invite") end
+    },
+    {
+        name = "YouTube",
+        desc = "Subscribe for more scripts!",
+        img = "rbxassetid://95429734677601",
+        openFn = function() openLink("https://youtube.com/@yourchannel") end
+    },
     {
         name = "Pet Simulator 99",
         desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
@@ -274,7 +286,7 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- Thông báo cuối cùng (giữ nguyên)
+-- Thông báo cuối cùng
 local note = Instance.new("TextLabel", hubGui)
 note.Size = UDim2.new(1,0,0,30)
 note.Position = UDim2.new(0,0,0.85,0)
