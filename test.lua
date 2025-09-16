@@ -4,7 +4,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 -- auto chạy script chính khi mở menu
 pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/rtete/refs/heads/main/rtete"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
 
 -- xoá hub cũ nếu có
@@ -174,6 +174,7 @@ local function openBladeBallMenu()
                 if not ok then
                     warn("BladeBall script failed:", err)
                 end
+                subGui.Enabled = true
             end)
         end)
     end
@@ -219,12 +220,17 @@ local function openBladeBallMenu()
                 Text = "We will update soon",
                 Duration = 4
             })
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+            end)
         end)
     end
 
+    -- Menu scripts
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
+    createScriptBtn("PawsThePaw", "https://raw.githubusercontent.com/PawsThePaw/Scripts/main/Loader.lua")
     createPremiumBtn("Allusive", "Allusive")
     createPremiumBtn("UwU", "UwU")
 
@@ -375,17 +381,3 @@ note.Font = Enum.Font.GothamBold
 note.TextSize = 18
 note.TextColor3 = Color3.fromRGB(255,255,100)
 note.Text = "If you want scripts for other games, please subscribe to the channel and join the Discord group!"
-
--- Nút ẩn/hiện hub
-local toggleBtn = Instance.new("TextButton", hubGui)
-toggleBtn.Size = UDim2.new(0,40,0,40)
-toggleBtn.Position = UDim2.new(1,-50,0,10)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-toggleBtn.Text = "👁"
-toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
-Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0,8)
-
-toggleBtn.MouseButton1Click:Connect(function()
-    hubGui.Enabled = not hubGui.Enabled
-end)
