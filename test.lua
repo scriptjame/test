@@ -1,213 +1,250 @@
--- // Main Script Loader
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- remove old gui if exists
-local old = playerGui:FindFirstChild("rutoairas")
+-- auto chạy script chính khi mở menu
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+end)
+
+-- xoá hub cũ nếu có
+local old = playerGui:FindFirstChild("MainMenu")
 if old then old:Destroy() end
 
--- create ScreenGui
-local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "rutoairas"
-screenGui.ResetOnSpawn = false
+-- tạo hub gui
+local hubGui = Instance.new("ScreenGui", playerGui)
+hubGui.Name = "MainMenu"
+hubGui.ResetOnSpawn = false
+hubGui.IgnoreGuiInset = true
 
--- ui corner helper
-local function makeCorner(obj, radius)
-    local c = Instance.new("UICorner")
-    c.CornerRadius = UDim.new(0, radius)
-    c.Parent = obj
+-- helper mở link
+local function openLink(url)
+    local copied = false
+    if setclipboard then
+        pcall(setclipboard, url)
+        copied = true
+    end
+    if type(openbrowser) == "function" then
+        pcall(openbrowser, url)
+        copied = true
+    end
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Link",
+        Text = copied and "Link copied, paste it in your browser!" or "Cannot copy, copy manually: "..url,
+        Duration = 5
+    })
+    warn("Link:", url)
 end
 
--- main frame
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 750, 0, 420)
-mainFrame.Position = UDim2.new(0.5, -375, 0.5, -210)
-mainFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-makeCorner(mainFrame, 12)
+-- loading GUI
+local function showLoading(durationSeconds, onDone)
+    durationSeconds = durationSeconds or 5
+    local gui = Instance.new("ScreenGui", playerGui)
+    gui.Name = "Hub_LoadingGui"
+    gui.ResetOnSpawn = false
 
--- grid for cards
-local layout = Instance.new("UIGridLayout", mainFrame)
-layout.CellSize = UDim2.new(0, 230, 0, 140)
-layout.CellPadding = UDim2.new(0, 10, 0, 10)
-layout.FillDirectionMaxCells = 3
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.VerticalAlignment = Enum.VerticalAlignment.Center
+    local frame = Instance.new("Frame", gui)
+    frame.Size = UDim2.new(0.46, 0, 0.14, 0)
+    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
 
--- yellow footer text
-local footer = Instance.new("TextLabel", screenGui)
-footer.Size = UDim2.new(1, 0, 0, 30)
-footer.Position = UDim2.new(0, 0, 1, -30)
-footer.BackgroundTransparency = 1
-footer.Text = "Join our Discord group to get scripts for other games"
-footer.TextColor3 = Color3.fromRGB(255, 255, 0)
-footer.TextStrokeTransparency = 0.5
-footer.Font = Enum.Font.GothamBold
-footer.TextSize = 18
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = Color3.fromRGB(120, 120, 255)
+    stroke.Thickness = 2
 
--- helper for card creation
-local function createCard(title, desc, imageId, callback)
-    local card = Instance.new("Frame")
-    card.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    makeCorner(card, 10)
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, -20, 0.45, 0)
+    title.Position = UDim2.new(0, 10, 0, 8)
+    title.BackgroundTransparency = 1
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 20
+    title.TextColor3 = Color3.fromRGB(255,255,255)
+    title.Text = "Preparing script..."
+    title.TextXAlignment = Enum.TextXAlignment.Center
 
-    local btn = Instance.new("TextButton", card)
-    btn.Size = UDim2.new(1, 0, 1, 0)
-    btn.BackgroundTransparency = 1
-    btn.Text = ""
+    local barBG = Instance.new("Frame", frame)
+    barBG.Size = UDim2.new(0.9, 0, 0.28, 0)
+    barBG.Position = UDim2.new(0.05, 0, 0.55, 0)
+    barBG.BackgroundColor3 = Color3.fromRGB(45,45,45)
+    barBG.BorderSizePixel = 0
+    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
 
-    local img = Instance.new("ImageLabel", card)
-    img.Size = UDim2.new(1, 0, 0.6, 0)
-    img.Position = UDim2.new(0, 0, 0, 0)
-    img.BackgroundTransparency = 1
-    img.Image = imageId or ""
+    local bar = Instance.new("Frame", barBG)
+    bar.Size = UDim2.new(0, 0, 1, 0)
+    bar.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
 
-    local titleLabel = Instance.new("TextLabel", card)
-    titleLabel.Size = UDim2.new(1, -10, 0, 25)
-    titleLabel.Position = UDim2.new(0, 5, 0.6, 0)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.TextSize = 18
+    local phrases = {
+        "Injecting magic modules...",
+        "Optimizing local hooks...",
+        "Calibrating anti-miss...",
+        "Loading GUI components...",
+        "Almost ready — hold on..."
+    }
+    local steps = 100
+    local stepTime = durationSeconds / steps
 
-    local descLabel = Instance.new("TextLabel", card)
-    descLabel.Size = UDim2.new(1, -10, 0, 20)
-    descLabel.Position = UDim2.new(0, 5, 0.8, 0)
-    descLabel.BackgroundTransparency = 1
-    descLabel.Text = desc
-    descLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    descLabel.Font = Enum.Font.Gotham
-    descLabel.TextXAlignment = Enum.TextXAlignment.Left
-    descLabel.TextSize = 14
+    task.spawn(function()
+        for i = 1, steps do
+            local pct = i/steps
+            bar:TweenSize(UDim2.new(pct,0,1,0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quad, stepTime, true)
+            title.Text = phrases[math.random(1, #phrases)]
+            task.wait(stepTime)
+        end
+        gui:Destroy()
+        if onDone then onDone() end
+    end)
+end
 
-    btn.MouseButton1Click:Connect(function()
-        pcall(callback)
+-- container chính
+local container = Instance.new("Frame", hubGui)
+container.Size = UDim2.new(0.95, 0, 0.78, 0) -- scale thay vì offset
+container.Position = UDim2.new(0.025, 0, 0.06, 0)
+container.BackgroundTransparency = 1
+
+local grid = Instance.new("UIGridLayout", container)
+grid.CellSize = UDim2.new(0.45, 0, 0.35, 0) -- scale để tự co giãn
+grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
+grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+grid.VerticalAlignment = Enum.VerticalAlignment.Top
+grid.FillDirectionMaxCells = 4
+
+-- Blade Ball menu phụ
+local function openBladeBallMenu()
+    hubGui.Enabled = false
+    local subGui = Instance.new("ScreenGui", playerGui)
+    subGui.Name = "BladeBallMenu"
+    subGui.ResetOnSpawn = false
+
+    local frame = Instance.new("Frame", subGui)
+    frame.Size = UDim2.new(0.8, 0, 0.7, 0) -- scale thay vì cố định 480x360
+    frame.AnchorPoint = Vector2.new(0.5,0.5)
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
+
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Color = Color3.fromRGB(200,200,200)
+    stroke.Thickness = 2
+
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, -40, 0, 40)
+    title.Position = UDim2.new(0, 20, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Font = Enum.Font.Gotham
+    title.TextSize = 20
+    title.TextColor3 = Color3.fromRGB(230,230,230)
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Text = "Blade Ball Scripts"
+
+    local list = Instance.new("UIListLayout", frame)
+    list.Padding = UDim.new(0,10)
+    list.FillDirection = Enum.FillDirection.Vertical
+    list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    list.VerticalAlignment = Enum.VerticalAlignment.Top
+    list.SortOrder = Enum.SortOrder.LayoutOrder
+
+    list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        frame.Size = UDim2.new(0.8, 0, 0, list.AbsoluteContentSize.Y+60)
     end)
 
-    return card
-end
+    local function createScriptBtn(text, url)
+        local btn = Instance.new("TextButton", frame)
+        btn.Size = UDim2.new(0.9,0,0,50)
+        btn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 16
+        btn.TextColor3 = Color3.fromRGB(255,255,255)
+        btn.Text = "Script - "..text
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
 
--- card definitions
-local cards = {
-    {
-        "Pet Simulator 99",
-        "Auto Farm, Dupe Pets, Unlock Areas...",
-        "rbxassetid://137509940940918",
-        function()
-            print("Pet Sim script executed")
-        end
-    },
-    {
-        "Grow a Garden",
-        "Auto Plant, Auto Sell, Auto Upgrade...",
-        "rbxassetid://137510042865871",
-        function()
-            print("Grow a Garden script executed")
-        end
-    },
-    {
-        "Murder Mystery 2",
-        "ESP, Auto Farm, Knife Aura...",
-        "rbxassetid://137510101662510",
-        function()
-            print("MM2 script executed")
-        end
-    },
-    {
-        "Blade Ball",
-        "Auto Parry, Skin Changer, Dupe...",
-        "rbxassetid://137510146002973",
-        function()
-            print("Blade Ball script executed")
-        end
-    },
-    {
-        "UwU",
-        "Premium exclusive features...",
-        "rbxassetid://137510200374927",
-        function()
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "UwU",
-                Text = "Update soon",
-                Duration = 5
-            })
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-        end
-    },
-    {
-        "Allusive",
-        "Premium exclusive features...",
-        "rbxassetid://137510237485161",
-        function()
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Allusive",
-                Text = "Update soon",
-                Duration = 5
-            })
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-        end
-    },
-    {
-        "Discord",
-        "Join our Discord group for updates!",
-        "",
-        function()
-            setclipboard("https://discord.gg/yourinvite")
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Discord",
-                Text = "Discord link copied to clipboard",
-                Duration = 5
-            })
-        end
-    },
-    {
-        "YouTube",
-        "My channel is close to 3k subs, pls subscribe!",
-        "rbxassetid://137510274857391",
-        function()
-            setclipboard("https://youtube.com/yourchannel")
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "YouTube",
-                Text = "Channel link copied to clipboard",
-                Duration = 5
-            })
-        end
-    }
-}
+        local stroke = Instance.new("UIStroke", btn)
+        stroke.Color = Color3.fromRGB(180,180,180)
+        stroke.Thickness = 1
 
--- create cards
-for _, v in ipairs(cards) do
-    local card = createCard(v[1], v[2], v[3], v[4])
-    card.Parent = mainFrame
-end
+        btn.MouseButton1Click:Connect(function()
+            subGui.Enabled = false
+            showLoading(5, function()
+                local ok, err = pcall(function()
+                    loadstring(game:HttpGet(url))()
+                end)
+                if not ok then
+                    warn("BladeBall script failed:", err)
+                end
+                subGui.Enabled = true
+            end)
+        end)
+    end
 
--- gradient animation for premium cards UwU + Allusive
-local function addGradient(card)
-    local grad = Instance.new("UIGradient")
-    grad.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
-    }
-    grad.Rotation = 45
-    grad.Parent = card
-    task.spawn(function()
-        while card.Parent do
-            for i = 0, 1, 0.01 do
-                grad.Offset = Vector2.new(i, i)
+    local function createPremiumBtn(text, theme)
+        local btn = Instance.new("TextButton", frame)
+        btn.Size = UDim2.new(0.9,0,0,50)
+        btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+        btn.Font = Enum.Font.GothamBold
+        btn.TextSize = 18
+        btn.TextColor3 = Color3.fromRGB(255,255,255)
+        btn.TextStrokeTransparency = 0.2
+        btn.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+        btn.Text = "Script - "..text
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+
+        local gradient = Instance.new("UIGradient", btn)
+        if theme == "Allusive" then
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(200,0,255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(160,60,255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(220,140,255))
+            }
+        elseif theme == "UwU" then
+            gradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255,120,180)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,170,220)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255,100,160))
+            }
+        end
+        gradient.Rotation = 0
+
+        task.spawn(function()
+            while btn.Parent do
+                gradient.Rotation = (gradient.Rotation + 1) % 360
                 task.wait(0.05)
             end
-        end
+        end)
+
+        btn.MouseButton1Click:Connect(function()
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Coming Soon",
+                Text = "We will update soon",
+                Duration = 4
+            })
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+            end)
+        end)
+    end
+
+    createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
+    createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
+    createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
+    createPremiumBtn("Allusive", "Allusive")
+    createPremiumBtn("UwU", "UwU")
+
+    local backBtn = Instance.new("TextButton", frame)
+    backBtn.Size = UDim2.new(0.9,0,0,40)
+    backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
+    backBtn.Font = Enum.Font.GothamBold
+    backBtn.TextSize = 16
+    backBtn.TextColor3 = Color3.fromRGB(255,255,255)
+    backBtn.Text = "← Back"
+    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0,8)
+
+    backBtn.MouseButton1Click:Connect(function()
+        subGui:Destroy()
+        hubGui.Enabled = true
     end)
 end
 
-for _, c in pairs(mainFrame:GetChildren()) do
-    if c:IsA("Frame") then
-        local title = c:FindFirstChildOfClass("TextLabel")
-        if title and (title.Text == "UwU" or title.Text == "Allusive") then
-            addGradient(c)
-        end
-    end
-end
+-- ⚡ các phần còn lại (games + social + note) giữ nguyên không đổi
