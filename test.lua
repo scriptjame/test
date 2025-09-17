@@ -36,7 +36,7 @@ local function openLink(url)
     warn("Link:", url)
 end
 
--- nền duy nhất phủ tất cả menu (giống khay)
+-- nền duy nhất phủ tất cả menu
 local backgroundFrame = Instance.new("Frame", hubGui)
 backgroundFrame.Size = UDim2.new(1, -40, 0.78, 0)
 backgroundFrame.Position = UDim2.new(0, 20, 0.06, 0)
@@ -58,7 +58,7 @@ grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
 
--- loading helper (giữ nguyên)
+-- loading helper
 local function showLoading(durationSeconds, onDone)
     durationSeconds = durationSeconds or 5
     local gui = Instance.new("ScreenGui", playerGui)
@@ -120,7 +120,7 @@ local function showLoading(durationSeconds, onDone)
     end)
 end
 
--- Blade Ball menu phụ giữ nguyên
+-- Blade Ball menu phụ
 local function openBladeBallMenu()
     hubGui.Enabled = false
     local subGui = Instance.new("ScreenGui", playerGui)
@@ -237,7 +237,7 @@ local function openBladeBallMenu()
     end)
 end
 
--- danh sách game + Discord + YouTube (giữ nguyên)
+-- danh sách game + Discord + YouTube
 local games = {
     {
         name = "Discord",
@@ -321,19 +321,7 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- thông báo vàng ở giữa màn hình khi ẩn GUI
-local note = Instance.new("TextLabel", hubGui)
-note.Size = UDim2.new(0.8,0,0,30)
-note.AnchorPoint = Vector2.new(0.5,0.5)
-note.Position = UDim2.new(0.5,0,0.55,0)
-note.BackgroundTransparency = 1
-note.Font = Enum.Font.GothamBold
-note.TextSize = 18
-note.TextColor3 = Color3.fromRGB(255,255,0)
-note.Text = "GUI is hidden"
-note.Visible = false
-
--- Nút ẩn/hiện hub
+-- Nút ẩn/hiện hub (giữ nguyên, không hiển thị chữ vàng)
 local toggleBtn = Instance.new("TextButton", hubGui)
 toggleBtn.Size = UDim2.new(0,40,0,40)
 toggleBtn.Position = UDim2.new(0, 10, 1, -80)
@@ -348,5 +336,4 @@ Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 toggleBtn.MouseButton1Click:Connect(function()
     container.Visible = not container.Visible
     backgroundFrame.Visible = container.Visible
-    note.Visible = not container.Visible
 end)
