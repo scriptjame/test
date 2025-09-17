@@ -38,18 +38,18 @@ end
 
 -- container chính
 local container = Instance.new("Frame", hubGui)
-container.Size = UDim2.new(1, -40, 0.78, 0)
-container.Position = UDim2.new(0, 20, 0.06, 0)
+container.Size = UDim2.new(0.96, 0, 0.78, 0)
+container.Position = UDim2.new(0.02, 0, 0.06, 0)
 container.BackgroundTransparency = 1
 
 local grid = Instance.new("UIGridLayout", container)
-grid.CellSize = UDim2.new(0.25, 0, 0.3, 0)
+grid.CellSize = UDim2.new(0.22, 0, 0.3, 0)
 grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
 
--- loading helper (giữ nguyên)
+-- loading helper
 local function showLoading(durationSeconds, onDone)
     durationSeconds = durationSeconds or 5
     local gui = Instance.new("ScreenGui", playerGui)
@@ -58,7 +58,8 @@ local function showLoading(durationSeconds, onDone)
 
     local frame = Instance.new("Frame", gui)
     frame.Size = UDim2.new(0.46, 0, 0.14, 0)
-    frame.Position = UDim2.new(0.27, 0, 0.42, 0)
+    frame.AnchorPoint = Vector2.new(0.5,0.5)
+    frame.Position = UDim2.new(0.5,0,0.5,0)
     frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
@@ -110,16 +111,16 @@ local function showLoading(durationSeconds, onDone)
         if onDone then onDone() end
     end)
 end
--- Blade Ball menu phụ (đưa về như cũ nhưng sửa lỗi lệch bằng btnContainer)
+
+-- Blade Ball menu phụ
 local function openBladeBallMenu()
     hubGui.Enabled = false
     local subGui = Instance.new("ScreenGui", playerGui)
     subGui.Name = "BladeBallMenu"
     subGui.ResetOnSpawn = false
 
-    -- giữ kích thước giống bản cũ (pixel)
     local frame = Instance.new("Frame", subGui)
-    frame.Size = UDim2.new(0, 480, 0, 360)
+    frame.Size = UDim2.new(0.5, 0, 0.6, 0)
     frame.AnchorPoint = Vector2.new(0.5,0.5)
     frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
@@ -140,7 +141,6 @@ local function openBladeBallMenu()
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Text = "Blade Ball Scripts"
 
-    -- container chứa nút (để các nút align gọn như cũ)
     local btnContainer = Instance.new("Frame", frame)
     btnContainer.Size = UDim2.new(1, 0, 1, -60)
     btnContainer.Position = UDim2.new(0, 0, 0, 50)
@@ -153,17 +153,15 @@ local function openBladeBallMenu()
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- tự mở rộng frame theo nội dung (giữ width 480)
     list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         local newH = list.AbsoluteContentSize.Y + 80
         if newH < 160 then newH = 160 end
         if newH > 720 then newH = 720 end
-        frame.Size = UDim2.new(0, 480, 0, newH)
+        frame.Size = UDim2.new(frame.Size.X.Scale, frame.Size.X.Offset, 0, newH)
         frame.AnchorPoint = Vector2.new(0.5,0.5)
         frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     end)
 
-    -- tạo button script (gồm premium)
     local function createScriptBtn(text, url, mode)
         local btn = Instance.new("TextButton", btnContainer)
         btn.Size = UDim2.new(0.9,0,0,50)
@@ -211,7 +209,6 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- tạo các nút giống cũ
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
@@ -232,7 +229,8 @@ local function openBladeBallMenu()
         hubGui.Enabled = true
     end)
 end
--- danh sách game + Discord + YouTube (giữ link bạn cung cấp)
+
+-- danh sách game + Discord + YouTube
 local games = {
     {
         name = "Discord",
@@ -316,7 +314,7 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- Thông báo vàng (ở giữa màn hình, không đụng GUI nào)
+-- Thông báo vàng
 local note = Instance.new("TextLabel", hubGui)
 note.Size = UDim2.new(1,0,0,30)
 note.AnchorPoint = Vector2.new(0.5,0.5)
@@ -327,7 +325,7 @@ note.TextSize = 18
 note.TextColor3 = Color3.fromRGB(255,255,100)
 note.Text = "If you want scripts for other games, subscribe + join Discord!"
 
--- Nút ẩn/hiện hub (draggable) — đặt mặc định gần góc trái dưới để mobile/pc dễ thấy
+-- Nút ẩn/hiện hub
 local toggleBtn = Instance.new("TextButton", hubGui)
 toggleBtn.Size = UDim2.new(0,40,0,40)
 toggleBtn.Position = UDim2.new(0, 10, 1, -80)
@@ -339,7 +337,7 @@ toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
 toggleBtn.ZIndex = 100
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 
--- drag di chuyển nút (hỗ trợ touch & mouse)
+-- drag di chuyển nút
 local UserInputService = game:GetService("UserInputService")
 local dragging, dragInput, dragStart, startPos
 
