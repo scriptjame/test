@@ -58,6 +58,20 @@ grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
 
+-- Chữ vàng thông báo giữa YouTube và MM2
+local infoLabel = Instance.new("TextLabel", hubGui)
+infoLabel.Size = UDim2.new(0.6,0,0,30)
+infoLabel.Position = UDim2.new(0.2,0,0.6,0)
+infoLabel.BackgroundTransparency = 1
+infoLabel.Font = Enum.Font.GothamBold
+infoLabel.TextSize = 18
+infoLabel.TextColor3 = Color3.fromRGB(255, 221, 0)
+infoLabel.Text = "Join my Discord to get scripts for other games"
+infoLabel.TextStrokeTransparency = 0.5
+infoLabel.TextXAlignment = Enum.TextXAlignment.Center
+infoLabel.TextYAlignment = Enum.TextYAlignment.Center
+infoLabel.ZIndex = 10
+
 -- loading helper
 local function showLoading(durationSeconds, onDone)
     durationSeconds = durationSeconds or 5
@@ -321,7 +335,7 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- Nút ẩn/hiện hub (giữ nguyên, không hiển thị chữ vàng)
+-- Nút ẩn/hiện hub (ẩn hiện container + chữ vàng)
 local toggleBtn = Instance.new("TextButton", hubGui)
 toggleBtn.Size = UDim2.new(0,40,0,40)
 toggleBtn.Position = UDim2.new(0, 10, 1, -80)
@@ -334,6 +348,8 @@ toggleBtn.ZIndex = 100
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 
 toggleBtn.MouseButton1Click:Connect(function()
-    container.Visible = not container.Visible
-    backgroundFrame.Visible = container.Visible
+    local visible = not container.Visible
+    container.Visible = visible
+    backgroundFrame.Visible = visible
+    infoLabel.Visible = visible
 end)
