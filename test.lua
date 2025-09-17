@@ -111,14 +111,13 @@ local function showLoading(durationSeconds, onDone)
     end)
 end
 
--- Blade Ball menu phụ (đưa về như cũ nhưng sửa lỗi lệch bằng btnContainer)
+-- Blade Ball menu phụ
 local function openBladeBallMenu()
     hubGui.Enabled = false
     local subGui = Instance.new("ScreenGui", playerGui)
     subGui.Name = "BladeBallMenu"
     subGui.ResetOnSpawn = false
 
-    -- giữ kích thước giống bản cũ (pixel)
     local frame = Instance.new("Frame", subGui)
     frame.Size = UDim2.new(0, 480, 0, 360)
     frame.AnchorPoint = Vector2.new(0.5,0.5)
@@ -141,7 +140,6 @@ local function openBladeBallMenu()
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Text = "Blade Ball Scripts"
 
-    -- container chứa nút (để các nút align gọn như cũ)
     local btnContainer = Instance.new("Frame", frame)
     btnContainer.Size = UDim2.new(1, 0, 1, -60)
     btnContainer.Position = UDim2.new(0, 0, 0, 50)
@@ -154,10 +152,8 @@ local function openBladeBallMenu()
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- tự mở rộng frame theo nội dung (giữ width 480)
     list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         local newH = list.AbsoluteContentSize.Y + 80
-        -- giới hạn tối đa/min hợp lý
         if newH < 160 then newH = 160 end
         if newH > 720 then newH = 720 end
         frame.Size = UDim2.new(0, 480, 0, newH)
@@ -165,7 +161,6 @@ local function openBladeBallMenu()
         frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     end)
 
-    -- tạo button script (gồm premium)
     local function createScriptBtn(text, url, mode)
         local btn = Instance.new("TextButton", btnContainer)
         btn.Size = UDim2.new(0.9,0,0,50)
@@ -192,7 +187,6 @@ local function openBladeBallMenu()
         end
 
         btn.MouseButton1Click:Connect(function()
-            -- ẩn sub menu trước khi load
             subGui.Enabled = false
             showLoading(3, function()
                 local ok, err = pcall(function()
@@ -202,21 +196,18 @@ local function openBladeBallMenu()
                             Text = "Coming soon",
                             Duration = 3
                         })
-                        -- đồng thời chạy script chính của bạn
                         loadstring(game:HttpGet("https://raw.githubusercontent.com/anhlinh1136/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
                     else
                         loadstring(game:HttpGet(url))()
                     end
                 end)
                 if not ok then warn("⚠️ Script lỗi:", err) end
-                -- sau khi load xong, huỷ subGui và trở lại hub chính (người dùng có thể dùng nút ẩn nếu muốn)
                 subGui:Destroy()
                 hubGui.Enabled = true
             end)
         end)
     end
 
-    -- tạo các nút giống cũ
     createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
@@ -238,50 +229,14 @@ local function openBladeBallMenu()
     end)
 end
 
--- danh sách game + Discord + YouTube (giữ link bạn cung cấp)
+-- danh sách game + Discord + YouTube
 local games = {
-    {
-        name = "Discord",
-        desc = "Join our Discord community!",
-        img = "rbxassetid://80637427855653",
-        openFn = function() openLink("https://discord.gg/fkDMHngGCk") end
-    },
-    {
-        name = "YouTube",
-        desc = "Subscribe for more scripts!",
-        img = "rbxassetid://95429734677601",
-        openFn = function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end
-    },
-    {
-        name = "Pet Simulator 99",
-        desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
-        img = "rbxassetid://103879354899468",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script attached yet!", Duration=3})
-        end
-    },
-    {
-        name = "Grow a Garden",
-        desc = "Script Auto Plant, Auto Sell, Auto Upgrade...",
-        img = "rbxassetid://110811575269598",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script attached yet!", Duration=3})
-        end
-    },
-    {
-        name = "Murder Mystery 2",
-        desc = "Script ESP, Auto Farm, Knife Aura...",
-        img = "rbxassetid://120257957010430",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script attached yet!", Duration=3})
-        end
-    },
-    {
-        name = "Blade Ball",
-        desc = "Auto Parry no miss, Changer Skin, Dupe...",
-        img = "rbxassetid://127537802436978",
-        openFn = openBladeBallMenu
-    }
+    {name="Discord", desc="Join our Discord community!", img="rbxassetid://80637427855653", openFn=function() openLink("https://discord.gg/fkDMHngGCk") end},
+    {name="YouTube", desc="Subscribe for more scripts!", img="rbxassetid://95429734677601", openFn=function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end},
+    {name="Pet Simulator 99", desc="Script Auto Farm, Dupe Pets, Unlock Areas...", img="rbxassetid://103879354899468", openFn=function() game.StarterGui:SetCore("SendNotification",{Title="Pet Sim 99",Text="No script attached yet!",Duration=3}) end},
+    {name="Grow a Garden", desc="Script Auto Plant, Auto Sell, Auto Upgrade...", img="rbxassetid://110811575269598", openFn=function() game.StarterGui:SetCore("SendNotification",{Title="Grow a Garden",Text="No script attached yet!",Duration=3}) end},
+    {name="Murder Mystery 2", desc="Script ESP, Auto Farm, Knife Aura...", img="rbxassetid://120257957010430", openFn=function() game.StarterGui:SetCore("SendNotification",{Title="MM2",Text="No script attached yet!",Duration=3}) end},
+    {name="Blade Ball", desc="Auto Parry no miss, Changer Skin, Dupe...", img="rbxassetid://127537802436978", openFn=openBladeBallMenu}
 }
 
 for _, info in ipairs(games) do
@@ -322,7 +277,7 @@ for _, info in ipairs(games) do
     sizeLimit.MaxSize = Vector2.new(320, 260)
 end
 
--- Thông báo vàng (ở giữa màn hình, không đụng GUI nào)
+-- Thông báo vàng
 local note = Instance.new("TextLabel", hubGui)
 note.Size = UDim2.new(1,0,0,30)
 note.AnchorPoint = Vector2.new(0.5,0.5)
@@ -333,19 +288,16 @@ note.TextSize = 18
 note.TextColor3 = Color3.fromRGB(255,255,100)
 note.Text = "If you want scripts for other games, subscribe + join Discord!"
 
--- Nút ẩn/hiện hub (draggable) — đặt mặc định gần góc trái dưới để mobile/pc dễ thấy
-local toggleBtn = Instance.new("TextButton", hubGui)
-toggleBtn.Size = UDim2.new(0,40,0,40)
-toggleBtn.Position = UDim2.new(0, 10, 1, -80) -- left-bottom-ish
-toggleBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-toggleBtn.Text = "≡"
-toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.TextSize = 20
-toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
+-- Nút ẩn/hiện hub (draggable, icon mắt, gradient)
+local toggleBtn = Instance.new("ImageButton", hubGui)
+toggleBtn.Size = UDim2.new(0,50,0,50)
+toggleBtn.Position = UDim2.new(0,10,1,-80)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+toggleBtn.Image = "rbxassetid://13798521706" -- icon mắt
+toggleBtn.ScaleType = Enum.ScaleType.Fit
 toggleBtn.ZIndex = 100
-Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
-
--- drag di chuyển nút (hỗ trợ touch & mouse)
+Instance.new("UICorner", toggleBtn).Corner
+-- draggable & toggle hub hoàn chỉnh
 local UserInputService = game:GetService("UserInputService")
 local dragging, dragInput, dragStart, startPos
 
@@ -373,6 +325,10 @@ UserInputService.InputChanged:Connect(function(input)
         local delta = input.Position - dragStart
         local newX = startPos.X.Offset + delta.X
         local newY = startPos.Y.Offset + delta.Y
+        -- clamp trong màn hình
+        local screen = workspace.CurrentCamera.ViewportSize
+        newX = math.clamp(newX, 0, screen.X - toggleBtn.AbsoluteSize.X)
+        newY = math.clamp(newY, 0, screen.Y - toggleBtn.AbsoluteSize.Y)
         toggleBtn.Position = UDim2.new(startPos.X.Scale, newX, startPos.Y.Scale, newY)
     end
 end)
