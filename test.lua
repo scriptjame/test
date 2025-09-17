@@ -210,7 +210,7 @@ local function openBladeBallMenu()
             end)
         end
 
-        -- ===== Thêm hover animation cho nút Blade Ball =====
+        -- Hover animation
         btn.MouseEnter:Connect(function()
             TweenService:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.92,0,0,52)}):Play()
         end)
@@ -265,13 +265,13 @@ local function openBladeBallMenu()
         hubGui.Enabled = true
     end)
 
-    -- ===== Thêm mở animation Blade Ball menu =====
+    -- Open animation Blade Ball menu
     frame.Size = frame.Size * 0.8
     frame.BackgroundTransparency = 1
     TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,480,0,360), BackgroundTransparency = 0}):Play()
 end
 
--- ===== DANH SÁCH GAME + Discord + YouTube =====
+-- DANH SÁCH GAME + Discord + YouTube
 local games = {
     { name = "Discord", desc = "Join our Discord community!", img = "rbxassetid://80637427855653", openFn = function() openLink("https://discord.gg/fkDMHngGCk") end },
     { name = "YouTube", desc = "Subscribe for more scripts!", img = "rbxassetid://95429734677601", openFn = function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end },
@@ -318,7 +318,7 @@ for _, info in ipairs(games) do
     sizeLimit.MinSize = Vector2.new(160, 120)
     sizeLimit.MaxSize = Vector2.new(320, 260)
 
-    -- ===== hover effect card =====
+    -- Hover effect card
     local originalSize = card.Size
     card.MouseEnter:Connect(function()
         TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize + UDim2.new(0,8,0,8)}):Play()
@@ -328,7 +328,7 @@ for _, info in ipairs(games) do
     end)
 end
 
--- Nút ẩn/hiện hub (ẩn hiện container + chữ vàng)
+-- Nút ẩn/hiện hub
 local toggleBtn = Instance.new("TextButton", hubGui)
 toggleBtn.Size = UDim2.new(0,40,0,40)
 toggleBtn.Position = UDim2.new(0, 10, 1, -80)
