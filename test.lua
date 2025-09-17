@@ -332,11 +332,19 @@ for _, info in ipairs(games) do
     card.MouseLeave:Connect(function()
         TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize}):Play()
     end)
+end
 
-    -- Fade-in card animation
-    task.spawn(function()
-        TweenService:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
-    end)
+-- 🎯 Fade-in từng card theo thứ tự (staggered)
+local cardIndex = 0
+for _, obj in ipairs(container:GetChildren()) do
+    if obj:IsA("Frame") then
+        cardIndex += 1
+        local card = obj
+        task.spawn(function()
+            task.wait(0.05 * (cardIndex-1)) -- delay nhỏ giữa các card
+            TweenService:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+        end)
+    end
 end
 
 -- Nút ẩn/hiện hub
