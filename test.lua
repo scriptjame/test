@@ -289,6 +289,7 @@ local games = {
 for _, info in ipairs(games) do
     local card = Instance.new("Frame", container)
     card.BackgroundColor3 = Color3.fromRGB(24,24,24)
+    card.BackgroundTransparency = 1 -- fade-in start
     Instance.new("UICorner", card).CornerRadius = UDim.new(0,10)
 
     local img = Instance.new("ImageButton", card)
@@ -330,6 +331,11 @@ for _, info in ipairs(games) do
     end)
     card.MouseLeave:Connect(function()
         TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize}):Play()
+    end)
+
+    -- Fade-in card animation
+    task.spawn(function()
+        TweenService:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
     end)
 end
 
