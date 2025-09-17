@@ -1,4 +1,5 @@
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
@@ -209,6 +210,14 @@ local function openBladeBallMenu()
             end)
         end
 
+        -- ===== Thêm hover animation cho nút Blade Ball =====
+        btn.MouseEnter:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.92,0,0,52)}):Play()
+        end)
+        btn.MouseLeave:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.9,0,0,50)}):Play()
+        end)
+
         btn.MouseButton1Click:Connect(function()
             subGui.Enabled = false
             showLoading(3, function()
@@ -245,56 +254,31 @@ local function openBladeBallMenu()
     backBtn.TextColor3 = Color3.fromRGB(255,255,255)
     backBtn.Text = "← Back"
     Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0,8)
+    backBtn.MouseEnter:Connect(function()
+        TweenService:Create(backBtn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.92,0,0,42)}):Play()
+    end)
+    backBtn.MouseLeave:Connect(function()
+        TweenService:Create(backBtn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.9,0,0,40)}):Play()
+    end)
     backBtn.MouseButton1Click:Connect(function()
         subGui:Destroy()
         hubGui.Enabled = true
     end)
+
+    -- ===== Thêm mở animation Blade Ball menu =====
+    frame.Size = frame.Size * 0.8
+    frame.BackgroundTransparency = 1
+    TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,480,0,360), BackgroundTransparency = 0}):Play()
 end
 
--- danh sách game + Discord + YouTube
+-- ===== DANH SÁCH GAME + Discord + YouTube =====
 local games = {
-    {
-        name = "Discord",
-        desc = "Join our Discord community!",
-        img = "rbxassetid://80637427855653",
-        openFn = function() openLink("https://discord.gg/fkDMHngGCk") end
-    },
-    {
-        name = "YouTube",
-        desc = "Subscribe for more scripts!",
-        img = "rbxassetid://95429734677601",
-        openFn = function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end
-    },
-    {
-        name = "Pet Simulator 99",
-        desc = "Script Auto Farm, Dupe Pets, Unlock Areas...",
-        img = "rbxassetid://103879354899468",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script attached yet!", Duration=3})
-        end
-    },
-    {
-        name = "Grow a Garden",
-        desc = "Script Auto Plant, Auto Sell, Auto Upgrade...",
-        img = "rbxassetid://110811575269598",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script attached yet!", Duration=3})
-        end
-    },
-    {
-        name = "Murder Mystery 2",
-        desc = "Script ESP, Auto Farm, Knife Aura...",
-        img = "rbxassetid://120257957010430",
-        openFn = function()
-            game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script attached yet!", Duration=3})
-        end
-    },
-    {
-        name = "Blade Ball",
-        desc = "Auto Parry no miss, Changer Skin, Dupe...",
-        img = "rbxassetid://127537802436978",
-        openFn = openBladeBallMenu
-    }
+    { name = "Discord", desc = "Join our Discord community!", img = "rbxassetid://80637427855653", openFn = function() openLink("https://discord.gg/fkDMHngGCk") end },
+    { name = "YouTube", desc = "Subscribe for more scripts!", img = "rbxassetid://95429734677601", openFn = function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end },
+    { name = "Pet Simulator 99", desc = "Script Auto Farm, Dupe Pets, Unlock Areas...", img = "rbxassetid://103879354899468", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script attached yet!", Duration=3}) end },
+    { name = "Grow a Garden", desc = "Script Auto Plant, Auto Sell, Auto Upgrade...", img = "rbxassetid://110811575269598", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script attached yet!", Duration=3}) end },
+    { name = "Murder Mystery 2", desc = "Script ESP, Auto Farm, Knife Aura...", img = "rbxassetid://120257957010430", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script attached yet!", Duration=3}) end },
+    { name = "Blade Ball", desc = "Auto Parry no miss, Changer Skin, Dupe...", img = "rbxassetid://127537802436978", openFn = openBladeBallMenu }
 }
 
 for _, info in ipairs(games) do
@@ -333,9 +317,18 @@ for _, info in ipairs(games) do
     local sizeLimit = Instance.new("UISizeConstraint", card)
     sizeLimit.MinSize = Vector2.new(160, 120)
     sizeLimit.MaxSize = Vector2.new(320, 260)
+
+    -- ===== hover effect card =====
+    local originalSize = card.Size
+    card.MouseEnter:Connect(function()
+        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize + UDim2.new(0,8,0,8)}):Play()
+    end)
+    card.MouseLeave:Connect(function()
+        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize}):Play()
+    end)
 end
 
--- Nút ẩn/hiện hub với hiệu ứng fade
+-- Nút ẩn/hiện hub (ẩn hiện container + chữ vàng)
 local toggleBtn = Instance.new("TextButton", hubGui)
 toggleBtn.Size = UDim2.new(0,40,0,40)
 toggleBtn.Position = UDim2.new(0, 10, 1, -80)
@@ -347,44 +340,10 @@ toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
 toggleBtn.ZIndex = 100
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 
-local function fadeObject(obj, startTransparency, endTransparency, duration)
-    duration = duration or 0.25
-    local elapsed = 0
-    local step = 0.03
-    task.spawn(function()
-        while elapsed < duration do
-            elapsed = elapsed + step
-            local alpha = elapsed/duration
-            local value = startTransparency + (endTransparency - startTransparency) * alpha
-            if obj:IsA("TextLabel") or obj:IsA("TextButton") then
-                obj.TextTransparency = value
-            else
-                obj.BackgroundTransparency = value
-            end
-            task.wait(step)
-        end
-        if obj:IsA("TextLabel") or obj:IsA("TextButton") then
-            obj.TextTransparency = endTransparency
-        else
-            obj.BackgroundTransparency = endTransparency
-        end
-    end)
-end
-
+local toggleVisible = true
 toggleBtn.MouseButton1Click:Connect(function()
-    if container.Visible then
-        fadeObject(container, 0, 1, 0.25)
-        fadeObject(infoLabel, 0, 1, 0.25)
-        task.delay(0.25, function()
-            container.Visible = false
-            backgroundFrame.Visible = false
-            infoLabel.Visible = false
-        end)
-    else
-        container.Visible = true
-        backgroundFrame.Visible = true
-        infoLabel.Visible = true
-        fadeObject(container, 1, 0, 0.25)
-        fadeObject(infoLabel, 1, 0, 0.25)
-    end
+    toggleVisible = not toggleVisible
+    TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0,0,0,0) or UDim2.new(-1,0,0,0)}):Play()
+    TweenService:Create(backgroundFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0,20,0.06,0) or UDim2.new(-1,20,0.06,0)}):Play()
+    TweenService:Create(infoLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0.2,0,0.6,0) or UDim2.new(-1,0,0.6,0)}):Play()
 end)
