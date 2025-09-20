@@ -5,7 +5,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 -- chạy script chính NGAY LẬP TỨC
 pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/newbb/refs/heads/main/tryV3.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bbnew/refs/heads/main/V2.lua"))()
 end)
 
 -- xoá hub cũ nếu có
