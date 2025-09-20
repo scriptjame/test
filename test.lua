@@ -74,8 +74,8 @@ infoLabel.TextYAlignment = Enum.TextYAlignment.Center
 infoLabel.ZIndex = 10
 infoLabel.TextTransparency = 1 -- fade-in start
 
--- ✨ Thêm quảng bá TikTok
-local tiktokLabel = Instance.new("TextLabel", hubGui)
+-- ✨ Thêm quảng bá TikTok (click được)
+local tiktokLabel = Instance.new("TextButton", hubGui)
 tiktokLabel.Size = UDim2.new(0.6,0,0,30)
 tiktokLabel.Position = UDim2.new(0.2,0,0.65,0)
 tiktokLabel.BackgroundTransparency = 1
@@ -97,6 +97,11 @@ task.spawn(function()
         tiktokLabel.TextColor3 = Color3.fromHSV(hue/360, 0.8, 1)
         task.wait(0.05)
     end
+end)
+
+-- Click để mở/copy TikTok
+tiktokLabel.MouseButton1Click:Connect(function()
+    openLink("https://www.tiktok.com/@evenher6")
 end)
 
 -- Fade-in background + text
