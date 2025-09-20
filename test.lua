@@ -74,6 +74,31 @@ infoLabel.TextYAlignment = Enum.TextYAlignment.Center
 infoLabel.ZIndex = 10
 infoLabel.TextTransparency = 1 -- fade-in start
 
+-- ✨ Thêm quảng bá TikTok
+local tiktokLabel = Instance.new("TextLabel", hubGui)
+tiktokLabel.Size = UDim2.new(0.6,0,0,30)
+tiktokLabel.Position = UDim2.new(0.2,0,0.65,0)
+tiktokLabel.BackgroundTransparency = 1
+tiktokLabel.Font = Enum.Font.GothamBold
+tiktokLabel.TextSize = 20
+tiktokLabel.TextColor3 = Color3.fromRGB(255, 0, 100)
+tiktokLabel.Text = "Follow my TikTok: @evenher6"
+tiktokLabel.TextStrokeTransparency = 0.5
+tiktokLabel.TextXAlignment = Enum.TextXAlignment.Center
+tiktokLabel.TextYAlignment = Enum.TextYAlignment.Center
+tiktokLabel.ZIndex = 10
+tiktokLabel.TextTransparency = 0
+
+-- Hiệu ứng đổi màu TikTok
+task.spawn(function()
+    local hue = 0
+    while tiktokLabel.Parent do
+        hue = (hue + 1) % 360
+        tiktokLabel.TextColor3 = Color3.fromHSV(hue/360, 0.8, 1)
+        task.wait(0.05)
+    end
+end)
+
 -- Fade-in background + text
 TweenService:Create(backgroundFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3}):Play()
 TweenService:Create(infoLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
@@ -230,8 +255,8 @@ local function openBladeBallMenu()
                     if mode == "premium" then
                         game.StarterGui:SetCore("SendNotification", {
                             Title = text,
-                            Text = "Coming soon",
-                            Duration = 3
+                            Text = "Follow my TikTok @evenher6 and stay tuned!",
+                            Duration = 4
                         })
                     else
                         loadstring(game:HttpGet(url))()
@@ -244,9 +269,10 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- ✅ ĐÃ XOÁ "Argon Hub X"
+    -- ✅ Menu Scripts
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
+    createScriptBtn("Makzinn Hub", "https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
     createScriptBtn("Allusive", nil, "premium")
     createScriptBtn("UwU", nil, "premium")
 
@@ -364,4 +390,5 @@ toggleBtn.MouseButton1Click:Connect(function()
     TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0,0,0,0) or UDim2.new(-1,0,0,0)}):Play()
     TweenService:Create(backgroundFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0,20,0.06,0) or UDim2.new(-1,20,0.06,0)}):Play()
     TweenService:Create(infoLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0.2,0,0.6,0) or UDim2.new(-1,0,0.6,0)}):Play()
+    TweenService:Create(tiktokLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0.2,0,0.65,0) or UDim2.new(-1,0,0.65,0)}):Play()
 end)
