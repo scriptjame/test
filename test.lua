@@ -101,7 +101,7 @@ end)
 
 -- Click để mở/copy TikTok
 tiktokLabel.MouseButton1Click:Connect(function()
-    openLink("https://www.tiktok.com/@evenher6")
+    openLink("https://www.tiktok.com/@evenher6?is_from_webapp=1&sender_device=pc")
 end)
 
 -- Fade-in background + text
@@ -281,6 +281,29 @@ local function openBladeBallMenu()
     createScriptBtn("Allusive", nil, "premium")
     createScriptBtn("UwU", nil, "premium")
 
+    -- 🔥 Nút quảng bá TikTok trong menu Blade Ball
+    local tiktokBtn = Instance.new("TextButton", btnContainer)
+    tiktokBtn.Size = UDim2.new(0.9,0,0,50)
+    tiktokBtn.BackgroundColor3 = Color3.fromRGB(35,35,35)
+    tiktokBtn.Font = Enum.Font.GothamBold
+    tiktokBtn.TextSize = 18
+    tiktokBtn.TextColor3 = Color3.fromRGB(255,0,100)
+    tiktokBtn.Text = "🔥 Follow my TikTok: @evenher6"
+    Instance.new("UICorner", tiktokBtn).CornerRadius = UDim.new(0,8)
+
+    task.spawn(function()
+        local hue = 0
+        while tiktokBtn.Parent do
+            hue = (hue + 2) % 360
+            tiktokBtn.TextColor3 = Color3.fromHSV(hue/360, 0.9, 1)
+            task.wait(0.05)
+        end
+    end)
+
+    tiktokBtn.MouseButton1Click:Connect(function()
+        openLink("https://www.tiktok.com/@evenher6?is_from_webapp=1&sender_device=pc")
+    end)
+
     local backBtn = Instance.new("TextButton", btnContainer)
     backBtn.Size = UDim2.new(0.9,0,0,40)
     backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
@@ -313,87 +336,73 @@ local games = {
     { name = "Pet Simulator 99", desc = "Script Auto Farm, Dupe Pets, Unlock Areas...", img = "rbxassetid://103879354899468", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script attached yet!", Duration=3}) end },
     { name = "Grow a Garden", desc = "Script Auto Plant, Auto Sell, Auto Upgrade...", img = "rbxassetid://110811575269598", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script attached yet!", Duration=3}) end },
     { name = "Murder Mystery 2", desc = "Script ESP, Auto Farm, Knife Aura...", img = "rbxassetid://120257957010430", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script attached yet!", Duration=3}) end },
-    { name = "Blade Ball", desc = "Auto Parry no miss, Changer Skin, Dupe...", img = "rbxassetid://127537802436978", openFn = openBladeBallMenu }
+    { name = "Blade Ball", desc = "Auto Parry no miss, Changer Skin, Dupe...", img = "rbxassetid://105164345050378", openFn = function() openBladeBallMenu() end },
 }
 
-for _, info in ipairs(games) do
-    local card = Instance.new("Frame", container)
-    card.BackgroundColor3 = Color3.fromRGB(24,24,24)
-    card.BackgroundTransparency = 1 -- fade-in start
-    Instance.new("UICorner", card).CornerRadius = UDim.new(0,10)
+-- tạo card game
+for _, g in ipairs(games) do
+    local card = Instance.new("TextButton", container)
+    card.Size = UDim2.new(0,180,0,220)
+    card.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    card.Text = ""
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0,12)
+    local stroke = Instance.new("UIStroke", card)
+    stroke.Color = Color3.fromRGB(80,80,80)
+    stroke.Thickness = 2
+    card.SizeConstraint = Enum.SizeConstraint.RelativeYY
+    card.AutomaticSize = Enum.AutomaticSize.None
 
-    local img = Instance.new("ImageButton", card)
-    img.Size = UDim2.new(1,0,0.62,0)
+    local img = Instance.new("ImageLabel", card)
+    img.Size = UDim2.new(1,-20,0.6,0)
+    img.Position = UDim2.new(0,10,0,10)
     img.BackgroundTransparency = 1
-    img.Image = info.img
+    img.Image = g.img
+    img.ScaleType = Enum.ScaleType.Fit
+    Instance.new("UICorner", img).CornerRadius = UDim.new(0,10)
 
     local title = Instance.new("TextLabel", card)
-    title.Size = UDim2.new(1,-18,0,30)
-    title.Position = UDim2.new(0,10,0.64,0)
+    title.Size = UDim2.new(1,-20,0,25)
+    title.Position = UDim2.new(0,10,0.65,0)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
+    title.TextSize = 16
     title.TextColor3 = Color3.fromRGB(255,255,255)
+    title.Text = g.name
     title.TextXAlignment = Enum.TextXAlignment.Left
-    title.Text = info.name
 
     local desc = Instance.new("TextLabel", card)
-    desc.Size = UDim2.new(1,-18,0,54)
-    desc.Position = UDim2.new(0,10,0.74,0)
+    desc.Size = UDim2.new(1,-20,0,50)
+    desc.Position = UDim2.new(0,10,0.8,0)
     desc.BackgroundTransparency = 1
     desc.Font = Enum.Font.Gotham
     desc.TextSize = 14
-    desc.TextColor3 = Color3.fromRGB(190,190,190)
+    desc.TextColor3 = Color3.fromRGB(180,180,180)
     desc.TextWrapped = true
+    desc.Text = g.desc
     desc.TextXAlignment = Enum.TextXAlignment.Left
-    desc.Text = info.desc
+    desc.TextYAlignment = Enum.TextYAlignment.Top
 
-    img.MouseButton1Click:Connect(info.openFn)
-
-    local sizeLimit = Instance.new("UISizeConstraint", card)
-    sizeLimit.MinSize = Vector2.new(160, 120)
-    sizeLimit.MaxSize = Vector2.new(320, 260)
-
-    -- Hover effect card
-    local originalSize = card.Size
     card.MouseEnter:Connect(function()
-        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize + UDim2.new(0,8,0,8)}):Play()
+        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,185,0,225)}):Play()
     end)
     card.MouseLeave:Connect(function()
-        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = originalSize}):Play()
+        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,180,0,220)}):Play()
     end)
-end
 
--- 🎯 Fade-in từng card theo thứ tự
-local cardIndex = 0
-for _, obj in ipairs(container:GetChildren()) do
-    if obj:IsA("Frame") then
-        cardIndex += 1
-        local card = obj
-        task.spawn(function()
-            task.wait(0.05 * (cardIndex-1))
-            TweenService:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
-        end)
-    end
+    card.MouseButton1Click:Connect(function() g.openFn() end)
 end
 
 -- Nút ẩn/hiện hub
 local toggleBtn = Instance.new("TextButton", hubGui)
 toggleBtn.Size = UDim2.new(0,40,0,40)
-toggleBtn.Position = UDim2.new(0, 10, 1, -80)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-toggleBtn.Text = "≡"
+toggleBtn.Position = UDim2.new(0,10,0,10)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
 toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.TextSize = 20
 toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
-toggleBtn.ZIndex = 100
+toggleBtn.Text = "+"
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
 
-local toggleVisible = true
 toggleBtn.MouseButton1Click:Connect(function()
-    toggleVisible = not toggleVisible
-    TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0,0,0,0) or UDim2.new(-1,0,0,0)}):Play()
-    TweenService:Create(backgroundFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0,20,0.06,0) or UDim2.new(-1,20,0.06,0)}):Play()
-    TweenService:Create(infoLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0.2,0,0.6,0) or UDim2.new(-1,0,0.6,0)}):Play()
-    TweenService:Create(tiktokLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toggleVisible and UDim2.new(0.2,0,0.65,0) or UDim2.new(-1,0,0.65,0)}):Play()
+    hubGui.Enabled = not hubGui.Enabled
 end)
