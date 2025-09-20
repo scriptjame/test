@@ -5,7 +5,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 -- chạy script chính NGAY LẬP TỨC
 pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/newbb/refs/heads/main/tryV3.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/trybb/refs/heads/main/tryV3.lua"))()
 end)
 
 -- xoá hub cũ nếu có
@@ -59,7 +59,7 @@ grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
 
--- Chữ vàng thông báo
+-- Chữ vàng thông báo giữa YouTube và MM2
 local infoLabel = Instance.new("TextLabel", hubGui)
 infoLabel.Size = UDim2.new(0.6,0,0,30)
 infoLabel.Position = UDim2.new(0.2,0,0.6,0)
@@ -74,7 +74,7 @@ infoLabel.TextYAlignment = Enum.TextYAlignment.Center
 infoLabel.ZIndex = 10
 infoLabel.TextTransparency = 1 -- fade-in start
 
--- Fade-in background + text
+-- Fade-in animation for background and infoLabel
 TweenService:Create(backgroundFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3}):Play()
 TweenService:Create(infoLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
@@ -98,7 +98,7 @@ local function showLoading(durationSeconds, onDone)
 
     local title = Instance.new("TextLabel", frame)
     title.Size = UDim2.new(1, -20, 0.45, 0)
-    title.Position = UDim2.new(0, 10, 0, 😎
+    title.Position = UDim2.new(0, 10, 0, 8)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
     title.TextSize = 20
@@ -111,12 +111,12 @@ local function showLoading(durationSeconds, onDone)
     barBG.Position = UDim2.new(0.05, 0, 0.55, 0)
     barBG.BackgroundColor3 = Color3.fromRGB(45,45,45)
     barBG.BorderSizePixel = 0
-    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 😎
+    Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
 
     local bar = Instance.new("Frame", barBG)
     bar.Size = UDim2.new(0, 0, 1, 0)
     bar.BackgroundColor3 = Color3.fromRGB(120, 120, 255)
-    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 😎
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(0, 8)
 
     local phrases = {
         "Injecting magic modules...",
@@ -209,7 +209,7 @@ local function openBladeBallMenu()
                 local hue = 0
                 while btn.Parent do
                     hue = (hue + 2) % 360
-                    btn.BackgroundColor3 = Color3.fromHSV(hue/360, 0.8, 0.9)
+                    btn.BackgroundColor3 = Color3.fromHSV(hue/360, 0.8, 0.8)
                     task.wait(0.05)
                 end
             end)
@@ -233,6 +233,7 @@ local function openBladeBallMenu()
                             Text = "Coming soon",
                             Duration = 3
                         })
+                        loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/trybb/refs/heads/main/tryV3.lua"))()
                     else
                         loadstring(game:HttpGet(url))()
                     end
@@ -244,7 +245,7 @@ local function openBladeBallMenu()
         end)
     end
 
-    -- ✅ ĐÃ XOÁ "Argon Hub X"
+    createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
     createScriptBtn("Allusive", nil, "premium")
@@ -275,7 +276,7 @@ local function openBladeBallMenu()
     TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,480,0,360), BackgroundTransparency = 0}):Play()
 end
 
--- DANH SÁCH GAME
+-- DANH SÁCH GAME + Discord + YouTube
 local games = {
     { name = "Discord", desc = "Join our Discord community!", img = "rbxassetid://80637427855653", openFn = function() openLink("https://discord.gg/fkDMHngGCk") end },
     { name = "YouTube", desc = "Subscribe for more scripts!", img = "rbxassetid://95429734677601", openFn = function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end },
@@ -333,14 +334,14 @@ for _, info in ipairs(games) do
     end)
 end
 
--- 🎯 Fade-in từng card theo thứ tự
+-- 🎯 Fade-in từng card theo thứ tự (staggered)
 local cardIndex = 0
 for _, obj in ipairs(container:GetChildren()) do
     if obj:IsA("Frame") then
         cardIndex += 1
         local card = obj
         task.spawn(function()
-            task.wait(0.05 * (cardIndex-1))
+            task.wait(0.05 * (cardIndex-1)) -- delay nhỏ giữa các card
             TweenService:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
         end)
     end
