@@ -51,14 +51,12 @@ local container = Instance.new("Frame", backgroundFrame)
 container.Size = UDim2.new(1, 0, 1, 0)
 container.Position = UDim2.new(0, 0, 0, 0)
 container.BackgroundTransparency = 1
-
 local grid = Instance.new("UIGridLayout", container)
 grid.CellSize = UDim2.new(0.25, 0, 0.3, 0)
 grid.CellPadding = UDim2.new(0.02, 0, 0.02, 0)
 grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
 grid.VerticalAlignment = Enum.VerticalAlignment.Top
 grid.FillDirectionMaxCells = 4
-
 -- Chữ vàng thông báo
 local infoLabel = Instance.new("TextLabel", hubGui)
 infoLabel.Size = UDim2.new(0.6,0,0,30)
@@ -121,7 +119,6 @@ local function showLoading(durationSeconds, onDone)
     frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
-
     local stroke = Instance.new("UIStroke", frame)
     stroke.Color = Color3.fromRGB(120, 120, 255)
     stroke.Thickness = 2
@@ -155,9 +152,9 @@ local function showLoading(durationSeconds, onDone)
         "Loading GUI components...",
         "Almost ready — hold on..."
     }
+
     local steps = 100
     local stepTime = durationSeconds / steps
-
     task.spawn(function()
         for i = 1, steps do
             local pct = i/steps
@@ -169,7 +166,6 @@ local function showLoading(durationSeconds, onDone)
         if onDone then onDone() end
     end)
 end
-
 -- Blade Ball menu phụ
 local function openBladeBallMenu()
     hubGui.Enabled = false
@@ -184,7 +180,6 @@ local function openBladeBallMenu()
     frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
-
     local stroke = Instance.new("UIStroke", frame)
     stroke.Color = Color3.fromRGB(200,200,200)
     stroke.Thickness = 2
@@ -203,14 +198,12 @@ local function openBladeBallMenu()
     btnContainer.Size = UDim2.new(1, 0, 1, -60)
     btnContainer.Position = UDim2.new(0, 0, 0, 50)
     btnContainer.BackgroundTransparency = 1
-
     local list = Instance.new("UIListLayout", btnContainer)
     list.Padding = UDim.new(0,10)
     list.FillDirection = Enum.FillDirection.Vertical
     list.HorizontalAlignment = Enum.HorizontalAlignment.Center
     list.VerticalAlignment = Enum.VerticalAlignment.Top
     list.SortOrder = Enum.SortOrder.LayoutOrder
-
     list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
         local newH = list.AbsoluteContentSize.Y + 80
         if newH < 160 then newH = 160 end
@@ -229,7 +222,6 @@ local function openBladeBallMenu()
         btn.TextColor3 = Color3.fromRGB(255,255,255)
         btn.Text = "Script - "..text
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
-
         local strokeBtn = Instance.new("UIStroke", btn)
         strokeBtn.Color = Color3.fromRGB(180,180,180)
         strokeBtn.Thickness = 1
@@ -290,7 +282,6 @@ local function openBladeBallMenu()
     tiktokBtn.TextColor3 = Color3.fromRGB(255,0,100)
     tiktokBtn.Text = "🔥 Follow my TikTok: @evenher6"
     Instance.new("UICorner", tiktokBtn).CornerRadius = UDim.new(0,8)
-
     task.spawn(function()
         local hue = 0
         while tiktokBtn.Parent do
@@ -299,11 +290,11 @@ local function openBladeBallMenu()
             task.wait(0.05)
         end
     end)
-
     tiktokBtn.MouseButton1Click:Connect(function()
         openLink("https://www.tiktok.com/@evenher6?is_from_webapp=1&sender_device=pc")
     end)
 
+    -- 🔙 Back button
     local backBtn = Instance.new("TextButton", btnContainer)
     backBtn.Size = UDim2.new(0.9,0,0,40)
     backBtn.BackgroundColor3 = Color3.fromRGB(50,0,0)
@@ -326,83 +317,131 @@ local function openBladeBallMenu()
     -- Open animation Blade Ball menu
     frame.Size = frame.Size * 0.8
     frame.BackgroundTransparency = 1
-    TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,480,0,360), BackgroundTransparency = 0}):Play()
+    TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0,480,0,360),
+        BackgroundTransparency = 0
+    }):Play()
 end
-
--- DANH SÁCH GAME
+-- Danh sách game
 local games = {
-    { name = "Discord", desc = "Join our Discord community!", img = "rbxassetid://80637427855653", openFn = function() openLink("https://discord.gg/fkDMHngGCk") end },
-    { name = "YouTube", desc = "Subscribe for more scripts!", img = "rbxassetid://95429734677601", openFn = function() openLink("https://www.youtube.com/@user-qe3dv7iy2j") end },
-    { name = "Pet Simulator 99", desc = "Script Auto Farm, Dupe Pets, Unlock Areas...", img = "rbxassetid://103879354899468", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="Pet Sim 99", Text="No script attached yet!", Duration=3}) end },
-    { name = "Grow a Garden", desc = "Script Auto Plant, Auto Sell, Auto Upgrade...", img = "rbxassetid://110811575269598", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="Grow a Garden", Text="No script attached yet!", Duration=3}) end },
-    { name = "Murder Mystery 2", desc = "Script ESP, Auto Farm, Knife Aura...", img = "rbxassetid://120257957010430", openFn = function() game.StarterGui:SetCore("SendNotification", {Title="MM2", Text="No script attached yet!", Duration=3}) end },
-    { name = "Blade Ball", desc = "Auto Parry no miss, Changer Skin, Dupe...", img = "rbxassetid://105164345050378", openFn = function() openBladeBallMenu() end },
+    {name = "Blade Ball", image = "rbxassetid://18688083865", action = openBladeBallMenu},
+    {name = "Blox Fruits", image = "rbxassetid://18688083865"},
+    {name = "King Legacy", image = "rbxassetid://18688083865"},
+    {name = "Anime Dungeon Fighters", image = "rbxassetid://18688083865"},
+    {name = "Strongman Simulator", image = "rbxassetid://18688083865"},
+    {name = "Pet Simulator 99", image = "rbxassetid://18688083865"}
 }
 
--- tạo card game
-for _, g in ipairs(games) do
-    local card = Instance.new("TextButton", container)
-    card.Size = UDim2.new(0,180,0,220)
+-- Tạo card game
+for _, info in ipairs(games) do
+    local card = Instance.new("Frame", container)
+    card.Size = UDim2.new(0, 200, 0, 260)
     card.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    card.Text = ""
+    card.BorderSizePixel = 0
     Instance.new("UICorner", card).CornerRadius = UDim.new(0,12)
     local stroke = Instance.new("UIStroke", card)
-    stroke.Color = Color3.fromRGB(80,80,80)
-    stroke.Thickness = 2
-    card.SizeConstraint = Enum.SizeConstraint.RelativeYY
-    card.AutomaticSize = Enum.AutomaticSize.None
+    stroke.Color = Color3.fromRGB(255,255,255)
+    stroke.Thickness = 1
 
     local img = Instance.new("ImageLabel", card)
-    img.Size = UDim2.new(1,-20,0.6,0)
-    img.Position = UDim2.new(0,10,0,10)
+    img.Size = UDim2.new(1,0,0.65,0)
     img.BackgroundTransparency = 1
-    img.Image = g.img
-    img.ScaleType = Enum.ScaleType.Fit
-    Instance.new("UICorner", img).CornerRadius = UDim.new(0,10)
+    img.Image = info.image
 
-    local title = Instance.new("TextLabel", card)
-    title.Size = UDim2.new(1,-20,0,25)
-    title.Position = UDim2.new(0,10,0.65,0)
-    title.BackgroundTransparency = 1
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextColor3 = Color3.fromRGB(255,255,255)
-    title.Text = g.name
-    title.TextXAlignment = Enum.TextXAlignment.Left
+    local label = Instance.new("TextLabel", card)
+    label.Size = UDim2.new(1, -20, 0, 40)
+    label.Position = UDim2.new(0, 10, 0.65, 10)
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 18
+    label.TextColor3 = Color3.fromRGB(255,255,255)
+    label.Text = info.name
 
-    local desc = Instance.new("TextLabel", card)
-    desc.Size = UDim2.new(1,-20,0,50)
-    desc.Position = UDim2.new(0,10,0.8,0)
-    desc.BackgroundTransparency = 1
-    desc.Font = Enum.Font.Gotham
-    desc.TextSize = 14
-    desc.TextColor3 = Color3.fromRGB(180,180,180)
-    desc.TextWrapped = true
-    desc.Text = g.desc
-    desc.TextXAlignment = Enum.TextXAlignment.Left
-    desc.TextYAlignment = Enum.TextYAlignment.Top
+    local btn = Instance.new("TextButton", card)
+    btn.Size = UDim2.new(0.8,0,0,36)
+    btn.Position = UDim2.new(0.1,0,1,-46)
+    btn.BackgroundColor3 = Color3.fromRGB(50,50,50)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Text = "Open"
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+    local strokeBtn = Instance.new("UIStroke", btn)
+    strokeBtn.Color = Color3.fromRGB(180,180,180)
+    strokeBtn.Thickness = 1
 
-    card.MouseEnter:Connect(function()
-        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,185,0,225)}):Play()
+    -- Hover
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.82,0,0,38)}):Play()
     end)
-    card.MouseLeave:Connect(function()
-        TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0,180,0,220)}):Play()
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.8,0,0,36)}):Play()
     end)
 
-    card.MouseButton1Click:Connect(function() g.openFn() end)
+    btn.MouseButton1Click:Connect(function()
+        if info.action then
+            info.action()
+        else
+            showLoading(3, function()
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Info",
+                    Text = "No script available for "..info.name,
+                    Duration = 3
+                })
+            end)
+        end
+    end)
 end
 
--- Nút ẩn/hiện hub
-local toggleBtn = Instance.new("TextButton", hubGui)
-toggleBtn.Size = UDim2.new(0,40,0,40)
-toggleBtn.Position = UDim2.new(0,10,0,10)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+-- 🔘 Nút ẩn/hiện GUI
+local toggleBtn = Instance.new("TextButton", playerGui)
+toggleBtn.Name = "ToggleHubBtn"
+toggleBtn.Size = UDim2.new(0, 40, 0, 40)
+toggleBtn.Position = UDim2.new(0, 10, 0.5, -20)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(0,0,0)
+toggleBtn.BackgroundTransparency = 0.3
+toggleBtn.Text = "≡"
 toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.TextSize = 20
 toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
-toggleBtn.Text = "+"
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1,0)
+local strokeToggle = Instance.new("UIStroke", toggleBtn)
+strokeToggle.Color = Color3.fromRGB(200,200,200)
+strokeToggle.Thickness = 2
+
+-- Nút di chuyển được
+local dragging, dragInput, dragStart, startPos
+local UIS = game:GetService("UserInputService")
+
+toggleBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = toggleBtn.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+toggleBtn.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        toggleBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
 
 toggleBtn.MouseButton1Click:Connect(function()
     hubGui.Enabled = not hubGui.Enabled
 end)
+
+-- ✨ Mặc định ẩn hub khi vào
+hubGui.Enabled = false
