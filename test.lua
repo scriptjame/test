@@ -1,3 +1,4 @@
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
@@ -71,6 +72,26 @@ infoLabel.TextTransparency = 1
 -- Fade-in animation for background and infoLabel
 TweenService:Create(backgroundFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0.3}):Play()
 TweenService:Create(infoLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+
+-- Quảng bá TikTok clickable dưới infoLabel
+local tiktokPromo = Instance.new("TextButton", hubGui)
+tiktokPromo.Size = UDim2.new(0.6,0,0,26)
+tiktokPromo.Position = UDim2.new(0.2,0,0.58,0)
+tiktokPromo.BackgroundTransparency = 1
+tiktokPromo.Font = Enum.Font.GothamBold
+tiktokPromo.TextSize = 16
+tiktokPromo.TextColor3 = Color3.fromRGB(255,105,180)
+tiktokPromo.TextStrokeTransparency = 0.5
+tiktokPromo.Text = "Follow my TikTok for more scripts! @evenher6"
+tiktokPromo.ZIndex = 10
+tiktokPromo.TextTransparency = 1
+tiktokPromo.MouseButton1Click:Connect(function()
+    openLink("https://www.tiktok.com/@evenher6?is_from_webapp=1&sender_device=pc")
+end)
+
+-- Fade-in cho tiktokPromo
+TweenService:Create(tiktokPromo, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+
 
 -- loading helper
 local function showLoading(durationSeconds, onDone)
