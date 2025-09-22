@@ -1,4 +1,3 @@
-
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
@@ -74,7 +73,7 @@ TweenService:Create(backgroundFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, E
 TweenService:Create(infoLabel, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
 
 -- Quảng bá TikTok clickable dưới infoLabel
-local tiktokPromo = Instance.new("TextButton", hubGui)
+local tiktokPromo = Instance.new("TextButton", backgroundFrame)
 tiktokPromo.Size = UDim2.new(0.6,0,0,26)
 tiktokPromo.Position = UDim2.new(0.2,0,0.58,0)
 tiktokPromo.BackgroundTransparency = 1
@@ -263,6 +262,7 @@ local function openBladeBallMenu()
     end
 
     -- tạo 4 script + nút mới ngay dưới Allusive & UwU
+    createScriptBtn("Makzinn Hub", "https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
     createScriptBtn("Sinaloa Hub", "https://api.luarmor.net/files/v3/loaders/63e751ce9ac5e9bcb4e7246c9775af78.lua")
     createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
     createScriptBtn("Allusive", nil, "premium")
