@@ -142,9 +142,9 @@ local function createScriptBtn(text, url, premium, copyTikTok)
 end
 
 -- 🟢 Scripts
-createScriptBtn("Makzinn Hub", "")
-createScriptBtn("MM2 Autofarm", "")
-createScriptBtn("MM2 ESP", "")
+createScriptBtn("Yayayya Hub", "https://raw.githubusercontent.com/GuizzyisbackV2LOL/mm2solara/main/yayayya.lua")
+createScriptBtn("wwfom1bX Hub", "https://pastefy.app/wwfom1bX/raw")
+createScriptBtn("Vexon Hub", "https://raw.githubusercontent.com/DiosDi/VexonHub/refs/heads/main/VexonHub")
 createScriptBtn("MM2 Knife Reach", "")
 createScriptBtn("Allusive (Premium)", nil, true, true)
 createScriptBtn("UwU Hub (Premium)", nil, true, true)
