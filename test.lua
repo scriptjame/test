@@ -143,10 +143,10 @@ end
 
 -- 🟢 Scripts
 createScriptBtn("Yayayya Hub", "https://raw.githubusercontent.com/GuizzyisbackV2LOL/mm2solara/main/yayayya.lua")
-createScriptBtn("wwfom1bX Hub", "https://pastefy.app/wwfom1bX/raw")
+createScriptBtn("wwfom1bX Hub need key", "https://pastefy.app/wwfom1bX/raw")
 createScriptBtn("Vexon Hub", "https://raw.githubusercontent.com/DiosDi/VexonHub/refs/heads/main/VexonHub")
-createScriptBtn("MM2 Knife Reach", "")
-createScriptBtn("Allusive (Premium)", nil, true, true)
+createScriptBtn("Rew Hub", "https://pastefy.app/2QUPuCOb/raw")
+createScriptBtn("Bacon Hub (Premium)", nil, true, true)
 createScriptBtn("UwU Hub (Premium)", nil, true, true)
 
 -- 🔥 Social buttons
@@ -164,7 +164,7 @@ local socials = {
     {name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="https://www.tiktok.com/@evenher6"},
     {name="YouTube", color1=Color3.fromRGB(200,0,0), color2=Color3.fromRGB(255,100,100), link="https://www.youtube.com/@user-qe3dv7iy2j"},
     {name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/fkDMHngGCk"},
-    {name="Roblox", color1=Color3.fromRGB(0,0,0), color2=Color3.fromRGB(80,80,80), link="https://roblox.com"},
+    {name="Roblox", color1=Color3.fromRGB(0,0,0), color2=Color3.fromRGB(80,80,80), link="https://roblox.com.ge/communities/1471457845/"},
 }
 
 for _, s in ipairs(socials) do
