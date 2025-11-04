@@ -142,12 +142,11 @@ local function createScriptBtn(text, url, premium, copyTikTok)
 end
 
 -- 🟢 Scripts
-createScriptBtn("Yayayya Hub", "https://raw.githubusercontent.com/GuizzyisbackV2LOL/mm2solara/main/yayayya.lua")
-createScriptBtn("wwfom1bX Hub need key", "https://pastefy.app/wwfom1bX/raw")
+createScriptBtn("Horizon Hub need key", "https://pastefy.app/wwfom1bX/raw")
 createScriptBtn("Vexon Hub", "https://raw.githubusercontent.com/DiosDi/VexonHub/refs/heads/main/VexonHub")
 createScriptBtn("Rew Hub", "https://pastefy.app/2QUPuCOb/raw")
 createScriptBtn("Bacon Hub (Premium)", nil, true, true)
-createScriptBtn("UwU Hub (Premium)", nil, true, true)
+createScriptBtn("Vertex Hub (Premium)", nil, true, true)
 
 -- 🔥 Social buttons
 local socialFrame = Instance.new("Frame", frame)
