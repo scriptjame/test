@@ -142,7 +142,7 @@ local function createScriptBtn(text, url, premium, copyTikTok)
 end
 
 -- 🟢 Scripts
-createScriptBtn("Project", "https://raw.githubusercontent.com/CycleScripts/Official/refs/heads/main/freemium")
+createScriptBtn("Project Hub", "https://raw.githubusercontent.com/CycleScripts/Official/refs/heads/main/freemium")
 createScriptBtn("Horizon Hub need key", "https://pastefy.app/wwfom1bX/raw")
 createScriptBtn("Vexon Hub", "https://raw.githubusercontent.com/DiosDi/VexonHub/refs/heads/main/VexonHub")
 createScriptBtn("Rew Hub", "https://pastefy.app/2QUPuCOb/raw")
