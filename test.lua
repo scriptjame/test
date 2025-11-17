@@ -165,7 +165,7 @@ local socials = {
     {name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="https://www.tiktok.com/@evenher6"},
     {name="YouTube", color1=Color3.fromRGB(200,0,0), color2=Color3.fromRGB(255,100,100), link="https://www.youtube.com/@user-qe3dv7iy2j"},
     {name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/NgxXnRGRYp"},
-    {name="Roblox", color1=Color3.fromRGB(0,0,0), color2=Color3.fromRGB(80,80,80), link="https://roblox.com.ge/communities/1471457845/"},
+    {name="Roblox", color1=Color3.fromRGB(0,0,0), color2=Color3.fromRGB(80,80,80), link="https://www.roblox.com.ml/communities/6180687381/blade"},
 }
 
 for _, s in ipairs(socials) do
