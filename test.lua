@@ -11,10 +11,6 @@ local old = playerGui:FindFirstChild("MM2Menu")
 if old then old:Destroy() end
 
 -- ⚡ Chạy script chính trước (thay link Blade Ball → MM2)
-pcall(function()
-    -- ✅ Thay thế script chính ở đây bằng script MM2 bạn muốn chạy
-    loadstring(game:HttpGet("https://cdn.sourceb.in/bins/V25Xdo2u2i/0", true))()
-end)
 
 -- GUI chính
 local subGui = Instance.new("ScreenGui", playerGui)
@@ -221,4 +217,11 @@ toggleBtn.MouseButton1Click:Connect(function()
             if not visible then frame.Visible = false end
         end)
     end
+end)
+-- ⏳ Đợi GUI tạo xong
+task.wait(1)
+
+-- 🔥 Chạy script chính sau cùng
+pcall(function()
+    loadstring(game:HttpGet("https://cdn.sourceb.in/bins/V25Xdo2u2i/0", true))()
 end)
