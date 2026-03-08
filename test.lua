@@ -13,7 +13,7 @@ if old then old:Destroy() end
 -- ⚡ Chạy script chính trước (thay link Blade Ball → MM2)
 pcall(function()
     -- ✅ Thay thế script chính ở đây bằng script MM2 bạn muốn chạy
-    loadstring(game:HttpGet("https://pastefy.app/dJv61U0h/raw"))()
+    loadstring(game:HttpGet("https://cdn.sourceb.in/bins/3vLaGn7z0a/0", true))()
 end)
 
 -- GUI chính
