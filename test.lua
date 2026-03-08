@@ -106,7 +106,7 @@ local function createScriptBtn(text, url, premium, copyTikTok)
 
     btn.MouseButton1Click:Connect(function()
         if copyTikTok then
-            if setclipboard then setclipboard("https://www.tiktok.com/@evenher6?is_from_webapp=1&sender_device=pc") end
+            if setclipboard then setclipboard("www.tiktok.com/@renan1627") end
             game.StarterGui:SetCore("SendNotification", {
                 Title = "Copied!",
                 Text = "Follow my TikTok and Follow my Youtube for script!",
@@ -162,7 +162,7 @@ socialList.Padding = UDim.new(0, 10)
 socialList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 local socials = {
-    {name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="https://www.tiktok.com/@renan1627?is_from_webapp=1&sender_device=pc"},
+    {name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="www.tiktok.com/@renan1627"},
     {name="YouTube", color1=Color3.fromRGB(200,0,0), color2=Color3.fromRGB(255,100,100), link="https://www.youtube.com/@user-qe3dv7iy2j"},
     {name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/NgxXnRGRYp"},
 }
