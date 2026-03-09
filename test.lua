@@ -143,6 +143,7 @@ end
 
 -- 🟢 Scripts
 createScriptBtn("YARHM Hub", "https://raw.githubusercontent.com/Joystickplays/psychic-octo-invention/main/yarhm.lua")
+createScriptBtn("Jazzedd Hub (best choice)", "https://raw.githubusercontent.com/jazzedd/JazradScript/refs/heads/main/Script")
 createScriptBtn("Project Hub", "https://raw.githubusercontent.com/CycleScripts/Official/refs/heads/main/freemium")
 createScriptBtn("Horizon Hub need key", "https://pastefy.app/wwfom1bX/raw")
 createScriptBtn("Vexon Hub", "https://raw.githubusercontent.com/DiosDi/VexonHub/refs/heads/main/VexonHub")
