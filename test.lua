@@ -164,7 +164,7 @@ socialList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 local socials = {
     {name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="www.tiktok.com/@renan1627"},
     {name="YouTube", color1=Color3.fromRGB(200,0,0), color2=Color3.fromRGB(255,100,100), link="https://www.youtube.com/@user-qe3dv7iy2j"},
-    {name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/NgxXnRGRYp"},
+    {name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/RbhFbKbABe"},
 }
 
 for _, s in ipairs(socials) do
