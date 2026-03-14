@@ -1,20 +1,21 @@
--- ⚔️ Blade Ball Script Hub (Clean + Draggable + Better UI)
+-- ⚔️ Blade Ball Mini Script Hub (Clean + Smooth)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local setclipboard = setclipboard or toclipboard or set_clipboard
 
--- remove old gui
+-- remove old
 local old = playerGui:FindFirstChild("BladeBallMenu")
 if old then old:Destroy() end
 
 -- run main script
 pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
 
 -- click sound
@@ -31,87 +32,85 @@ gui.ResetOnSpawn = false
 
 -- main frame
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0,390,0,300)
-frame.Position = UDim2.new(0.5,-195,0.5,-150)
-frame.BackgroundColor3 = Color3.fromRGB(22,22,28)
+frame.Size = UDim2.new(0,330,0,250)
+frame.Position = UDim2.new(0.5,-165,0.5,-125)
+frame.BackgroundColor3 = Color3.fromRGB(18,20,28)
 frame.BorderSizePixel = 0
 
-Instance.new("UICorner",frame).CornerRadius = UDim.new(0,12)
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,10)
 
 local stroke = Instance.new("UIStroke",frame)
 stroke.Color = Color3.fromRGB(120,140,255)
 stroke.Thickness = 1
-stroke.Transparency = 0.3
+stroke.Transparency = 0.4
 
--- draggable
-local dragging = false
-local dragStart
-local startPos
+-- drag
+local dragging=false
+local dragStart,startPos
 
-frame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = frame.Position
+frame.InputBegan:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=true
+		dragStart=i.Position
+		startPos=frame.Position
 	end
 end)
 
-frame.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = false
+frame.InputEnded:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=false
 	end
 end)
 
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-		local delta = input.Position - dragStart
-		frame.Position = UDim2.new(
+UIS.InputChanged:Connect(function(i)
+	if dragging and i.UserInputType==Enum.UserInputType.MouseMovement then
+		local delta=i.Position-dragStart
+		frame.Position=UDim2.new(
 			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
+			startPos.X.Offset+delta.X,
 			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
+			startPos.Y.Offset+delta.Y
 		)
 	end
 end)
 
 -- title
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1,0,0,35)
+local title = Instance.new("TextLabel",frame)
+title.Size = UDim2.new(1,0,0,32)
 title.BackgroundTransparency = 1
-title.Text = "⚔ Blade Ball Scripts"
+title.Text = "⚔ Blade Ball Hub"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 18
+title.TextSize = 16
 title.TextColor3 = Color3.fromRGB(170,200,255)
 
--- minimize button
-local hide = Instance.new("TextButton", frame)
-hide.Size = UDim2.new(0,25,0,25)
-hide.Position = UDim2.new(1,-32,0,5)
+-- hide button
+local hide = Instance.new("TextButton",frame)
+hide.Size = UDim2.new(0,22,0,22)
+hide.Position = UDim2.new(1,-28,0,5)
 hide.Text = "-"
 hide.Font = Enum.Font.GothamBold
-hide.TextSize = 20
+hide.TextSize = 18
 hide.BackgroundColor3 = Color3.fromRGB(35,35,45)
 hide.TextColor3 = Color3.new(1,1,1)
 
 Instance.new("UICorner",hide)
 
--- reopen icon
-local reopen = Instance.new("TextButton", gui)
-reopen.Size = UDim2.new(0,45,0,45)
-reopen.Position = UDim2.new(0,15,0.6,0)
-reopen.Text = "⚔"
+-- reopen button
+local reopen = Instance.new("TextButton",gui)
+reopen.Size = UDim2.new(0,42,0,42)
+reopen.Position = UDim2.new(0,15,0,120)
 reopen.Visible = false
-reopen.BackgroundColor3 = Color3.fromRGB(35,35,45)
-reopen.TextColor3 = Color3.new(1,1,1)
+reopen.Text = "⚔"
 reopen.Font = Enum.Font.GothamBold
 reopen.TextSize = 20
+reopen.BackgroundColor3 = Color3.fromRGB(35,35,45)
+reopen.TextColor3 = Color3.new(1,1,1)
 
 Instance.new("UICorner",reopen).CornerRadius = UDim.new(1,0)
 
 -- drag reopen
 local drag2=false
-local dragStart2
-local startPos2
+local dragStart2,startPos2
 
 reopen.InputBegan:Connect(function(i)
 	if i.UserInputType==Enum.UserInputType.MouseButton1 then
@@ -127,7 +126,7 @@ reopen.InputEnded:Connect(function(i)
 	end
 end)
 
-game:GetService("UserInputService").InputChanged:Connect(function(i)
+UIS.InputChanged:Connect(function(i)
 	if drag2 and i.UserInputType==Enum.UserInputType.MouseMovement then
 		local delta=i.Position-dragStart2
 		reopen.Position=UDim2.new(
@@ -139,55 +138,63 @@ game:GetService("UserInputService").InputChanged:Connect(function(i)
 	end
 end)
 
+-- hide animation
 hide.MouseButton1Click:Connect(function()
+
 	click:Play()
+
+	TweenService:Create(frame,TweenInfo.new(0.25),{
+		Size=UDim2.new(0,330,0,0),
+		BackgroundTransparency=1
+	}):Play()
+
+	task.wait(0.25)
+
 	frame.Visible=false
 	reopen.Visible=true
+
 end)
 
+-- reopen animation
 reopen.MouseButton1Click:Connect(function()
+
 	click:Play()
+
 	frame.Visible=true
 	reopen.Visible=false
+
+	frame.Size=UDim2.new(0,330,0,0)
+
+	TweenService:Create(frame,TweenInfo.new(0.25),{
+		Size=UDim2.new(0,330,0,250),
+		BackgroundTransparency=0
+	}):Play()
+
 end)
 
 -- scroll
-local scroll = Instance.new("ScrollingFrame", frame)
-scroll.Size = UDim2.new(1,-20,1,-90)
-scroll.Position = UDim2.new(0,10,0,40)
+local scroll = Instance.new("ScrollingFrame",frame)
+scroll.Size = UDim2.new(1,-16,1,-80)
+scroll.Position = UDim2.new(0,8,0,35)
 scroll.BackgroundTransparency = 1
-scroll.ScrollBarThickness = 5
+scroll.ScrollBarThickness = 4
 
 local list = Instance.new("UIListLayout",scroll)
-list.Padding = UDim.new(0,6)
-list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+list.Padding = UDim.new(0,5)
 
--- script button
+-- button
 local function createScriptBtn(text,url,premium,copy)
 
-	local btn = Instance.new("TextButton",scroll)
+	local btn=Instance.new("TextButton",scroll)
 
-	btn.Size = UDim2.new(0.95,0,0,36)
-	btn.BackgroundColor3 = Color3.fromRGB(30,30,38)
-	btn.TextColor3 = Color3.fromRGB(220,220,230)
-	btn.Text = text
-	btn.Font = Enum.Font.GothamMedium
-	btn.TextSize = 15
-	btn.AutoButtonColor = false
+	btn.Size=UDim2.new(1,0,0,32)
+	btn.BackgroundColor3=Color3.fromRGB(28,30,38)
+	btn.TextColor3=Color3.fromRGB(220,220,230)
+	btn.Font=Enum.Font.Gotham
+	btn.TextSize=14
+	btn.Text=text
 
-	Instance.new("UICorner",btn).CornerRadius = UDim.new(0,8)
-
-	btn.MouseEnter:Connect(function()
-		TweenService:Create(btn,TweenInfo.new(0.15),{
-			BackgroundColor3 = Color3.fromRGB(45,45,60)
-		}):Play()
-	end)
-
-	btn.MouseLeave:Connect(function()
-		TweenService:Create(btn,TweenInfo.new(0.15),{
-			BackgroundColor3 = Color3.fromRGB(30,30,38)
-		}):Play()
-	end)
+	Instance.new("UICorner",btn).CornerRadius=UDim.new(0,7)
 
 	btn.MouseButton1Click:Connect(function()
 
@@ -197,13 +204,6 @@ local function createScriptBtn(text,url,premium,copy)
 			if setclipboard then
 				setclipboard("www.tiktok.com/@renan1627")
 			end
-
-			game.StarterGui:SetCore("SendNotification",{
-				Title="Copied!",
-				Text="Follow TikTok & YouTube",
-				Duration=4
-			})
-
 		else
 			if url then
 				loadstring(game:HttpGet(url))()
@@ -212,7 +212,7 @@ local function createScriptBtn(text,url,premium,copy)
 
 	end)
 
-	scroll.CanvasSize = UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
+	scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 
 end
 
@@ -227,35 +227,33 @@ createScriptBtn("UwU",nil,true,true)
 
 -- socials
 local socialFrame = Instance.new("Frame",frame)
-socialFrame.Size = UDim2.new(1,-20,0,40)
-socialFrame.Position = UDim2.new(0,10,1,-45)
+socialFrame.Size = UDim2.new(1,-20,0,32)
+socialFrame.Position = UDim2.new(0,10,1,-36)
 socialFrame.BackgroundTransparency = 1
 
 local layout = Instance.new("UIListLayout",socialFrame)
 layout.FillDirection = Enum.FillDirection.Horizontal
 layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.Padding = UDim.new(0,10)
+layout.Padding = UDim.new(0,6)
 
-local socials = {
-
+local socials={
 {"TikTok","www.tiktok.com/@renan1627",Color3.fromRGB(255,0,120)},
 {"YouTube","https://www.youtube.com/@user-qe3dv7iy2j",Color3.fromRGB(200,0,0)},
 {"Discord","https://discord.gg/RbhFbKbABe",Color3.fromRGB(88,101,242)}
-
 }
 
 for _,s in ipairs(socials) do
 
-	local b = Instance.new("TextButton",socialFrame)
+	local b=Instance.new("TextButton",socialFrame)
 
-	b.Size = UDim2.new(0.25,0,1,0)
-	b.Text = s[1]
-	b.Font = Enum.Font.GothamBold
-	b.TextSize = 14
-	b.TextColor3 = Color3.new(1,1,1)
-	b.BackgroundColor3 = s[3]
+	b.Size=UDim2.new(0.3,0,1,0)
+	b.Text=s[1]
+	b.Font=Enum.Font.GothamBold
+	b.TextSize=13
+	b.TextColor3=Color3.new(1,1,1)
+	b.BackgroundColor3=s[3]
 
-	Instance.new("UICorner",b).CornerRadius = UDim.new(0,8)
+	Instance.new("UICorner",b)
 
 	b.MouseButton1Click:Connect(function()
 
@@ -264,12 +262,6 @@ for _,s in ipairs(socials) do
 		if setclipboard then
 			setclipboard(s[2])
 		end
-
-		game.StarterGui:SetCore("SendNotification",{
-			Title="Copied!",
-			Text=s[1].." link copied",
-			Duration=4
-		})
 
 	end)
 
