@@ -1,4 +1,4 @@
--- ⚔️ Blade Ball GUI phụ (compact + better colors + border + chrome minimize)
+-- ⚔️ Blade Ball GUI phụ (compact version)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -36,10 +36,10 @@ gui.Name = "BladeBallMenu"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
--- frame (nhỏ gọn hơn)
+-- frame (nhỏ gọn hơn nữa)
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0,420,0,340)
-frame.Position = UDim2.new(0.5,-210,0.5,-170)
+frame.Size = UDim2.new(0,350,0,280)
+frame.Position = UDim2.new(0.5,-175,0.5,-140)
 frame.BackgroundColor3 = Color3.fromRGB(30,32,40)
 frame.BorderSizePixel = 0
 frame.Active = true
@@ -47,7 +47,7 @@ frame.Draggable = true
 frame.Parent = gui
 
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0,12)
+corner.CornerRadius = UDim.new(0,10)
 corner.Parent = frame
 
 -- viền ngoài
@@ -67,22 +67,22 @@ inner.Parent = frame
 
 -- title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1,-60,0,35)
+title.Size = UDim2.new(1,-60,0,30)
 title.Position = UDim2.new(0,10,0,5)
 title.BackgroundTransparency = 1
 title.Font = Enum.Font.GothamBold
-title.TextSize = 18
+title.TextSize = 16
 title.TextColor3 = Color3.fromRGB(180,255,200)
 title.Text = "⚔️ Blade Ball Scripts"
 title.Parent = frame
 
--- nút minimize giống chrome
+-- nút minimize
 local minimize = Instance.new("TextButton")
-minimize.Size = UDim2.new(0,28,0,28)
-minimize.Position = UDim2.new(1,-34,0,6)
+minimize.Size = UDim2.new(0,24,0,24)
+minimize.Position = UDim2.new(1,-30,0,6)
 minimize.Text = "-"
 minimize.Font = Enum.Font.GothamBold
-minimize.TextSize = 20
+minimize.TextSize = 18
 minimize.BackgroundColor3 = Color3.fromRGB(60,60,70)
 minimize.TextColor3 = Color3.new(1,1,1)
 minimize.Parent = frame
@@ -91,16 +91,16 @@ local minCorner = Instance.new("UICorner")
 minCorner.CornerRadius = UDim.new(1,0)
 minCorner.Parent = minimize
 
--- nút reopen
+-- reopen
 local reopen = Instance.new("TextButton")
-reopen.Size = UDim2.new(0,40,0,40)
+reopen.Size = UDim2.new(0,36,0,36)
 reopen.Position = UDim2.new(0,20,0.75,0)
 reopen.Text = "≡"
 reopen.Visible = false
 reopen.BackgroundColor3 = Color3.fromRGB(50,55,70)
 reopen.TextColor3 = Color3.new(1,1,1)
 reopen.Font = Enum.Font.GothamBold
-reopen.TextSize = 18
+reopen.TextSize = 16
 reopen.Active = true
 reopen.Draggable = true
 reopen.Parent = gui
@@ -123,35 +123,34 @@ end)
 
 -- scroll
 local scroll = Instance.new("ScrollingFrame")
-scroll.Size = UDim2.new(1,-20,1,-100)
-scroll.Position = UDim2.new(0,10,0,45)
+scroll.Size = UDim2.new(1,-20,1,-80)
+scroll.Position = UDim2.new(0,10,0,40)
 scroll.BackgroundTransparency = 1
-scroll.ScrollBarThickness = 5
+scroll.ScrollBarThickness = 4
 scroll.Parent = frame
 
 local list = Instance.new("UIListLayout")
-list.Padding = UDim.new(0,6)
+list.Padding = UDim.new(0,5)
 list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 list.Parent = scroll
 
--- tạo nút script
+-- tạo nút
 local function createBtn(text,url,premium)
 
 	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(0.9,0,0,36)
+	btn.Size = UDim2.new(0.9,0,0,30)
 	btn.BackgroundColor3 = Color3.fromRGB(45,48,60)
 	btn.Font = Enum.Font.GothamMedium
-	btn.TextSize = 14
+	btn.TextSize = 13
 	btn.TextColor3 = Color3.new(1,1,1)
 	btn.Text = text
 	btn.AutoButtonColor = false
 	btn.Parent = scroll
 
 	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0,8)
+	c.CornerRadius = UDim.new(0,6)
 	c.Parent = btn
 
-	-- màu đặc biệt cho premium
 	if premium then
 		btn.BackgroundColor3 = Color3.fromRGB(70,50,110)
 		btn.TextColor3 = Color3.fromRGB(255,220,120)
@@ -190,20 +189,19 @@ createBtn("Frostware Hub need key","https://raw.githubusercontent.com/Fsploit/F-
 createBtn("Catsus Hub","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
 createBtn("RX Hub","https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
 
--- premium
 createBtn("Allusive",nil,true)
 createBtn("UwU",nil,true)
 
 -- social
 local socialFrame = Instance.new("Frame")
-socialFrame.Size = UDim2.new(1,-20,0,40)
-socialFrame.Position = UDim2.new(0,10,1,-45)
+socialFrame.Size = UDim2.new(1,-20,0,34)
+socialFrame.Position = UDim2.new(0,10,1,-38)
 socialFrame.BackgroundTransparency = 1
 socialFrame.Parent = frame
 
 local socialList = Instance.new("UIListLayout")
 socialList.FillDirection = Enum.FillDirection.Horizontal
-socialList.Padding = UDim.new(0,8)
+socialList.Padding = UDim.new(0,6)
 socialList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 socialList.Parent = socialFrame
 
@@ -218,16 +216,16 @@ local socials = {
 for _,s in pairs(socials) do
 
 	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(0.22,0,1,0)
+	btn.Size = UDim2.new(0.28,0,1,0)
 	btn.Text = s.name
 	btn.Font = Enum.Font.GothamBold
-	btn.TextSize = 14
+	btn.TextSize = 12
 	btn.TextColor3 = Color3.new(1,1,1)
 	btn.BackgroundColor3 = s.color
 	btn.Parent = socialFrame
 
 	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0,8)
+	c.CornerRadius = UDim.new(0,6)
 	c.Parent = btn
 
 	btn.MouseButton1Click:Connect(function()
