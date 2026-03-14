@@ -39,17 +39,18 @@ frame.BorderSizePixel = 0
 
 Instance.new("UICorner",frame).CornerRadius = UDim.new(0,10)
 
+-- border color
 local stroke = Instance.new("UIStroke",frame)
-stroke.Color = Color3.fromRGB(120,140,255)
-stroke.Thickness = 1
-stroke.Transparency = 0.4
+stroke.Color = Color3.fromRGB(130,150,255)
+stroke.Thickness = 2
+stroke.Transparency = 0.2
 
--- drag
+-- drag gui
 local dragging=false
 local dragStart,startPos
 
 frame.InputBegan:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
 		dragging=true
 		dragStart=i.Position
 		startPos=frame.Position
@@ -57,13 +58,13 @@ frame.InputBegan:Connect(function(i)
 end)
 
 frame.InputEnded:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
 		dragging=false
 	end
 end)
 
 UIS.InputChanged:Connect(function(i)
-	if dragging and i.UserInputType==Enum.UserInputType.MouseMovement then
+	if dragging then
 		local delta=i.Position-dragStart
 		frame.Position=UDim2.new(
 			startPos.X.Scale,
@@ -95,10 +96,10 @@ hide.TextColor3 = Color3.new(1,1,1)
 
 Instance.new("UICorner",hide)
 
--- reopen button
+-- reopen button (FIXED POSITION)
 local reopen = Instance.new("TextButton",gui)
-reopen.Size = UDim2.new(0,42,0,42)
-reopen.Position = UDim2.new(0,15,0,120)
+reopen.Size = UDim2.new(0,40,0,40)
+reopen.Position = UDim2.new(0,10,0,70) -- góc trên trái dưới chat
 reopen.Visible = false
 reopen.Text = "⚔"
 reopen.Font = Enum.Font.GothamBold
@@ -108,12 +109,12 @@ reopen.TextColor3 = Color3.new(1,1,1)
 
 Instance.new("UICorner",reopen).CornerRadius = UDim.new(1,0)
 
--- drag reopen
+-- drag reopen button (mobile fix)
 local drag2=false
 local dragStart2,startPos2
 
 reopen.InputBegan:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
 		drag2=true
 		dragStart2=i.Position
 		startPos2=reopen.Position
@@ -121,13 +122,13 @@ reopen.InputBegan:Connect(function(i)
 end)
 
 reopen.InputEnded:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 then
+	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
 		drag2=false
 	end
 end)
 
 UIS.InputChanged:Connect(function(i)
-	if drag2 and i.UserInputType==Enum.UserInputType.MouseMovement then
+	if drag2 then
 		local delta=i.Position-dragStart2
 		reopen.Position=UDim2.new(
 			startPos2.X.Scale,
@@ -180,21 +181,21 @@ scroll.BackgroundTransparency = 1
 scroll.ScrollBarThickness = 4
 
 local list = Instance.new("UIListLayout",scroll)
-list.Padding = UDim.new(0,5)
+list.Padding = UDim.new(0,8)
 
 -- button
 local function createScriptBtn(text,url,premium,copy)
 
 	local btn=Instance.new("TextButton",scroll)
 
-	btn.Size=UDim2.new(1,0,0,32)
+	btn.Size=UDim2.new(1,0,0,36)
 	btn.BackgroundColor3=Color3.fromRGB(28,30,38)
 	btn.TextColor3=Color3.fromRGB(220,220,230)
 	btn.Font=Enum.Font.Gotham
 	btn.TextSize=14
 	btn.Text=text
 
-	Instance.new("UICorner",btn).CornerRadius=UDim.new(0,7)
+	Instance.new("UICorner",btn).CornerRadius=UDim.new(0,8)
 
 	btn.MouseButton1Click:Connect(function()
 
@@ -212,57 +213,13 @@ local function createScriptBtn(text,url,premium,copy)
 
 	end)
 
-	scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
-
 end
 
--- scripts
+-- scripts (short names)
 createScriptBtn("Makzinn Hub","https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
-createScriptBtn("Argon Hub X","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-createScriptBtn("Frostware Hub need key","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
-createScriptBtn("Catsus Hub","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
+createScriptBtn("Argon Hub","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
+createScriptBtn("Frostware","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
+createScriptBtn("Catsus Parry","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
 createScriptBtn("RX Hub","https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
 createScriptBtn("Allusive",nil,true,true)
 createScriptBtn("UwU",nil,true,true)
-
--- socials
-local socialFrame = Instance.new("Frame",frame)
-socialFrame.Size = UDim2.new(1,-20,0,32)
-socialFrame.Position = UDim2.new(0,10,1,-36)
-socialFrame.BackgroundTransparency = 1
-
-local layout = Instance.new("UIListLayout",socialFrame)
-layout.FillDirection = Enum.FillDirection.Horizontal
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.Padding = UDim.new(0,6)
-
-local socials={
-{"TikTok","www.tiktok.com/@renan1627",Color3.fromRGB(255,0,120)},
-{"YouTube","https://www.youtube.com/@user-qe3dv7iy2j",Color3.fromRGB(200,0,0)},
-{"Discord","https://discord.gg/RbhFbKbABe",Color3.fromRGB(88,101,242)}
-}
-
-for _,s in ipairs(socials) do
-
-	local b=Instance.new("TextButton",socialFrame)
-
-	b.Size=UDim2.new(0.3,0,1,0)
-	b.Text=s[1]
-	b.Font=Enum.Font.GothamBold
-	b.TextSize=13
-	b.TextColor3=Color3.new(1,1,1)
-	b.BackgroundColor3=s[3]
-
-	Instance.new("UICorner",b)
-
-	b.MouseButton1Click:Connect(function()
-
-		click:Play()
-
-		if setclipboard then
-			setclipboard(s[2])
-		end
-
-	end)
-
-end
