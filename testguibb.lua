@@ -14,8 +14,13 @@ local old = playerGui:FindFirstChild("BladeBallMenu")
 if old then old:Destroy() end
 
 -- run main script
-pcall(function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+-- run main script (non blocking)
+task.spawn(function()
+
+	pcall(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+	end)
+
 end)
 
 -- click sound
