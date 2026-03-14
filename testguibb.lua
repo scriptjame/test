@@ -1,254 +1,258 @@
--- ⚔️ Blade Ball GUI phụ (hiện đại + auto resize + hiệu ứng + mạng xã hội nổi bật)
+-- ⚔️ Blade Ball Mini Script Hub (Clean + Smooth)
+
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local HttpService = game:GetService("HttpService")
+
 local setclipboard = setclipboard or toclipboard or set_clipboard
 
--- Xoá gui cũ nếu có
+-- remove old
 local old = playerGui:FindFirstChild("BladeBallMenu")
 if old then old:Destroy() end
 
--- ⚡ Chạy script chính trước
+-- run main script
 pcall(function()
 loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
 
--- GUI chính
-local subGui = Instance.new("ScreenGui", playerGui)
-subGui.Name = "BladeBallMenu"
-subGui.ResetOnSpawn = false
+-- click sound
+local click = Instance.new("Sound")
+click.SoundId = "rbxassetid://12221967"
+click.Volume = 1
+click.Parent = game:GetService("SoundService")
 
--- Frame chính
-local frame = Instance.new("Frame", subGui)
-frame.AnchorPoint = Vector2.new(0.5, 0.5)
-frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+-- gui
+local gui = Instance.new("ScreenGui")
+gui.Name = "BladeBallMenu"
+gui.Parent = playerGui
+gui.ResetOnSpawn = false
+
+-- main frame
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0,330,0,250)
+frame.Position = UDim2.new(0.5,-165,0.5,-125)
+frame.BackgroundColor3 = Color3.fromRGB(18,20,28)
 frame.BorderSizePixel = 0
-frame.BackgroundTransparency = 0.1
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 14)
 
--- Shadow
-local shadow = Instance.new("ImageLabel", frame)
-shadow.ZIndex = 0
-shadow.Size = UDim2.new(1, 60, 1, 60)
-shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-shadow.Image = "rbxassetid://6015897843"
-shadow.ImageTransparency = 0.4
-shadow.BackgroundTransparency = 1
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,10)
 
--- Auto resize
-local function resizeFrame()
-local screenSize = workspace.CurrentCamera.ViewportSize
-local w = math.clamp(screenSize.X * 0.45, 320, 650)
-local h = math.clamp(screenSize.Y * 0.45, 260, 520)
-frame.Size = UDim2.new(0, w, 0, h)
-end
-resizeFrame()
-workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(resizeFrame)
+-- border color
+local stroke = Instance.new("UIStroke",frame)
+stroke.Color = Color3.fromRGB(130,150,255)
+stroke.Thickness = 2
+stroke.Transparency = 0.2
 
--- Title
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, -20, 0, 45)
-title.Position = UDim2.new(0, 10, 0, 5)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.GothamBold
-title.TextSize = 22
-title.TextColor3 = Color3.fromRGB(180, 255, 200)
-title.TextStrokeTransparency = 0.5
-title.Text = "⚔️ Blade Ball Scripts"
+-- drag gui
+local dragging=false
+local dragStart,startPos
 
--- Scroll
-local scroll = Instance.new("ScrollingFrame", frame)
-scroll.Size = UDim2.new(1, -20, 1, -115)
-scroll.Position = UDim2.new(0, 10, 0, 55)
-scroll.BackgroundTransparency = 1
-scroll.ScrollBarThickness = 6
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-
-local list = Instance.new("UIListLayout", scroll)
-list.Padding = UDim.new(0, 8)
-list.HorizontalAlignment = Enum.HorizontalAlignment.Center
-list.SortOrder = Enum.SortOrder.LayoutOrder
-
--- Hàm tạo nút script
-local function createScriptBtn(text, url, premium, copyTikTok)
-local btn = Instance.new("TextButton", scroll)
-btn.Size = UDim2.new(0.9, 0, 0, 45)
-btn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-btn.AutoButtonColor = false
-btn.Font = Enum.Font.GothamMedium
-btn.TextSize = 16
-btn.TextColor3 = Color3.fromRGB(230, 230, 230)
-btn.Text = text
-Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
-
-```
-btn.MouseEnter:Connect(function()
-    TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 90)}):Play()
-end)
-btn.MouseLeave:Connect(function()
-    TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 45)}):Play()
-end)
-
-if premium then
-    task.spawn(function()
-        local hue = 0
-        while btn.Parent do
-            hue = (hue + 1) % 360
-            btn.TextColor3 = Color3.fromHSV(hue/360, 0.8, 1)
-            task.wait(0.05)
-        end
-    end)
-end
-
-btn.MouseButton1Click:Connect(function()
-    if copyTikTok then
-        if setclipboard then setclipboard("www.tiktok.com/@renan1627") end
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Copied!",
-            Text = "Follow my TikTok and Follow my Youtube for updates!",
-            Duration = 5
-        })
-    else
-        local ok, err = pcall(function()
-            if url then
-                local loading = Instance.new("TextLabel", frame)
-                loading.Size = UDim2.new(1, 0, 0, 30)
-                loading.Position = UDim2.new(0, 0, 1, -35)
-                loading.BackgroundTransparency = 1
-                loading.Text = "Loading..."
-                loading.Font = Enum.Font.GothamBold
-                loading.TextSize = 18
-                loading.TextColor3 = Color3.fromRGB(255, 255, 0)
-                task.wait(3)
-                loading:Destroy()
-                loadstring(game:HttpGet(url))()
-            end
-        end)
-        if not ok then warn("⚠️ Script error:", err) end
-    end
-end)
-
-scroll.CanvasSize = UDim2.new(0, 0, 0, list.AbsoluteContentSize.Y + 20)
-```
-
-end
-
--- Scripts
-createScriptBtn("Makzinn Hub", "https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
-createScriptBtn("Argon Hub X", "https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-createScriptBtn("Frostware Hub need key", "https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
-createScriptBtn("Catsus Hub", "https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
-createScriptBtn("RX Hub", "https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
-createScriptBtn("Allusive", nil, true, true)
-createScriptBtn("UwU", nil, true, true)
-
--- Social buttons (GIỮ NGUYÊN)
-local socialFrame = Instance.new("Frame", frame)
-socialFrame.Size = UDim2.new(1, -20, 0, 45)
-socialFrame.Position = UDim2.new(0, 10, 1, -55)
-socialFrame.BackgroundTransparency = 1
-
-local socialList = Instance.new("UIListLayout", socialFrame)
-socialList.FillDirection = Enum.FillDirection.Horizontal
-socialList.Padding = UDim.new(0, 10)
-socialList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
-local socials = {
-{name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="[www.tiktok.com/@renan1627](http://www.tiktok.com/@renan1627)"},
-{name="YouTube", color1=Color3.fromRGB(200,0,0), color2=Color3.fromRGB(255,100,100), link="https://www.youtube.com/@user-qe3dv7iy2j"},
-{name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/RbhFbKbABe"},
-}
-
-for _, s in ipairs(socials) do
-local btn = Instance.new("TextButton", socialFrame)
-btn.Size = UDim2.new(0.18, -5, 1, 0)
-btn.Text = s.name
-btn.Font = Enum.Font.GothamBold
-btn.TextSize = 16
-btn.TextColor3 = Color3.fromRGB(255,255,255)
-btn.AutoButtonColor = false
-Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-
-```
-task.spawn(function()
-    local t = 0
-    while btn.Parent do
-        t += 0.03
-        local r = s.color1:Lerp(s.color2, (math.sin(t)+1)/2)
-        btn.BackgroundColor3 = r
-        task.wait(0.05)
-    end
-end)
-
-btn.MouseButton1Click:Connect(function()
-    if setclipboard then setclipboard(s.link) end
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "Copied!",
-        Text = s.name .. " link copied to clipboard.",
-        Duration = 4
-    })
-end)
-```
-
-end
-
--- Toggle nút (FIX vị trí + kéo được)
-local toggleBtn = Instance.new("TextButton", subGui)
-toggleBtn.Size = UDim2.new(0, 45, 0, 45)
-toggleBtn.Position = UDim2.new(0, 10, 0, 80)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-toggleBtn.Text = "≡"
-toggleBtn.Font = Enum.Font.GothamBold
-toggleBtn.TextSize = 20
-toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1, 0)
-
-local dragging = false
-local dragStart
-local startPos
-
-toggleBtn.InputBegan:Connect(function(input)
-if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-dragging = true
-dragStart = input.Position
-startPos = toggleBtn.Position
+frame.InputBegan:Connect(function(i)
+if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+dragging=true
+dragStart=i.Position
+startPos=frame.Position
 end
 end)
 
-toggleBtn.InputEnded:Connect(function(input)
-if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-dragging = false
+frame.InputEnded:Connect(function(i)
+if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+dragging=false
 end
 end)
 
-UIS.InputChanged:Connect(function(input)
-if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
-local delta = input.Position - dragStart
-toggleBtn.Position = UDim2.new(
+UIS.InputChanged:Connect(function(i)
+if dragging then
+local delta=i.Position-dragStart
+frame.Position=UDim2.new(
 startPos.X.Scale,
-startPos.X.Offset + delta.X,
+startPos.X.Offset+delta.X,
 startPos.Y.Scale,
-startPos.Y.Offset + delta.Y
+startPos.Y.Offset+delta.Y
 )
 end
 end)
 
-local visible = true
-toggleBtn.MouseButton1Click:Connect(function()
-visible = not visible
-if visible then
-frame.Visible = true
-frame.BackgroundTransparency = 1
-TweenService:Create(frame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+-- title
+local title = Instance.new("TextLabel",frame)
+title.Size = UDim2.new(1,0,0,32)
+title.BackgroundTransparency = 1
+title.Text = "⚔ Blade Ball Hub"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.TextColor3 = Color3.fromRGB(170,200,255)
+
+-- hide button
+local hide = Instance.new("TextButton",frame)
+hide.Size = UDim2.new(0,22,0,22)
+hide.Position = UDim2.new(1,-28,0,5)
+hide.Text = "-"
+hide.Font = Enum.Font.GothamBold
+hide.TextSize = 18
+hide.BackgroundColor3 = Color3.fromRGB(35,35,45)
+hide.TextColor3 = Color3.new(1,1,1)
+
+Instance.new("UICorner",hide)
+
+-- reopen button
+local reopen = Instance.new("TextButton",gui)
+reopen.Size = UDim2.new(0,40,0,40)
+reopen.Position = UDim2.new(0,10,0,70)
+reopen.Visible = false
+reopen.Text = "⚔"
+reopen.Font = Enum.Font.GothamBold
+reopen.TextSize = 20
+reopen.BackgroundColor3 = Color3.fromRGB(35,35,45)
+reopen.TextColor3 = Color3.new(1,1,1)
+
+Instance.new("UICorner",reopen).CornerRadius = UDim.new(1,0)
+
+-- hide animation
+hide.MouseButton1Click:Connect(function()
+
+```
+click:Play()
+
+TweenService:Create(frame,TweenInfo.new(0.25),{
+	Size=UDim2.new(0,330,0,0),
+	BackgroundTransparency=1
+}):Play()
+
+task.wait(0.25)
+
+frame.Visible=false
+reopen.Visible=true
+```
+
+end)
+
+-- reopen animation
+reopen.MouseButton1Click:Connect(function()
+
+```
+click:Play()
+
+frame.Visible=true
+reopen.Visible=false
+
+frame.Size=UDim2.new(0,330,0,0)
+
+TweenService:Create(frame,TweenInfo.new(0.25),{
+	Size=UDim2.new(0,330,0,250),
+	BackgroundTransparency=0
+}):Play()
+```
+
+end)
+
+-- scroll
+local scroll = Instance.new("ScrollingFrame",frame)
+scroll.Size = UDim2.new(1,-16,1,-80)
+scroll.Position = UDim2.new(0,8,0,35)
+scroll.BackgroundTransparency = 1
+scroll.ScrollBarThickness = 4
+
+local list = Instance.new("UIListLayout",scroll)
+list.Padding = UDim.new(0,8)
+
+-- button
+local function createScriptBtn(text,url,premium,copy)
+
+```
+local btn=Instance.new("TextButton",scroll)
+
+btn.Size=UDim2.new(1,0,0,36)
+btn.Font=Enum.Font.Gotham
+btn.TextSize=14
+btn.Text=text
+
+if premium then
+	btn.BackgroundColor3=Color3.fromRGB(45,30,70)
+	btn.TextColor3=Color3.fromRGB(255,220,120)
+
+	local s=Instance.new("UIStroke",btn)
+	s.Color=Color3.fromRGB(255,200,80)
+	s.Thickness=1.5
 else
-TweenService:Create(frame, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-task.delay(0.3, function()
-if not visible then frame.Visible = false end
-end)
+	btn.BackgroundColor3=Color3.fromRGB(28,30,38)
+	btn.TextColor3=Color3.fromRGB(220,220,230)
 end
+
+Instance.new("UICorner",btn).CornerRadius=UDim.new(0,8)
+
+btn.MouseButton1Click:Connect(function()
+
+	click:Play()
+
+	if copy then
+		if setclipboard then
+			setclipboard("www.tiktok.com/@renan1627")
+		end
+	else
+		if url then
+			loadstring(game:HttpGet(url))()
+		end
+	end
+
 end)
+```
+
+end
+
+-- scripts
+createScriptBtn("Makzinn Hub","https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
+createScriptBtn("Argon Hub","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
+createScriptBtn("Frostware","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
+createScriptBtn("Catsus Parry","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
+createScriptBtn("RX Hub","https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
+createScriptBtn("Allusive",nil,true,true)
+createScriptBtn("UwU",nil,true,true)
+
+-- social buttons
+local socialFrame = Instance.new("Frame",frame)
+socialFrame.Size = UDim2.new(1,-16,0,35)
+socialFrame.Position = UDim2.new(0,8,1,-40)
+socialFrame.BackgroundTransparency = 1
+
+local layout = Instance.new("UIListLayout",socialFrame)
+layout.FillDirection = Enum.FillDirection.Horizontal
+layout.Padding = UDim.new(0,6)
+
+local socialButtons = {
+
+{name="TikTok", color1=Color3.fromRGB(255,0,128), color2=Color3.fromRGB(0,255,255), link="[www.tiktok.com/@renan1627](http://www.tiktok.com/@renan1627)"},
+{name="YouTube", color1=Color3.fromRGB(200,0,0), color2=Color3.fromRGB(255,100,100), link="https://www.youtube.com/@user-qe3dv7iy2j"},
+{name="Discord", color1=Color3.fromRGB(88,101,242), color2=Color3.fromRGB(120,140,255), link="https://discord.gg/RbhFbKbABe"}
+
+}
+
+for _,v in pairs(socialButtons) do
+
+local b = Instance.new("TextButton",socialFrame)
+b.Size = UDim2.new(0.33,-4,1,0)
+b.Text = v.name
+b.Font = Enum.Font.GothamBold
+b.TextSize = 13
+b.TextColor3 = Color3.new(1,1,1)
+
+Instance.new("UICorner",b).CornerRadius = UDim.new(0,8)
+
+local grad = Instance.new("UIGradient",b)
+grad.Color = ColorSequence.new{
+ColorSequenceKeypoint.new(0,v.color1),
+ColorSequenceKeypoint.new(1,v.color2)
+}
+
+b.MouseButton1Click:Connect(function()
+
+click:Play()
+
+if setclipboard then
+setclipboard(v.link)
+end
+
+end)
+
+end
