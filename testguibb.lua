@@ -1,225 +1,187 @@
--- ⚔️ Blade Ball Mini Script Hub (Clean + Smooth)
-
+-- ⚔️ Blade Ball GUI phụ (modern + sound + border + draggable)
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local UIS = game:GetService("UserInputService")
-
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-
+local HttpService = game:GetService("HttpService")
 local setclipboard = setclipboard or toclipboard or set_clipboard
 
--- remove old
+-- Xoá gui cũ nếu có
 local old = playerGui:FindFirstChild("BladeBallMenu")
 if old then old:Destroy() end
 
--- run main script
+-- ⚡ Chạy script chính trước
 pcall(function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
 
--- click sound
-local click = Instance.new("Sound")
-click.SoundId = "rbxassetid://12221967"
-click.Volume = 1
-click.Parent = game:GetService("SoundService")
+-- 🔊 Sound click
+local function playClick()
+    local s = Instance.new("Sound")
+    s.SoundId = "rbxassetid://911342077"
+    s.Volume = 1
+    s.Parent = workspace
+    s:Play()
+    game.Debris:AddItem(s,2)
+end
 
--- gui
-local gui = Instance.new("ScreenGui")
-gui.Name = "BladeBallMenu"
-gui.Parent = playerGui
-gui.ResetOnSpawn = false
+-- GUI chính
+local subGui = Instance.new("ScreenGui", playerGui)
+subGui.Name = "BladeBallMenu"
+subGui.ResetOnSpawn = false
 
--- main frame
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0,330,0,250)
-frame.Position = UDim2.new(0.5,-165,0.5,-125)
-frame.BackgroundColor3 = Color3.fromRGB(18,20,28)
+-- Frame chính
+local frame = Instance.new("Frame", subGui)
+frame.AnchorPoint = Vector2.new(0.5,0.5)
+frame.Position = UDim2.new(0.5,0,0.5,0)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,25)
 frame.BorderSizePixel = 0
+frame.BackgroundTransparency = 0.05
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,12)
 
-Instance.new("UICorner",frame).CornerRadius = UDim.new(0,10)
-
--- border color
+-- viền
 local stroke = Instance.new("UIStroke",frame)
-stroke.Color = Color3.fromRGB(130,150,255)
-stroke.Thickness = 2
-stroke.Transparency = 0.2
+stroke.Color = Color3.fromRGB(120,255,160)
+stroke.Thickness = 1.5
+stroke.Transparency = 0.3
 
--- drag gui
-local dragging=false
-local dragStart,startPos
+-- Shadow
+local shadow = Instance.new("ImageLabel", frame)
+shadow.ZIndex = 0
+shadow.Size = UDim2.new(1,60,1,60)
+shadow.Position = UDim2.new(0.5,0,0.5,0)
+shadow.AnchorPoint = Vector2.new(0.5,0.5)
+shadow.Image = "rbxassetid://6015897843"
+shadow.ImageTransparency = 0.4
+shadow.BackgroundTransparency = 1
 
-frame.InputBegan:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-		dragging=true
-		dragStart=i.Position
-		startPos=frame.Position
-	end
-end)
+-- resize nhỏ gọn hơn
+local function resizeFrame()
+    local screenSize = workspace.CurrentCamera.ViewportSize
+    local w = math.clamp(screenSize.X * 0.38,300,580)
+    local h = math.clamp(screenSize.Y * 0.38,240,460)
+    frame.Size = UDim2.new(0,w,0,h)
+end
+resizeFrame()
+workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(resizeFrame)
 
-frame.InputEnded:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-		dragging=false
-	end
-end)
-
-UIS.InputChanged:Connect(function(i)
-	if dragging then
-		local delta=i.Position-dragStart
-		frame.Position=UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset+delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset+delta.Y
-		)
-	end
-end)
-
--- title
-local title = Instance.new("TextLabel",frame)
-title.Size = UDim2.new(1,0,0,32)
+-- Title
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,-20,0,40)
+title.Position = UDim2.new(0,10,0,5)
 title.BackgroundTransparency = 1
-title.Text = "⚔ Blade Ball Hub"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 16
-title.TextColor3 = Color3.fromRGB(170,200,255)
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(180,255,200)
+title.Text = "⚔️ Blade Ball Scripts"
 
--- hide button
-local hide = Instance.new("TextButton",frame)
-hide.Size = UDim2.new(0,22,0,22)
-hide.Position = UDim2.new(1,-28,0,5)
-hide.Text = "-"
-hide.Font = Enum.Font.GothamBold
-hide.TextSize = 18
-hide.BackgroundColor3 = Color3.fromRGB(35,35,45)
-hide.TextColor3 = Color3.new(1,1,1)
-
-Instance.new("UICorner",hide)
-
--- reopen button (FIXED POSITION)
-local reopen = Instance.new("TextButton",gui)
-reopen.Size = UDim2.new(0,40,0,40)
-reopen.Position = UDim2.new(0,10,0,70) -- góc trên trái dưới chat
-reopen.Visible = false
-reopen.Text = "⚔"
-reopen.Font = Enum.Font.GothamBold
-reopen.TextSize = 20
-reopen.BackgroundColor3 = Color3.fromRGB(35,35,45)
-reopen.TextColor3 = Color3.new(1,1,1)
-
-Instance.new("UICorner",reopen).CornerRadius = UDim.new(1,0)
-
--- drag reopen button (mobile fix)
-local drag2=false
-local dragStart2,startPos2
-
-reopen.InputBegan:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-		drag2=true
-		dragStart2=i.Position
-		startPos2=reopen.Position
-	end
-end)
-
-reopen.InputEnded:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-		drag2=false
-	end
-end)
-
-UIS.InputChanged:Connect(function(i)
-	if drag2 then
-		local delta=i.Position-dragStart2
-		reopen.Position=UDim2.new(
-			startPos2.X.Scale,
-			startPos2.X.Offset+delta.X,
-			startPos2.Y.Scale,
-			startPos2.Y.Offset+delta.Y
-		)
-	end
-end)
-
--- hide animation
-hide.MouseButton1Click:Connect(function()
-
-	click:Play()
-
-	TweenService:Create(frame,TweenInfo.new(0.25),{
-		Size=UDim2.new(0,330,0,0),
-		BackgroundTransparency=1
-	}):Play()
-
-	task.wait(0.25)
-
-	frame.Visible=false
-	reopen.Visible=true
-
-end)
-
--- reopen animation
-reopen.MouseButton1Click:Connect(function()
-
-	click:Play()
-
-	frame.Visible=true
-	reopen.Visible=false
-
-	frame.Size=UDim2.new(0,330,0,0)
-
-	TweenService:Create(frame,TweenInfo.new(0.25),{
-		Size=UDim2.new(0,330,0,250),
-		BackgroundTransparency=0
-	}):Play()
-
-end)
-
--- scroll
-local scroll = Instance.new("ScrollingFrame",frame)
-scroll.Size = UDim2.new(1,-16,1,-80)
-scroll.Position = UDim2.new(0,8,0,35)
+-- Scroll
+local scroll = Instance.new("ScrollingFrame", frame)
+scroll.Size = UDim2.new(1,-20,1,-110)
+scroll.Position = UDim2.new(0,10,0,50)
 scroll.BackgroundTransparency = 1
-scroll.ScrollBarThickness = 4
+scroll.ScrollBarThickness = 5
+scroll.CanvasSize = UDim2.new(0,0,0,0)
 
 local list = Instance.new("UIListLayout",scroll)
-list.Padding = UDim.new(0,8)
+list.Padding = UDim.new(0,7)
+list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- button
-local function createScriptBtn(text,url,premium,copy)
+-- Hàm tạo nút
+local function createScriptBtn(text,url,premium,copyTikTok)
 
-	local btn=Instance.new("TextButton",scroll)
+    local btn = Instance.new("TextButton",scroll)
+    btn.Size = UDim2.new(0.9,0,0,42)
+    btn.BackgroundColor3 = Color3.fromRGB(35,35,45)
+    btn.Font = Enum.Font.GothamMedium
+    btn.TextSize = 15
+    btn.TextColor3 = Color3.fromRGB(230,230,230)
+    btn.Text = text
+    btn.AutoButtonColor = false
 
-	btn.Size=UDim2.new(1,0,0,36)
-	btn.BackgroundColor3=Color3.fromRGB(28,30,38)
-	btn.TextColor3=Color3.fromRGB(220,220,230)
-	btn.Font=Enum.Font.Gotham
-	btn.TextSize=14
-	btn.Text=text
+    Instance.new("UICorner",btn).CornerRadius = UDim.new(0,8)
 
-	Instance.new("UICorner",btn).CornerRadius=UDim.new(0,8)
+    local bstroke = Instance.new("UIStroke",btn)
+    bstroke.Color = Color3.fromRGB(90,200,255)
+    bstroke.Transparency = 0.5
 
-	btn.MouseButton1Click:Connect(function()
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn,TweenInfo.new(0.2),{BackgroundColor3 = Color3.fromRGB(60,60,90)}):Play()
+    end)
 
-		click:Play()
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn,TweenInfo.new(0.2),{BackgroundColor3 = Color3.fromRGB(35,35,45)}):Play()
+    end)
 
-		if copy then
-			if setclipboard then
-				setclipboard("www.tiktok.com/@renan1627")
-			end
-		else
-			if url then
-				loadstring(game:HttpGet(url))()
-			end
-		end
+    -- rainbow premium
+    if premium then
+        task.spawn(function()
+            local hue = 0
+            while btn.Parent do
+                hue = (hue+1)%360
+                btn.TextColor3 = Color3.fromHSV(hue/360,0.8,1)
+                task.wait(0.05)
+            end
+        end)
+    end
 
-	end)
+    btn.MouseButton1Click:Connect(function()
+        playClick()
+
+        if copyTikTok then
+            if setclipboard then
+                setclipboard("www.tiktok.com/@renan1627")
+            end
+        else
+            if url then
+                loadstring(game:HttpGet(url))()
+            end
+        end
+    end)
+
+    scroll.CanvasSize = UDim2.new(0,0,0,list.AbsoluteContentSize.Y+20)
 
 end
 
--- scripts (short names)
+-- Scripts
 createScriptBtn("Makzinn Hub","https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
-createScriptBtn("Argon Hub","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-createScriptBtn("Frostware","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
-createScriptBtn("Catsus Parry","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
+createScriptBtn("Argon Hub X","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
+createScriptBtn("Frostware Hub need key","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
+createScriptBtn("Catsus Hub","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
 createScriptBtn("RX Hub","https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
 createScriptBtn("Allusive",nil,true,true)
 createScriptBtn("UwU",nil,true,true)
+
+-- 🔘 Nút ẩn kiểu chrome
+local miniBtn = Instance.new("TextButton",subGui)
+miniBtn.Size = UDim2.new(0,40,0,40)
+miniBtn.Position = UDim2.new(0,15,0.75,0)
+miniBtn.Text = "≡"
+miniBtn.Font = Enum.Font.GothamBold
+miniBtn.TextSize = 18
+miniBtn.BackgroundColor3 = Color3.fromRGB(40,40,50)
+miniBtn.TextColor3 = Color3.new(1,1,1)
+miniBtn.Active = true
+miniBtn.Draggable = true
+
+Instance.new("UICorner",miniBtn).CornerRadius = UDim.new(1,0)
+
+local visible = true
+
+miniBtn.MouseButton1Click:Connect(function()
+
+    playClick()
+
+    visible = not visible
+
+    if visible then
+        frame.Visible = true
+    else
+        frame.Visible = false
+    end
+
+end)
+
+-- Frame draggable
+frame.Active = true
+frame.Draggable = true
