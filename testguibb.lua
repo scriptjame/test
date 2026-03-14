@@ -1,8 +1,9 @@
--- ⚔️ Blade Ball GUI phụ (compact version)
+-- ⚔️ Blade Ball GUI phụ (RGB border + premium gradient + click sound FIX)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
+local SoundService = game:GetService("SoundService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -20,14 +21,17 @@ pcall(function()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
 end)
 
--- sound click
+-- 🔊 CLICK SOUND (FIX)
 local function clickSound()
-	local s = Instance.new("Sound")
-	s.SoundId = "rbxassetid://911342077"
-	s.Volume = 1
-	s.Parent = workspace
-	s:Play()
-	Debris:AddItem(s,2)
+
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://9114487369"
+	sound.Volume = 2
+	sound.PlayOnRemove = true
+	sound.Parent = SoundService
+
+	sound:Destroy()
+
 end
 
 -- GUI
@@ -36,7 +40,7 @@ gui.Name = "BladeBallMenu"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
--- frame (nhỏ gọn hơn nữa)
+-- frame
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0,350,0,280)
 frame.Position = UDim2.new(0.5,-175,0.5,-140)
@@ -46,24 +50,21 @@ frame.Active = true
 frame.Draggable = true
 frame.Parent = gui
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0,10)
-corner.Parent = frame
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,10)
 
--- viền ngoài
+-- RGB border
 local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(0,170,255)
 stroke.Thickness = 2
-stroke.Transparency = 0.2
 stroke.Parent = frame
 
--- viền trong
-local inner = Instance.new("UIStroke")
-inner.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-inner.Color = Color3.fromRGB(120,140,255)
-inner.Thickness = 1
-inner.Transparency = 0.5
-inner.Parent = frame
+task.spawn(function()
+	local hue = 0
+	while true do
+		hue = (hue + 1) % 360
+		stroke.Color = Color3.fromHSV(hue/360,1,1)
+		task.wait(0.05)
+	end
+end)
 
 -- title
 local title = Instance.new("TextLabel")
@@ -76,7 +77,7 @@ title.TextColor3 = Color3.fromRGB(180,255,200)
 title.Text = "⚔️ Blade Ball Scripts"
 title.Parent = frame
 
--- nút minimize
+-- minimize
 local minimize = Instance.new("TextButton")
 minimize.Size = UDim2.new(0,24,0,24)
 minimize.Position = UDim2.new(1,-30,0,6)
@@ -87,9 +88,7 @@ minimize.BackgroundColor3 = Color3.fromRGB(60,60,70)
 minimize.TextColor3 = Color3.new(1,1,1)
 minimize.Parent = frame
 
-local minCorner = Instance.new("UICorner")
-minCorner.CornerRadius = UDim.new(1,0)
-minCorner.Parent = minimize
+Instance.new("UICorner",minimize).CornerRadius = UDim.new(1,0)
 
 -- reopen
 local reopen = Instance.new("TextButton")
@@ -105,9 +104,7 @@ reopen.Active = true
 reopen.Draggable = true
 reopen.Parent = gui
 
-local reopenCorner = Instance.new("UICorner")
-reopenCorner.CornerRadius = UDim.new(1,0)
-reopenCorner.Parent = reopen
+Instance.new("UICorner",reopen).CornerRadius = UDim.new(1,0)
 
 minimize.MouseButton1Click:Connect(function()
 	clickSound()
@@ -147,13 +144,18 @@ local function createBtn(text,url,premium)
 	btn.AutoButtonColor = false
 	btn.Parent = scroll
 
-	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0,6)
-	c.Parent = btn
+	Instance.new("UICorner",btn).CornerRadius = UDim.new(0,6)
 
 	if premium then
-		btn.BackgroundColor3 = Color3.fromRGB(70,50,110)
-		btn.TextColor3 = Color3.fromRGB(255,220,120)
+
+		local gradient = Instance.new("UIGradient")
+		gradient.Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0,Color3.fromRGB(255,120,0)),
+			ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,200))
+		}
+		gradient.Rotation = 45
+		gradient.Parent = btn
+
 	end
 
 	btn.MouseButton1Click:Connect(function()
@@ -224,9 +226,7 @@ for _,s in pairs(socials) do
 	btn.BackgroundColor3 = s.color
 	btn.Parent = socialFrame
 
-	local c = Instance.new("UICorner")
-	c.CornerRadius = UDim.new(0,6)
-	c.Parent = btn
+	Instance.new("UICorner",btn).CornerRadius = UDim.new(0,6)
 
 	btn.MouseButton1Click:Connect(function()
 
