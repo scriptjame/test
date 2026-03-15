@@ -152,8 +152,8 @@ end
 createBtn("YARHM Hub","https://raw.githubusercontent.com/Joystickplays/psychic-octo-invention/main/yarhm.lua")
 createBtn("Project Hub","https://raw.githubusercontent.com/CycleScripts/Official/refs/heads/main/freemium")
 createBtn("Horizon Hub need key","https://pastefy.app/wwfom1bX/raw")
-createBtn("Vexon Hub","https://raw.githubusercontent.com/DiosDi/VexonHub/refs/heads/main/VexonHub")
-createBtn("Rew Hub","https://pastefy.app/2QUPuCOb/raw")
+createBtn("Azura","https://raw.githubusercontent.com/Azura83/Murder-Mystery-2/refs/heads/main/Script.lua")
+createBtn("Trav Hub","https://raw.githubusercontent.com/mm2scripthub/TravHub/refs/heads/main/MurderMystery2")
 createBtn("Bacon Hub (Premium)",nil,true,true)
 createBtn("Vertex Hub (Premium)",nil,true,true)
 
