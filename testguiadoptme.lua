@@ -151,8 +151,6 @@ end
 -- Adopt Me scripts
 createBtn("INF Hub","https://raw.githubusercontent.com/INF-Hub-PL/AdoptMeSpawner/refs/heads/main/PetSpawner")
 createBtn("Jazzedd Hub","https://raw.githubusercontent.com/jazzedd/JazradScript/refs/heads/main/Script")
-createBtn("R4m Hub (need key)","https://raw.githubusercontent.com/r4mpage4/LuaCom/refs/heads/main/r4mpage.gay")
-createBtn("Rage Hub (need key)","https://api.luarmor.net/files/v3/loaders/875033288c5e99d576622aced60a0c44.lua")
 
 createBtn("Ikai Hub (Premium)",nil,true,true)
 createBtn("Soseiwe Hub (Premium)",nil,true,true)
