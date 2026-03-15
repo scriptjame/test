@@ -1,4 +1,4 @@
--- ⚔️ Blade Ball GUI phụ (improved UI + animation + drag + hide button)
+-- ⚔️ Blade Ball GUI phụ (compact + drag + click sound + hide)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -9,10 +9,15 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local setclipboard = setclipboard or toclipboard or set_clipboard
 
--- sound
-local clickSound = Instance.new("Sound")
-clickSound.SoundId = "rbxassetid://6026984224"
-clickSound.Volume = 1
+-- click sound
+local function playClick(parent)
+    local s = Instance.new("Sound")
+    s.SoundId = "rbxassetid://876939830"
+    s.Volume = 1
+    s.Parent = parent
+    s:Play()
+    game:GetService("Debris"):AddItem(s,2)
+end
 
 -- remove old gui
 local old = playerGui:FindFirstChild("BladeBallMenu")
@@ -28,52 +33,52 @@ local subGui = Instance.new("ScreenGui",playerGui)
 subGui.Name="BladeBallMenu"
 subGui.ResetOnSpawn=false
 
--- main frame
+-- main frame (SMALLER)
 local frame=Instance.new("Frame",subGui)
 frame.AnchorPoint=Vector2.new(0.5,0.5)
 frame.Position=UDim2.new(0.5,0,0.5,0)
-frame.Size=UDim2.new(0,420,0,360)
-frame.BackgroundColor3=Color3.fromRGB(28,30,36)
+frame.Size=UDim2.new(0,330,0,270)
+frame.BackgroundColor3=Color3.fromRGB(30,32,38)
 frame.BackgroundTransparency=0.08
 frame.BorderSizePixel=0
-Instance.new("UICorner",frame).CornerRadius=UDim.new(0,14)
+Instance.new("UICorner",frame).CornerRadius=UDim.new(0,12)
 
--- gradient (style giống ảnh)
+-- gradient
 local grad=Instance.new("UIGradient",frame)
 grad.Color=ColorSequence.new{
-ColorSequenceKeypoint.new(0,Color3.fromRGB(40,45,55)),
+ColorSequenceKeypoint.new(0,Color3.fromRGB(45,48,60)),
 ColorSequenceKeypoint.new(1,Color3.fromRGB(25,27,33))
 }
 
--- stroke
+-- border
 local stroke=Instance.new("UIStroke",frame)
 stroke.Color=Color3.fromRGB(120,170,255)
 stroke.Transparency=0.4
 stroke.Thickness=1.5
 
--- title bar
+-- TITLE BAR (for dragging)
 local titleBar=Instance.new("Frame",frame)
-titleBar.Size=UDim2.new(1,0,0,40)
+titleBar.Size=UDim2.new(1,0,0,30)
 titleBar.BackgroundTransparency=1
 
 -- title
 local title=Instance.new("TextLabel",titleBar)
-title.Size=UDim2.new(1,-60,1,0)
+title.Size=UDim2.new(1,-50,1,0)
 title.Position=UDim2.new(0,10,0,0)
 title.BackgroundTransparency=1
 title.Font=Enum.Font.GothamBold
-title.TextSize=20
+title.TextSize=16
 title.TextColor3=Color3.fromRGB(220,255,220)
 title.Text="⚔️ Blade Ball Scripts"
 title.TextXAlignment="Left"
 
 -- hide button
 local hideBtn=Instance.new("TextButton",titleBar)
-hideBtn.Size=UDim2.new(0,30,0,25)
-hideBtn.Position=UDim2.new(1,-35,0.5,-12)
+hideBtn.Size=UDim2.new(0,25,0,22)
+hideBtn.Position=UDim2.new(1,-30,0.5,-11)
 hideBtn.Text="-"
 hideBtn.Font=Enum.Font.GothamBold
-hideBtn.TextSize=20
+hideBtn.TextSize=18
 hideBtn.TextColor3=Color3.new(1,1,1)
 hideBtn.BackgroundColor3=Color3.fromRGB(45,48,55)
 hideBtn.BorderSizePixel=0
@@ -81,27 +86,27 @@ Instance.new("UICorner",hideBtn).CornerRadius=UDim.new(0,6)
 
 -- scroll
 local scroll=Instance.new("ScrollingFrame",frame)
-scroll.Size=UDim2.new(1,-20,1,-110)
-scroll.Position=UDim2.new(0,10,0,45)
+scroll.Size=UDim2.new(1,-20,1,-85)
+scroll.Position=UDim2.new(0,10,0,35)
 scroll.BackgroundTransparency=1
-scroll.ScrollBarThickness=6
+scroll.ScrollBarThickness=5
 
 local list=Instance.new("UIListLayout",scroll)
-list.Padding=UDim.new(0,8)
+list.Padding=UDim.new(0,6)
 list.HorizontalAlignment="Center"
 
--- button function
+-- script button function
 local function createScriptBtn(text,url,premium,copyTikTok)
 
 local btn=Instance.new("TextButton",scroll)
-btn.Size=UDim2.new(0.9,0,0,40)
-btn.BackgroundColor3=Color3.fromRGB(40,42,50)
+btn.Size=UDim2.new(0.92,0,0,32)
+btn.BackgroundColor3=Color3.fromRGB(42,45,52)
 btn.TextColor3=Color3.fromRGB(235,235,235)
 btn.Font=Enum.Font.GothamMedium
-btn.TextSize=15
+btn.TextSize=14
 btn.Text=text
 btn.AutoButtonColor=false
-Instance.new("UICorner",btn).CornerRadius=UDim.new(0,8)
+Instance.new("UICorner",btn).CornerRadius=UDim.new(0,7)
 
 -- hover
 btn.MouseEnter:Connect(function()
@@ -109,7 +114,7 @@ TweenService:Create(btn,TweenInfo.new(.15),{BackgroundColor3=Color3.fromRGB(60,6
 end)
 
 btn.MouseLeave:Connect(function()
-TweenService:Create(btn,TweenInfo.new(.15),{BackgroundColor3=Color3.fromRGB(40,42,50)}):Play()
+TweenService:Create(btn,TweenInfo.new(.15),{BackgroundColor3=Color3.fromRGB(42,45,52)}):Play()
 end)
 
 -- premium color
@@ -127,9 +132,10 @@ end
 -- click
 btn.MouseButton1Click:Connect(function()
 
-clickSound:Play()
+playClick(btn)
 
 if copyTikTok then
+
 if setclipboard then
 setclipboard("https://www.tiktok.com/@evenher6")
 end
@@ -150,7 +156,7 @@ end
 
 end)
 
-scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+20)
+scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 
 end
 
@@ -165,44 +171,35 @@ createScriptBtn("UwU",nil,true,true)
 
 -- social frame
 local socialFrame=Instance.new("Frame",frame)
-socialFrame.Size=UDim2.new(1,-20,0,40)
-socialFrame.Position=UDim2.new(0,10,1,-50)
+socialFrame.Size=UDim2.new(1,-20,0,30)
+socialFrame.Position=UDim2.new(0,10,1,-35)
 socialFrame.BackgroundTransparency=1
 
 local socialList=Instance.new("UIListLayout",socialFrame)
 socialList.FillDirection="Horizontal"
 socialList.HorizontalAlignment="Center"
-socialList.Padding=UDim.new(0,10)
+socialList.Padding=UDim.new(0,8)
 
 local socials={
-{name="TikTok",color1=Color3.fromRGB(255,0,128),color2=Color3.fromRGB(0,255,255),link="https://www.tiktok.com"},
-{name="YouTube",color1=Color3.fromRGB(200,0,0),color2=Color3.fromRGB(255,100,100),link="https://youtube.com"},
-{name="Discord",color1=Color3.fromRGB(88,101,242),color2=Color3.fromRGB(120,140,255),link="https://discord.gg"}
+{name="TikTok",link="https://www.tiktok.com"},
+{name="YouTube",link="https://youtube.com"},
+{name="Discord",link="https://discord.gg"}
 }
 
 for _,s in ipairs(socials) do
 
 local btn=Instance.new("TextButton",socialFrame)
-btn.Size=UDim2.new(0.25,0,1,0)
+btn.Size=UDim2.new(0.3,0,1,0)
 btn.Text=s.name
 btn.Font=Enum.Font.GothamBold
-btn.TextSize=15
+btn.TextSize=13
 btn.TextColor3=Color3.new(1,1,1)
-btn.AutoButtonColor=false
-Instance.new("UICorner",btn).CornerRadius=UDim.new(0,8)
-
-task.spawn(function()
-local t=0
-while btn.Parent do
-t+=.03
-btn.BackgroundColor3=s.color1:Lerp(s.color2,(math.sin(t)+1)/2)
-task.wait(.05)
-end
-end)
+btn.BackgroundColor3=Color3.fromRGB(60,65,80)
+Instance.new("UICorner",btn).CornerRadius=UDim.new(0,6)
 
 btn.MouseButton1Click:Connect(function()
 
-clickSound:Play()
+playClick(btn)
 
 if setclipboard then
 setclipboard(s.link)
@@ -218,53 +215,39 @@ end)
 
 end
 
--- toggle icon
+-- reopen button
 local reopen=Instance.new("TextButton",subGui)
-reopen.Size=UDim2.new(0,40,0,40)
+reopen.Size=UDim2.new(0,32,0,32)
 reopen.Position=UDim2.new(0,20,0.7,0)
 reopen.Text="≡"
 reopen.Visible=false
 reopen.Font=Enum.Font.GothamBold
-reopen.TextSize=18
+reopen.TextSize=16
 reopen.TextColor3=Color3.new(1,1,1)
 reopen.BackgroundColor3=Color3.fromRGB(40,45,55)
 Instance.new("UICorner",reopen).CornerRadius=UDim.new(1,0)
 
--- animation hide
+-- hide gui
 hideBtn.MouseButton1Click:Connect(function()
 
-clickSound:Play()
-
-TweenService:Create(frame,TweenInfo.new(.25),{
-Size=UDim2.new(0,0,0,0),
-BackgroundTransparency=1
-}):Play()
-
-task.wait(.25)
+playClick(hideBtn)
 
 frame.Visible=false
 reopen.Visible=true
 
 end)
 
--- reopen
+-- reopen gui
 reopen.MouseButton1Click:Connect(function()
 
-clickSound:Play()
+playClick(reopen)
 
 frame.Visible=true
 reopen.Visible=false
 
-frame.Size=UDim2.new(0,0,0,0)
-
-TweenService:Create(frame,TweenInfo.new(.3,Enum.EasingStyle.Back),{
-Size=UDim2.new(0,420,0,360),
-BackgroundTransparency=0.08
-}):Play()
-
 end)
 
--- drag
+-- DRAG SYSTEM
 local dragging=false
 local dragInput
 local start
