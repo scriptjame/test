@@ -1,4 +1,4 @@
--- ⚔️ Blade Ball GUI phụ (compact + premium buttons + fixed socials)
+-- ⚔️ Blade Ball GUI phụ (final polished)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -64,7 +64,7 @@ title.Text="⚔️ Blade Ball Scripts"
 title.TextColor3=Color3.fromRGB(220,255,220)
 title.TextXAlignment="Left"
 
--- hide button (BIGGER)
+-- hide button
 local hideBtn=Instance.new("TextButton",titleBar)
 hideBtn.Size=UDim2.new(0,35,0,25)
 hideBtn.Position=UDim2.new(1,-40,0.5,-12)
@@ -86,7 +86,7 @@ local list=Instance.new("UIListLayout",scroll)
 list.Padding=UDim.new(0,6)
 list.HorizontalAlignment="Center"
 
--- script button
+-- button function
 local function createBtn(text,url,premium,copy)
 
 local btn=Instance.new("TextButton",scroll)
@@ -123,6 +123,11 @@ btn.MouseButton1Click:Connect(function()
 
 click(btn)
 
+-- animation press
+TweenService:Create(btn,TweenInfo.new(.1),{Size=UDim2.new(0.95,0,0,34)}):Play()
+task.wait(.1)
+TweenService:Create(btn,TweenInfo.new(.1),{Size=UDim2.new(0.92,0,0,32)}):Play()
+
 if copy then
 
 if setclipboard then
@@ -156,7 +161,6 @@ createBtn("Frostware Hub need key","https://raw.githubusercontent.com/Fsploit/F-
 createBtn("Catsus Hub","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
 createBtn("RX Hub","https://raw.githubusercontent.com/NodeX-Enc/NodeX/refs/heads/main/Main.lua")
 
--- premium
 createBtn("Allusive",nil,true,true)
 createBtn("UwU",nil,true,true)
 
@@ -172,9 +176,9 @@ layout.Padding=UDim.new(0,8)
 layout.HorizontalAlignment="Center"
 
 local socials={
-{name="TikTok",link="https://www.tiktok.com/@renan1627?is_from_webapp=1&sender_device=pc"},
-{name="YouTube",link="https://www.youtube.com/@user-qe3dv7iy2j"},
-{name="Discord",link="https://discord.gg/NgxXnRGRYp"}
+{name="TikTok",color=Color3.fromRGB(255,0,128),link="https://www.tiktok.com/@renan1627?is_from_webapp=1&sender_device=pc"},
+{name="YouTube",color=Color3.fromRGB(255,0,0),link="https://www.youtube.com/@user-qe3dv7iy2j"},
+{name="Discord",color=Color3.fromRGB(114,137,218),link="https://discord.gg/NgxXnRGRYp"}
 }
 
 for _,s in pairs(socials) do
@@ -185,7 +189,7 @@ b.Text=s.name
 b.Font=Enum.Font.GothamBold
 b.TextSize=13
 b.TextColor3=Color3.new(1,1,1)
-b.BackgroundColor3=Color3.fromRGB(60,65,80)
+b.BackgroundColor3=s.color
 Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
 
 b.MouseButton1Click:Connect(function()
@@ -206,7 +210,7 @@ end)
 
 end
 
--- reopen button (BIGGER)
+-- reopen button
 local reopen=Instance.new("TextButton",gui)
 reopen.Size=UDim2.new(0,45,0,45)
 reopen.Position=UDim2.new(0,20,0.7,0)
@@ -218,20 +222,37 @@ reopen.TextColor3=Color3.new(1,1,1)
 reopen.BackgroundColor3=Color3.fromRGB(50,55,70)
 Instance.new("UICorner",reopen).CornerRadius=UDim.new(1,0)
 
+-- open/close animation
 hideBtn.MouseButton1Click:Connect(function()
 click(hideBtn)
+
+TweenService:Create(frame,TweenInfo.new(.25,Enum.EasingStyle.Quad),{
+Size=UDim2.new(0,0,0,0),
+BackgroundTransparency=1
+}):Play()
+
+task.wait(.25)
+
 frame.Visible=false
 reopen.Visible=true
 end)
 
 reopen.MouseButton1Click:Connect(function()
 click(reopen)
+
 frame.Visible=true
 reopen.Visible=false
+
+frame.Size=UDim2.new(0,0,0,0)
+
+TweenService:Create(frame,TweenInfo.new(.25,Enum.EasingStyle.Back),{
+Size=UDim2.new(0,330,0,270),
+BackgroundTransparency=0.05
+}):Play()
 end)
 
--- drag
-local dragging=false
+-- drag system (works for frame + hide button)
+local dragging
 local dragInput
 local start
 local startPos
@@ -241,13 +262,6 @@ if input.UserInputType==Enum.UserInputType.MouseButton1 then
 dragging=true
 start=input.Position
 startPos=frame.Position
-
-input.Changed:Connect(function()
-if input.UserInputState==Enum.UserInputState.End then
-dragging=false
-end
-end)
-
 end
 end)
 
@@ -272,4 +286,10 @@ startPos.Y.Offset+delta.Y
 
 end
 
+end)
+
+UIS.InputEnded:Connect(function(input)
+if input.UserInputType==Enum.UserInputType.MouseButton1 then
+dragging=false
+end
 end)
