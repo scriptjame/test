@@ -130,7 +130,7 @@ TweenService:Create(btn,TweenInfo.new(.1),{Size=UDim2.new(0.92,0,0,32)}):Play()
 if copy then
 
 if setclipboard then
-setclipboard("https://www.tiktok.com/@evenher6")
+setclipboard("www.tiktok.com/@renan1627")
 end
 
 game.StarterGui:SetCore("SendNotification",{
@@ -175,9 +175,9 @@ layout.Padding=UDim.new(0,8)
 layout.HorizontalAlignment="Center"
 
 local socials={
-{name="TikTok",color=Color3.fromRGB(255,0,128),link="https://www.tiktok.com"},
-{name="YouTube",color=Color3.fromRGB(255,0,0),link="https://www.youtube.com"},
-{name="Discord",color=Color3.fromRGB(114,137,218),link="https://discord.gg"}
+{name="TikTok",color=Color3.fromRGB(255,0,128),link="www.tiktok.com/@renan1627"},
+{name="YouTube",color=Color3.fromRGB(255,0,0),link="https://www.youtube.com/@Dearax-f9v"},
+{name="Discord",color=Color3.fromRGB(114,137,218),link="https://discord.gg/RbhFbKbABe"}
 }
 
 for _,s in pairs(socials) do
