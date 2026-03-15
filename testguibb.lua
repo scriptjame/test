@@ -123,7 +123,6 @@ btn.MouseButton1Click:Connect(function()
 
 click(btn)
 
--- animation press
 TweenService:Create(btn,TweenInfo.new(.1),{Size=UDim2.new(0.95,0,0,34)}):Play()
 task.wait(.1)
 TweenService:Create(btn,TweenInfo.new(.1),{Size=UDim2.new(0.92,0,0,32)}):Play()
@@ -176,9 +175,9 @@ layout.Padding=UDim.new(0,8)
 layout.HorizontalAlignment="Center"
 
 local socials={
-{name="TikTok",color=Color3.fromRGB(255,0,128),link="https://www.tiktok.com/@renan1627?is_from_webapp=1&sender_device=pc"},
-{name="YouTube",color=Color3.fromRGB(255,0,0),link="https://www.youtube.com/@user-qe3dv7iy2j"},
-{name="Discord",color=Color3.fromRGB(114,137,218),link="https://discord.gg/NgxXnRGRYp"}
+{name="TikTok",color=Color3.fromRGB(255,0,128),link="https://www.tiktok.com"},
+{name="YouTube",color=Color3.fromRGB(255,0,0),link="https://www.youtube.com"},
+{name="Discord",color=Color3.fromRGB(114,137,218),link="https://discord.gg"}
 }
 
 for _,s in pairs(socials) do
@@ -251,21 +250,24 @@ BackgroundTransparency=0.05
 }):Play()
 end)
 
--- drag system (works for frame + hide button)
-local dragging
+-- DRAG SYSTEM (FIXED)
+
+local function makeDraggable(obj)
+
+local dragging=false
 local dragInput
 local start
 local startPos
 
-titleBar.InputBegan:Connect(function(input)
+obj.InputBegan:Connect(function(input)
 if input.UserInputType==Enum.UserInputType.MouseButton1 then
 dragging=true
 start=input.Position
-startPos=frame.Position
+startPos=obj.Position
 end
 end)
 
-titleBar.InputChanged:Connect(function(input)
+obj.InputChanged:Connect(function(input)
 if input.UserInputType==Enum.UserInputType.MouseMovement then
 dragInput=input
 end
@@ -277,7 +279,7 @@ if input==dragInput and dragging then
 
 local delta=input.Position-start
 
-frame.Position=UDim2.new(
+obj.Position=UDim2.new(
 startPos.X.Scale,
 startPos.X.Offset+delta.X,
 startPos.Y.Scale,
@@ -293,3 +295,8 @@ if input.UserInputType==Enum.UserInputType.MouseButton1 then
 dragging=false
 end
 end)
+
+end
+
+makeDraggable(frame)
+makeDraggable(reopen)
