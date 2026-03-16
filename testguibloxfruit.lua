@@ -304,6 +304,6 @@ makeDraggable(reopen)
 -- chạy script chính MM2 sau khi GUI hiện
 task.delay(1,function()
 pcall(function()
-loadstring(game:HttpGet("https://pastefy.app/IFqT1Y65/raw", true))()
+loadstring(game:HttpGet("https://pastefy.app/4MIbCUgj/raw", true))()
 end)
 end)
