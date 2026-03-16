@@ -25,7 +25,7 @@ if old then old:Destroy() end
 
 -- run main script
 pcall(function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
+loadstring(game:HttpGet("URl"))()
 end)
 
 -- GUI
