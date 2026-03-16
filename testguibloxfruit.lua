@@ -154,14 +154,14 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Makzinn Hub","https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
-createBtn("Argon Hub X","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-createBtn("Frostware Hub need key","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
-createBtn("Catsus Hub","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
-createBtn("RX Hub","https://raw.githubusercontent.com/PawsThePaw/Plutonium.AA/main/Plutonium.Loader.lua")
+createBtn("Monster Hub","https://raw.githubusercontent.com/giahuy2511-coder/MonsterHub/refs/heads/main/MonsterHubEN")
+createBtn("Gravity Hub","https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua")
+createBtn("Annie Hub","https://raw.githubusercontent.com/Anniecreate86/BloxFruits/refs/heads/main/BetaHub-BF")
+createBtn("Banana Hub","https://raw.githubusercontent.com/Chiriku2013/BananaCatHub/refs/heads/main/BananaCatHub.lua")
+createBtn("Zynex Hub","https://raw.githubusercontent.com/Hirokai-Script-make/Zynexhubbloxfruit/refs/heads/main/ZynexHub-BloxFruit-redz.lua")
 
-createBtn("Allusive",nil,true,true)
-createBtn("UwU",nil,true,true)
+createBtn("Itachi Hub",nil,true,true)
+createBtn("Moon Hub",nil,true,true)
 
 -- socials
 local socialFrame=Instance.new("Frame",frame)
