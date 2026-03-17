@@ -23,6 +23,11 @@ end
 local old = playerGui:FindFirstChild("MM2Menu")
 if old then old:Destroy() end
 
+-- run main script
+pcall(function()
+loadstring(game:HttpGet("https://cdn.sourceb.in/bins/3vLaGn7z0a/0", true))()
+end)
+
 -- GUI
 local gui=Instance.new("ScreenGui",playerGui)
 gui.Name="MM2Menu"
