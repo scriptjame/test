@@ -155,7 +155,6 @@ end
 
 -- MM2 scripts
 createBtn("YARHM Hub","https://raw.githubusercontent.com/Joystickplays/psychic-octo-invention/main/yarhm.lua")
-createBtn("Project Hub","https://raw.githubusercontent.com/CycleScripts/Official/refs/heads/main/freemium")
 createBtn("Bacon Hub (Premium)",nil,true,true)
 createBtn("Vertex Hub (Premium)",nil,true,true)
 
