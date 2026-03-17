@@ -150,7 +150,6 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Hun Hub","https://pastebin.com/raw/g2W4zneW")
 createBtn("Rey Hub","https://raw.githubusercontent.com/javi-esp/Rey/main/sab.lua")
 createBtn("Stear Hub","https://pastefy.app/3P0o3D66/raw")
 createBtn("Guizzy Hub","https://raw.githubusercontent.com/GuizzyisbackV2LOL/Inkxsteal/refs/heads/main/.lua")
