@@ -149,14 +149,9 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Makzinn Hub","https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
-createBtn("Argon Hub X","https://raw.githubusercontent.com/AgentX771/ArgonHubX/main/Loader.lua")
-createBtn("Frostware Hub need key","https://raw.githubusercontent.com/Fsploit/F-R-O-S-T-W-A-R-E/refs/heads/main/Main")
-createBtn("Catsus Hub","https://raw.githubusercontent.com/3345-c-a-t-s-u-s/-beta-/main/AutoParry.lua")
-createBtn("RX Hub","https://raw.githubusercontent.com/PawsThePaw/Plutonium.AA/main/Plutonium.Loader.lua")
-
-createBtn("Allusive",nil,true,true)
-createBtn("UwU",nil,true,true)
+createBtn("Tzechco Hub","https://raw.githubusercontent.com/CF-Trail/tzechco-PlsDonateAutofarmBackup/main/old.lua")
+createBtn("Noxis Hub","https://raw.githubusercontent.com/Noxislua/Scripts/refs/heads/main/Pls%20Donate")
+createBtn("Steal (visual)","https://pastefy.app/3dLnL9R5/raw")
 
 -- socials
 local socialFrame=Instance.new("Frame",frame)
