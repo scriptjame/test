@@ -23,11 +23,6 @@ end
 local old = playerGui:FindFirstChild("PlsDonateMenu")
 if old then old:Destroy() end
 
--- run main script
-pcall(function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bladeball/refs/heads/main/Protected_2903763962339231.lua"))()
-end)
-
 -- GUI
 local gui=Instance.new("ScreenGui",playerGui)
 gui.Name="PlsDonateMenu"
