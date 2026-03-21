@@ -150,7 +150,7 @@ end
 
 -- scripts
 createBtn("Bagah Hub","https://raw.githubusercontent.com/Bagah-Project/bagah-hub-public/refs/heads/main/mainloader.lua")
-createBtn("DP Hub","\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\34\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\67\79\79\76\88\80\76\79\47\68\80\45\72\85\66\45\99\111\111\108\120\112\108\111\47\114\101\102\115\47\104\101\97\100\115\47\109\97\105\110\47\69\118\97\100\101\46\108\117\97\34\41\41\40\41")
+createBtn("DP Hub","https://raw.githubusercontent.com/COOLXPLO/DP-HUB-coolxplo/refs/heads/main/Evade.lua")
 createBtn("Kuncioco Hub (PC Recommended)","https://raw.githubusercontent.com/dhiosetia/trollplayerXD/refs/heads/main/evadenokey.lua")
 
 -- socials
