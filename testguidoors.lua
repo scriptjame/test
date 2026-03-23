@@ -149,11 +149,9 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Speed Hub","https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-createBtn("Phantasm Hub","https://raw.githubusercontent.com/ATrainz/Phantasm/refs/heads/main/Games/TSB.lua")
-createBtn("Spook Hub","https://raw.githubusercontent.com/ApparentlySpooks/spookshubTSB/refs/heads/main/SHTSB.txt")
-
-createBtn("Cookie Hub",nil,true,true)
+createBtn("Soluna Hub","https://raw.githubusercontent.com/EndOverdosing/Soluna-API/refs/heads/main/doors.lua")
+createBtn("Roshan Hub","https://raw.githubusercontent.com/ROSHANDVS2/ROSHAN-HUB-SCRIPTS/refs/heads/main/ROSHAN-DOORS-PAGUE-HUB.lua")
+createBtn("Kyksikoid Hub","https://raw.githubusercontent.com/kyksikoid/Doors-Script/main/doors.lua")
 
 -- socials
 local socialFrame=Instance.new("Frame",frame)
