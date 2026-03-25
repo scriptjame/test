@@ -149,11 +149,10 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Fox Hub","https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
-createBtn("Ringta Hub","https://raw.githubusercontent.com/wehibuyfgyuwe/99nights.github.io/refs/heads/main/ringta.lua")
-createBtn("Days Hub","https://raw.githubusercontent.com/adibhub1/99-nighit-in-forest/refs/heads/main/99%20night%20in%20forest")
-
-createBtn("99Nights Hub",nil,true,true)
+createBtn("TBO Hub","https://raw.githubusercontent.com/cool5013/TBO/main/TBOscript")
+createBtn("Plutonium Hub","https://raw.githubusercontent.com/PawsThePaw/Plutonium.AA/main/Plutonium.Loader.lua")
+createBtn("MD Hub","https://raw.githubusercontent.com/zenin-com/MDHub-Jujutsu-Shenanigans/refs/heads/main/%5BMdhub-jjs_v2%5D")
+createBtn("Spotlight Hub","https://raw.githubusercontent.com/NotEnoughJack/LuaFluentDependancies/refs/heads/main/main.lua")
 
 -- socials
 local socialFrame=Instance.new("Frame",frame)
