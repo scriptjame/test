@@ -149,11 +149,15 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Fox Hub","https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
-createBtn("Ringta Hub","https://raw.githubusercontent.com/wehibuyfgyuwe/99nights.github.io/refs/heads/main/ringta.lua")
-createBtn("Days Hub","https://raw.githubusercontent.com/adibhub1/99-nighit-in-forest/refs/heads/main/99%20night%20in%20forest")
+createBtn("Catsaken Hub","https://raw.githubusercontent.com/aibabylaugh/catsaken-real-script-not-assets/refs/heads/main/obfuscated-1448974601077002340.lua")
+createBtn("Hutao Hub","https://api.junkie-development.de/api/v1/luascripts/public/b803c8ca9d0205a7561d9f0467418e00b7743ef568f5471653432762027cf0f0/download")
+createBtn("Ringtabublik Hub","https://raw.githubusercontent.com/34f3f/forsaken.github.io/refs/heads/main/ringtabublik.lua")
+createBtn("Funny Hub","https://raw.githubusercontent.com/PlutomasterAccount/Funny-Hub-V2/main/Forsaken")
+createBtn("Fr0stByt3Z Hub","https://raw.githubusercontent.com/Fr0stByt3Z/Fr0stByt3Z-Hub/refs/heads/main/Forsaken%20Obfuscated.lua")
+createBtn("Cursed Hub","https://raw.githubusercontent.com/zxcursedsocute/Forsaken-Script/refs/heads/main/lua")
+createBtn("STN Hub","https://raw.githubusercontent.com/Snowt69/SNT-HUB/refs/heads/main/Forsaken")
 
-createBtn("99Nights Hub",nil,true,true)
+createBtn("Uni Hub",nil,true,true)
 
 -- socials
 local socialFrame=Instance.new("Frame",frame)
