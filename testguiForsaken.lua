@@ -55,7 +55,7 @@ title.Position=UDim2.new(0,10,0,0)
 title.BackgroundTransparency=1
 title.Font=Enum.Font.GothamBold
 title.TextSize=16
-title.Text="🐶 Pet Simulator 99 Scripts" -- ✅ ĐÃ ĐỔI DUY NHẤT DÒNG NÀY
+title.Text="💀 Forsaken Scripts" -- ✅ CHỈ ĐỔI DÒNG NÀY
 title.TextColor3=Color3.fromRGB(220,255,220)
 title.TextXAlignment="Left"
 
