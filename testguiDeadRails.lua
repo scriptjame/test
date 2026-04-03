@@ -55,7 +55,7 @@ title.Position=UDim2.new(0,10,0,0)
 title.BackgroundTransparency=1
 title.Font=Enum.Font.GothamBold
 title.TextSize=16
-title.Text="🌲 99 Night in the Forest Scripts"
+title.Text="🚂 Dead Rails Scripts"
 title.TextColor3=Color3.fromRGB(220,255,220)
 title.TextXAlignment="Left"
 
