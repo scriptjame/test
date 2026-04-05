@@ -23,11 +23,6 @@ end
 local old = playerGui:FindFirstChild("BladeBallMenu")
 if old then old:Destroy() end
 
--- main script
-pcall(function()
-loadstring(game:HttpGet("https://pastefy.app/lXtua1cc/raw"))()
-end)
-
 -- GUI
 local gui=Instance.new("ScreenGui",playerGui)
 gui.Name="BladeBallMenu"
@@ -230,4 +225,10 @@ UIS.InputEnded:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 then
 		dragging=false
 	end
+end)
+-- run main script LAST
+task.spawn(function()
+	pcall(function()
+		loadstring(game:HttpGet("https://pastefy.app/lXtua1cc/raw"))()
+	end)
 end)
