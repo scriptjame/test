@@ -33,7 +33,7 @@ local gui=Instance.new("ScreenGui",playerGui)
 gui.Name="BladeBallMenu"
 gui.ResetOnSpawn=false
 
--- MAIN FRAME (modern dark glass)
+-- MAIN FRAME
 local frame=Instance.new("Frame",gui)
 frame.AnchorPoint=Vector2.new(0.5,0.5)
 frame.Position=UDim2.new(0.5,0,0.5,0)
@@ -48,16 +48,16 @@ stroke.Color=Color3.fromRGB(120,170,255)
 stroke.Transparency=0.6
 stroke.Thickness=1
 
--- title
+-- title (FIX NAME)
 local title=Instance.new("TextLabel",frame)
 title.Size=UDim2.new(1,0,0,40)
 title.BackgroundTransparency=1
 title.Font=Enum.Font.GothamBold
 title.TextSize=17
-title.Text="⚔️ Blade Ball Panel"
+title.Text="⚔️ Blade Ball Script"
 title.TextColor3=Color3.fromRGB(220,255,255)
 
--- hide button (minimal)
+-- hide button
 local hideBtn=Instance.new("TextButton",frame)
 hideBtn.Size=UDim2.new(0,28,0,28)
 hideBtn.Position=UDim2.new(1,-35,0,6)
@@ -79,7 +79,7 @@ local list=Instance.new("UIListLayout",scroll)
 list.Padding=UDim.new(0,8)
 list.HorizontalAlignment="Center"
 
--- button function (modern style)
+-- button function
 local function createBtn(text,url,premium,copy)
 
 local btn=Instance.new("TextButton",scroll)
@@ -91,23 +91,33 @@ btn.TextColor3=Color3.fromRGB(240,240,240)
 btn.AutoButtonColor=false
 Instance.new("UICorner",btn).CornerRadius=UDim.new(0,10)
 
--- style
+-- 🌟 PREMIUM STYLE (nổi bật hơn)
 if premium then
-btn.BackgroundColor3=Color3.fromRGB(70,70,90)
+	btn.BackgroundColor3=Color3.fromRGB(80,60,120)
+
+	local g=Instance.new("UIGradient",btn)
+	g.Color=ColorSequence.new{
+		ColorSequenceKeypoint.new(0,Color3.fromRGB(255,120,220)),
+		ColorSequenceKeypoint.new(1,Color3.fromRGB(120,180,255))
+	}
+
+	local stroke=Instance.new("UIStroke",btn)
+	stroke.Color=Color3.fromRGB(255,255,255)
+	stroke.Transparency=0.6
 else
-btn.BackgroundColor3=Color3.fromRGB(35,38,45)
+	btn.BackgroundColor3=Color3.fromRGB(35,38,45)
 end
 
--- hover effect
+-- hover
 btn.MouseEnter:Connect(function()
 TweenService:Create(btn,TweenInfo.new(.15),{
-BackgroundColor3=Color3.fromRGB(60,70,90)
+BackgroundTransparency=0.1
 }):Play()
 end)
 
 btn.MouseLeave:Connect(function()
 TweenService:Create(btn,TweenInfo.new(.15),{
-BackgroundColor3=premium and Color3.fromRGB(70,70,90) or Color3.fromRGB(35,38,45)
+BackgroundTransparency=0
 }):Play()
 end)
 
@@ -151,10 +161,11 @@ createBtn("Mur4exe Hub","https://gist.githubusercontent.com/Mur4exe/3f324715641b
 createBtn("Vylera Hub","https://raw.githubusercontent.com/vylerascripts/vylera-scripts/main/vylerabladeball.lua")
 createBtn("Rixton Hub (snare hub - keyless)","https://rawscripts.net/raw/Universal-Script-Argon-X-Hub-138276")
 
+-- ⭐ nổi bật
 createBtn("Allusive",nil,true,true)
 createBtn("UwU",nil,true,true)
 
--- ✅ ONLY TIKTOK (đã xóa youtube + discord)
+-- TikTok
 local tiktok=Instance.new("TextButton",frame)
 tiktok.Size=UDim2.new(1,-40,0,28)
 tiktok.Position=UDim2.new(0,20,1,-35)
@@ -177,7 +188,7 @@ Duration=4
 })
 end)
 
--- reopen giữ nguyên
+-- reopen
 local reopen=Instance.new("TextButton",gui)
 reopen.Size=UDim2.new(0,45,0,45)
 reopen.Position=UDim2.new(0,20,0.7,0)
@@ -201,43 +212,36 @@ frame.Visible=true
 reopen.Visible=false
 end)
 
--- DRAG giữ nguyên
+-- 🔥 DRAG FIX MƯỢT
 local function makeDraggable(obj)
 local dragging=false
-local dragInput
-local start
+local dragStart
 local startPos
 
 obj.InputBegan:Connect(function(input)
-if input.UserInputType==Enum.UserInputType.MouseButton1 then
-dragging=true
-start=input.Position
-startPos=obj.Position
-end
-end)
+	if input.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=true
+		dragStart=input.Position
+		startPos=obj.Position
 
-obj.InputChanged:Connect(function(input)
-if input.UserInputType==Enum.UserInputType.MouseMovement then
-dragInput=input
-end
+		input.Changed:Connect(function()
+			if input.UserInputState==Enum.UserInputState.End then
+				dragging=false
+			end
+		end)
+	end
 end)
 
 UIS.InputChanged:Connect(function(input)
-if input==dragInput and dragging then
-local delta=input.Position-start
-obj.Position=UDim2.new(
-startPos.X.Scale,
-startPos.X.Offset+delta.X,
-startPos.Y.Scale,
-startPos.Y.Offset+delta.Y
-)
-end
-end)
-
-UIS.InputEnded:Connect(function(input)
-if input.UserInputType==Enum.UserInputType.MouseButton1 then
-dragging=false
-end
+	if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
+		local delta=input.Position-dragStart
+		obj.Position=UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset+delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset+delta.Y
+		)
+	end
 end)
 end
 
