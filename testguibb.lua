@@ -1,4 +1,4 @@
--- ⚔️ Blade Ball GUI (modern clean)
+-- ⚔️ Blade Ball GUI PRO
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -23,7 +23,7 @@ end
 local old = playerGui:FindFirstChild("BladeBallMenu")
 if old then old:Destroy() end
 
--- run main script
+-- main script
 pcall(function()
 loadstring(game:HttpGet("https://pastefy.app/lXtua1cc/raw"))()
 end)
@@ -33,34 +33,39 @@ local gui=Instance.new("ScreenGui",playerGui)
 gui.Name="BladeBallMenu"
 gui.ResetOnSpawn=false
 
--- MAIN FRAME
+-- FRAME
 local frame=Instance.new("Frame",gui)
 frame.AnchorPoint=Vector2.new(0.5,0.5)
 frame.Position=UDim2.new(0.5,0,0.5,0)
 frame.Size=UDim2.new(0,340,0,280)
-frame.BackgroundColor3=Color3.fromRGB(20,22,28)
-frame.BackgroundTransparency=0.1
+frame.BackgroundColor3=Color3.fromRGB(18,20,26)
+frame.BackgroundTransparency=0.15
 frame.BorderSizePixel=0
 Instance.new("UICorner",frame).CornerRadius=UDim.new(0,14)
 
 local stroke=Instance.new("UIStroke",frame)
 stroke.Color=Color3.fromRGB(120,170,255)
-stroke.Transparency=0.6
-stroke.Thickness=1
+stroke.Transparency=0.7
 
--- title (FIX NAME)
-local title=Instance.new("TextLabel",frame)
-title.Size=UDim2.new(1,0,0,40)
+-- 🔥 TITLE BAR (DRAG HERE)
+local titleBar = Instance.new("Frame", frame)
+titleBar.Size = UDim2.new(1,0,0,40)
+titleBar.BackgroundTransparency = 1
+
+local title=Instance.new("TextLabel",titleBar)
+title.Size=UDim2.new(1,-40,1,0)
+title.Position=UDim2.new(0,10,0,0)
 title.BackgroundTransparency=1
 title.Font=Enum.Font.GothamBold
 title.TextSize=17
 title.Text="⚔️ Blade Ball Script"
 title.TextColor3=Color3.fromRGB(220,255,255)
+title.TextXAlignment="Left"
 
--- hide button
-local hideBtn=Instance.new("TextButton",frame)
+-- hide
+local hideBtn=Instance.new("TextButton",titleBar)
 hideBtn.Size=UDim2.new(0,28,0,28)
-hideBtn.Position=UDim2.new(1,-35,0,6)
+hideBtn.Position=UDim2.new(1,-35,0.5,-14)
 hideBtn.Text="×"
 hideBtn.Font=Enum.Font.GothamBold
 hideBtn.TextSize=18
@@ -79,7 +84,7 @@ local list=Instance.new("UIListLayout",scroll)
 list.Padding=UDim.new(0,8)
 list.HorizontalAlignment="Center"
 
--- button function
+-- button
 local function createBtn(text,url,premium,copy)
 
 local btn=Instance.new("TextButton",scroll)
@@ -91,7 +96,6 @@ btn.TextColor3=Color3.fromRGB(240,240,240)
 btn.AutoButtonColor=false
 Instance.new("UICorner",btn).CornerRadius=UDim.new(0,10)
 
--- 🌟 PREMIUM STYLE (nổi bật hơn)
 if premium then
 	btn.BackgroundColor3=Color3.fromRGB(80,60,120)
 
@@ -101,25 +105,13 @@ if premium then
 		ColorSequenceKeypoint.new(1,Color3.fromRGB(120,180,255))
 	}
 
-	local stroke=Instance.new("UIStroke",btn)
-	stroke.Color=Color3.fromRGB(255,255,255)
-	stroke.Transparency=0.6
+	local glow=Instance.new("UIStroke",btn)
+	glow.Color=Color3.fromRGB(255,255,255)
+	glow.Thickness=1.5
+	glow.Transparency=0.5
 else
 	btn.BackgroundColor3=Color3.fromRGB(35,38,45)
 end
-
--- hover
-btn.MouseEnter:Connect(function()
-TweenService:Create(btn,TweenInfo.new(.15),{
-BackgroundTransparency=0.1
-}):Play()
-end)
-
-btn.MouseLeave:Connect(function()
-TweenService:Create(btn,TweenInfo.new(.15),{
-BackgroundTransparency=0
-}):Play()
-end)
 
 btn.MouseButton1Click:Connect(function()
 
@@ -133,13 +125,11 @@ if copy then
 if setclipboard then
 setclipboard("www.tiktok.com/@renan1627")
 end
-
 game.StarterGui:SetCore("SendNotification",{
 Title="Copied!",
 Text="Follow TikTok!",
 Duration=4
 })
-
 else
 if url then
 loadstring(game:HttpGet(url))()
@@ -161,7 +151,6 @@ createBtn("Mur4exe Hub","https://gist.githubusercontent.com/Mur4exe/3f324715641b
 createBtn("Vylera Hub","https://raw.githubusercontent.com/vylerascripts/vylera-scripts/main/vylerabladeball.lua")
 createBtn("Rixton Hub (snare hub - keyless)","https://rawscripts.net/raw/Universal-Script-Argon-X-Hub-138276")
 
--- ⭐ nổi bật
 createBtn("Allusive",nil,true,true)
 createBtn("UwU",nil,true,true)
 
@@ -212,30 +201,23 @@ frame.Visible=true
 reopen.Visible=false
 end)
 
--- 🔥 DRAG FIX MƯỢT
-local function makeDraggable(obj)
+-- 🔥 DRAG (ONLY TITLE BAR = FIX 100%)
 local dragging=false
 local dragStart
 local startPos
 
-obj.InputBegan:Connect(function(input)
+titleBar.InputBegan:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 then
 		dragging=true
 		dragStart=input.Position
-		startPos=obj.Position
-
-		input.Changed:Connect(function()
-			if input.UserInputState==Enum.UserInputState.End then
-				dragging=false
-			end
-		end)
+		startPos=frame.Position
 	end
 end)
 
 UIS.InputChanged:Connect(function(input)
 	if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
 		local delta=input.Position-dragStart
-		obj.Position=UDim2.new(
+		frame.Position=UDim2.new(
 			startPos.X.Scale,
 			startPos.X.Offset+delta.X,
 			startPos.Y.Scale,
@@ -243,7 +225,9 @@ UIS.InputChanged:Connect(function(input)
 		)
 	end
 end)
-end
 
-makeDraggable(frame)
-makeDraggable(reopen)
+UIS.InputEnded:Connect(function(input)
+	if input.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=false
+	end
+end)
