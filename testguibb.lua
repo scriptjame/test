@@ -74,7 +74,7 @@ TweenService:Create(bar, TweenInfo.new(5, Enum.EasingStyle.Linear), {
 	Size = UDim2.new(1,0,1,0)
 }):Play()
 
-task.wait(5)
+task.wait(8)
 
 -- fade out mượt
 TweenService:Create(box, TweenInfo.new(0.3), {Transparency = 1}):Play()
