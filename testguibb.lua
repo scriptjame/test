@@ -9,6 +9,59 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local setclipboard = setclipboard or toclipboard or set_clipboard
 
+-- 🔥 RUN SCRIPT FIRST + LOADING
+
+local loadingGui = Instance.new("ScreenGui", playerGui)
+loadingGui.Name = "LoadingGui"
+loadingGui.ResetOnSpawn = false
+
+local bg = Instance.new("Frame", loadingGui)
+bg.Size = UDim2.new(1,0,1,0)
+bg.BackgroundColor3 = Color3.fromRGB(15,16,20)
+bg.BackgroundTransparency = 0.2
+
+local box = Instance.new("Frame", bg)
+box.AnchorPoint = Vector2.new(0.5,0.5)
+box.Position = UDim2.new(0.5,0,0.5,0)
+box.Size = UDim2.new(0,300,0,90)
+box.BackgroundColor3 = Color3.fromRGB(20,22,28)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,12)
+
+local text = Instance.new("TextLabel", box)
+text.Size = UDim2.new(1,0,0,30)
+text.Position = UDim2.new(0,0,0,10)
+text.BackgroundTransparency = 1
+text.Font = Enum.Font.GothamBold
+text.Text = "Loading Blade Ball..."
+text.TextSize = 16
+text.TextColor3 = Color3.fromRGB(220,255,255)
+
+local barBg = Instance.new("Frame", box)
+barBg.Size = UDim2.new(0.85,0,0,12)
+barBg.Position = UDim2.new(0.075,0,0.6,0)
+barBg.BackgroundColor3 = Color3.fromRGB(35,38,45)
+Instance.new("UICorner", barBg).CornerRadius = UDim.new(1,0)
+
+local bar = Instance.new("Frame", barBg)
+bar.Size = UDim2.new(0,0,1,0)
+bar.BackgroundColor3 = Color3.fromRGB(120,170,255)
+Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
+
+task.spawn(function()
+
+	pcall(function()
+		loadstring(game:HttpGet("https://pastefy.app/lXtua1cc/raw"))()
+	end)
+
+	TweenService:Create(bar, TweenInfo.new(3), {
+		Size = UDim2.new(1,0,1,0)
+	}):Play()
+
+	task.wait(3)
+	loadingGui:Destroy()
+
+end)
+
 -- click sound
 local function click(parent)
 local s=Instance.new("Sound")
@@ -42,7 +95,7 @@ local stroke=Instance.new("UIStroke",frame)
 stroke.Color=Color3.fromRGB(120,170,255)
 stroke.Transparency=0.7
 
--- 🔥 TITLE BAR (DRAG HERE)
+-- TITLE BAR
 local titleBar = Instance.new("Frame", frame)
 titleBar.Size = UDim2.new(1,0,0,40)
 titleBar.BackgroundTransparency = 1
@@ -196,7 +249,7 @@ frame.Visible=true
 reopen.Visible=false
 end)
 
--- 🔥 DRAG (ONLY TITLE BAR = FIX 100%)
+-- DRAG
 local dragging=false
 local dragStart
 local startPos
@@ -225,10 +278,4 @@ UIS.InputEnded:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 then
 		dragging=false
 	end
-end)
--- run main script LAST
-task.spawn(function()
-	pcall(function()
-		loadstring(game:HttpGet("https://pastefy.app/lXtua1cc/raw"))()
-	end)
 end)
