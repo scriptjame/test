@@ -1,4 +1,4 @@
--- 🔥 LOADING GUI (3s)
+-- 🔥 LOADING GUI (5s - đẹp hơn)
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -9,33 +9,78 @@ local loadingGui = Instance.new("ScreenGui", playerGui)
 loadingGui.Name = "LoadingGui"
 loadingGui.IgnoreGuiInset = true
 
+-- nền mờ nhẹ (không full che)
 local bg = Instance.new("Frame", loadingGui)
 bg.Size = UDim2.new(1,0,1,0)
-bg.BackgroundColor3 = Color3.fromRGB(15,15,20)
+bg.BackgroundColor3 = Color3.fromRGB(10,10,15)
+bg.BackgroundTransparency = 0.4
 
+-- box chính
 local box = Instance.new("Frame", bg)
-box.Size = UDim2.new(0,300,0,80)
-box.Position = UDim2.new(0.5,-150,0.5,-40)
+box.Size = UDim2.new(0,320,0,90)
+box.Position = UDim2.new(0.5,-160,0.5,-45)
 box.BackgroundColor3 = Color3.fromRGB(25,28,35)
-Instance.new("UICorner", box).CornerRadius = UDim.new(0,12)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,14)
 
+-- viền nhẹ
+local stroke = Instance.new("UIStroke", box)
+stroke.Color = Color3.fromRGB(120,170,255)
+stroke.Transparency = 0.6
+
+-- text
+local text = Instance.new("TextLabel", box)
+text.Size = UDim2.new(1,0,0,30)
+text.Position = UDim2.new(0,0,0,8)
+text.BackgroundTransparency = 1
+text.Text = "Loading..."
+text.Font = Enum.Font.GothamBold
+text.TextSize = 16
+text.TextColor3 = Color3.fromRGB(220,240,255)
+
+-- nền thanh
 local barBg = Instance.new("Frame", box)
-barBg.Size = UDim2.new(0.9,0,0,14)
-barBg.Position = UDim2.new(0.05,0,0.65,0)
+barBg.Size = UDim2.new(0.85,0,0,16)
+barBg.Position = UDim2.new(0.075,0,0.6,0)
 barBg.BackgroundColor3 = Color3.fromRGB(40,45,60)
 Instance.new("UICorner", barBg).CornerRadius = UDim.new(1,0)
 
+-- thanh chính
 local bar = Instance.new("Frame", barBg)
 bar.Size = UDim2.new(0,0,1,0)
 bar.BackgroundColor3 = Color3.fromRGB(120,170,255)
 Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
 
--- tween tiến độ 3s
-TweenService:Create(bar, TweenInfo.new(3, Enum.EasingStyle.Linear), {
+-- gradient cho đẹp
+local grad = Instance.new("UIGradient", bar)
+grad.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(120,170,255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(180,120,255))
+}
+
+-- hiệu ứng chữ "Loading..."
+task.spawn(function()
+	while loadingGui.Parent do
+		text.Text = "Loading."
+		task.wait(0.4)
+		text.Text = "Loading.."
+		task.wait(0.4)
+		text.Text = "Loading..."
+		task.wait(0.4)
+	end
+end)
+
+-- tween thanh 5s
+TweenService:Create(bar, TweenInfo.new(5, Enum.EasingStyle.Linear), {
 	Size = UDim2.new(1,0,1,0)
 }):Play()
 
-task.wait(3)
+task.wait(5)
+
+-- fade out mượt
+TweenService:Create(box, TweenInfo.new(0.3), {Transparency = 1}):Play()
+TweenService:Create(bg, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+
+task.wait(0.3)
 loadingGui:Destroy()
 -- ⚔️ Blade Ball GUI PRO
 
