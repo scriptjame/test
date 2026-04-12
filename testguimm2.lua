@@ -135,7 +135,7 @@ end
 
 game.StarterGui:SetCore("SendNotification",{
 Title="Copied!",
-Text="Follow my TikTok for updates!",
+Text="Follow YouTube and TikTok for update",
 Duration=5
 })
 
@@ -155,8 +155,9 @@ end
 
 -- MM2 scripts
 createBtn("YARHM Hub","https://raw.githubusercontent.com/Joystickplays/psychic-octo-invention/main/yarhm.lua")
+createBtn("Overdrive Hub","https://rawscripts.net/raw/Universal-Script-Overdrive-Hub-43383")
+createBtn("Azure Hub","https://raw.githubusercontent.com/Aura-56/MurderMystery2/refs/heads/main/AzureHub.lua")
 createBtn("Bacon Hub (Premium)",nil,true,true)
-createBtn("Vertex Hub (Premium)",nil,true,true)
 
 -- socials
 local socialFrame=Instance.new("Frame",frame)
