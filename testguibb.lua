@@ -109,7 +109,7 @@ if old then old:Destroy() end
 
 -- main script
 pcall(function()
-loadstring(game:HttpGet("https://pastefy.app/lXtua1cc/raw"))()
+load
 end)
 
 -- GUI
@@ -227,13 +227,13 @@ scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
 end
 
 -- scripts
-createBtn("Makzinn Hub","https://raw.githubusercontent.com/MagoKazinn/Makzinn_hub/main/makzinn_Hub")
-createBtn("Levi Hub","https://levi-hub-x.vercel.app/Loader.lua")
-createBtn("Corolla Hub","https://raw.githubusercontent.com/7190000/Corolla-Hub/main/ch.lua")
-createBtn("Plutonium Hub","https://raw.githubusercontent.com/PawsThePaw/Plutonium.AA/main/Plutonium.Loader.lua")
-createBtn("Mur4exe Hub","https://gist.githubusercontent.com/Mur4exe/3f324715641be103e3ee2a8317765e13/raw/a9749a78feffaa7f535b8335454d9888aa8f530c/Blade_ball_modern_ui_v2.lua")
-createBtn("Vylera Hub","https://raw.githubusercontent.com/vylerascripts/vylera-scripts/main/vylerabladeball.lua")
-createBtn("Rixton Hub (snare hub - keyless)","https://rawscripts.net/raw/Universal-Script-Argon-X-Hub-138276")
+createBtn
+createBtn
+createBtn
+createBtn
+createBtn
+createBtn
+createBtn
 
 createBtn("Allusive",nil,true,true)
 createBtn("UwU",nil,true,true)
