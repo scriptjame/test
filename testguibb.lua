@@ -35,7 +35,7 @@ local Games = {
         Description = "Blade Ball Script",
         Icon = "⚔",
         Action = function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/test2/refs/heads/main/bladeball.lua"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/test3/refs/heads/main/test.lua", true))()
         end
     },
 
