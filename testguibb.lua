@@ -1,317 +1,1255 @@
--- 🔥 LOADING GUI (5s - đẹp hơn)
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local TweenService = game:GetService("TweenService")
-
-local loadingGui = Instance.new("ScreenGui", playerGui)
-loadingGui.Name = "LoadingGui"
-loadingGui.IgnoreGuiInset = true
-
--- nền mờ nhẹ (không full che)
-local bg = Instance.new("Frame", loadingGui)
-bg.Size = UDim2.new(1,0,1,0)
-bg.BackgroundColor3 = Color3.fromRGB(10,10,15)
-bg.BackgroundTransparency = 0.4
-
--- box chính
-local box = Instance.new("Frame", bg)
-box.Size = UDim2.new(0,320,0,90)
-box.Position = UDim2.new(0.5,-160,0.5,-45)
-box.BackgroundColor3 = Color3.fromRGB(25,28,35)
-Instance.new("UICorner", box).CornerRadius = UDim.new(0,14)
-
--- viền nhẹ
-local stroke = Instance.new("UIStroke", box)
-stroke.Color = Color3.fromRGB(120,170,255)
-stroke.Transparency = 0.6
-
--- text
-local text = Instance.new("TextLabel", box)
-text.Size = UDim2.new(1,0,0,30)
-text.Position = UDim2.new(0,0,0,8)
-text.BackgroundTransparency = 1
-text.Text = "Loading..."
-text.Font = Enum.Font.GothamBold
-text.TextSize = 16
-text.TextColor3 = Color3.fromRGB(220,240,255)
-
--- nền thanh
-local barBg = Instance.new("Frame", box)
-barBg.Size = UDim2.new(0.85,0,0,16)
-barBg.Position = UDim2.new(0.075,0,0.6,0)
-barBg.BackgroundColor3 = Color3.fromRGB(40,45,60)
-Instance.new("UICorner", barBg).CornerRadius = UDim.new(1,0)
-
--- thanh chính
-local bar = Instance.new("Frame", barBg)
-bar.Size = UDim2.new(0,0,1,0)
-bar.BackgroundColor3 = Color3.fromRGB(120,170,255)
-Instance.new("UICorner", bar).CornerRadius = UDim.new(1,0)
-
--- gradient cho đẹp
-local grad = Instance.new("UIGradient", bar)
-grad.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(120,170,255)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(180,120,255))
-}
-
--- hiệu ứng chữ "Loading..."
-task.spawn(function()
-	while loadingGui.Parent do
-		text.Text = "Loading."
-		task.wait(0.4)
-		text.Text = "Loading.."
-		task.wait(0.4)
-		text.Text = "Loading..."
-		task.wait(0.4)
-	end
-end)
-
--- tween thanh 5s
-TweenService:Create(bar, TweenInfo.new(5, Enum.EasingStyle.Linear), {
-	Size = UDim2.new(1,0,1,0)
-}):Play()
-
-task.wait(8)
-
--- fade out mượt
-TweenService:Create(box, TweenInfo.new(0.3), {Transparency = 1}):Play()
-TweenService:Create(bg, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-
-task.wait(0.3)
-loadingGui:Destroy()
--- ⚔️ Blade Ball GUI PRO
+--// ⚡ YUNGAKO HUB - UI v2
+--// Beautiful Cards / Search / Sound / Hover / Minimize / Reopen
+--// PC + Mobile
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
+local Debris = game:GetService("Debris")
 
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
-local setclipboard = setclipboard or toclipboard or set_clipboard
+--==================================================
+-- REMOVE OLD GUI
+--==================================================
 
--- click sound
-local function click(parent)
-local s=Instance.new("Sound")
-s.SoundId="rbxassetid://876939830"
-s.Volume=1
-s.Parent=parent
-s:Play()
-game:GetService("Debris"):AddItem(s,2)
+local old = PlayerGui:FindFirstChild("YungakoHub")
+if old then
+    old:Destroy()
 end
 
--- remove old gui
-local old = playerGui:FindFirstChild("BladeBallMenu")
-if old then old:Destroy() end
+--==================================================
+-- SETTINGS
+--==================================================
 
--- main script
-pcall(function()
-load
-end)
+local CLICK_SOUND = "rbxassetid://876939830"
 
--- GUI
-local gui=Instance.new("ScreenGui",playerGui)
-gui.Name="BladeBallMenu"
-gui.ResetOnSpawn=false
+--==================================================
+-- GAME DATA
+--==================================================
 
--- FRAME
-local frame=Instance.new("Frame",gui)
-frame.AnchorPoint=Vector2.new(0.5,0.5)
-frame.Position=UDim2.new(0.5,0,0.5,0)
-frame.Size=UDim2.new(0,340,0,280)
-frame.BackgroundColor3=Color3.fromRGB(18,20,26)
-frame.BackgroundTransparency=0.15
-frame.BorderSizePixel=0
-Instance.new("UICorner",frame).CornerRadius=UDim.new(0,14)
+local Games = {
+    {
+        Name = "Blade Ball",
+        Description = "Blade Ball Script",
+        Icon = "⚔",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/test2/refs/heads/main/bladeball.lua"))()
+        end
+    },
 
-local stroke=Instance.new("UIStroke",frame)
-stroke.Color=Color3.fromRGB(120,170,255)
-stroke.Transparency=0.7
+    {
+        Name = "MM2",
+        Description = "Murder Mystery 2",
+        Icon = "🔪",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/mm2/refs/heads/main/bawe.lua", true))()
+        end
+    },
 
--- 🔥 TITLE BAR (DRAG HERE)
-local titleBar = Instance.new("Frame", frame)
-titleBar.Size = UDim2.new(1,0,0,40)
-titleBar.BackgroundTransparency = 1
+    {
+        Name = "Adopt Me",
+        Description = "Adopt Me Script",
+        Icon = "🏠",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/testadp/main/adpt.lua"))()
+        end
+    },
 
-local title=Instance.new("TextLabel",titleBar)
-title.Size=UDim2.new(1,-40,1,0)
-title.Position=UDim2.new(0,10,0,0)
-title.BackgroundTransparency=1
-title.Font=Enum.Font.GothamBold
-title.TextSize=17
-title.Text="⚔️ Blade Ball Script"
-title.TextColor3=Color3.fromRGB(220,255,255)
-title.TextXAlignment="Left"
+    {
+        Name = "Blox Fruits",
+        Description = "Blox Fruits Script",
+        Icon = "🍎",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/bloxfruit/refs/heads/main/main.lua"))()
+        end
+    },
 
--- hide
-local hideBtn=Instance.new("TextButton",titleBar)
-hideBtn.Size=UDim2.new(0,28,0,28)
-hideBtn.Position=UDim2.new(1,-35,0.5,-14)
-hideBtn.Text="×"
-hideBtn.Font=Enum.Font.GothamBold
-hideBtn.TextSize=18
-hideBtn.TextColor3=Color3.new(1,1,1)
-hideBtn.BackgroundColor3=Color3.fromRGB(40,45,60)
-Instance.new("UICorner",hideBtn).CornerRadius=UDim.new(1,0)
+    {
+        Name = "Steal a Brainrot",
+        Description = "Steal a Brainrot Script",
+        Icon = "🧠",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/stealabrainrot/refs/heads/main/shiba.lua"))()
+        end
+    },
 
--- scroll
-local scroll=Instance.new("ScrollingFrame",frame)
-scroll.Size=UDim2.new(1,-20,1,-90)
-scroll.Position=UDim2.new(0,10,0,45)
-scroll.BackgroundTransparency=1
-scroll.ScrollBarThickness=3
+    {
+        Name = "99 Nights in the Forest",
+        Description = "99 Nights Script",
+        Icon = "🌲",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/99Nights/refs/heads/main/shiba.lua"))()
+        end
+    },
 
-local list=Instance.new("UIListLayout",scroll)
-list.Padding=UDim.new(0,8)
-list.HorizontalAlignment="Center"
+    {
+        Name = "The Strongest Battlegrounds",
+        Description = "TSB Script",
+        Icon = "⚡",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/TheStrongestBattlegrounds/refs/heads/main/main.lua"))()
+        end
+    },
 
--- button
-local function createBtn(text,url,premium,copy)
+    {
+        Name = "Pls Donate",
+        Description = "Pls Donate Script",
+        Icon = "💰",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/plsdonat_e/refs/heads/main/zzz.lua"))()
+        end
+    },
 
-local btn=Instance.new("TextButton",scroll)
-btn.Size=UDim2.new(0.92,0,0,34)
-btn.Text=text
-btn.Font=Enum.Font.GothamSemibold
-btn.TextSize=14
-btn.TextColor3=Color3.fromRGB(240,240,240)
-btn.AutoButtonColor=false
-Instance.new("UICorner",btn).CornerRadius=UDim.new(0,10)
+    {
+        Name = "Evade",
+        Description = "Evade Script",
+        Icon = "👁",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/evade/refs/heads/main/shabi.lua"))()
+        end
+    },
 
-if premium then
-	btn.BackgroundColor3=Color3.fromRGB(80,60,120)
+    {
+        Name = "Fish It",
+        Description = "Fish It Script",
+        Icon = "🎣",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/fishit/refs/heads/main/nice.lua"))()
+        end
+    },
 
-	local g=Instance.new("UIGradient",btn)
-	g.Color=ColorSequence.new{
-		ColorSequenceKeypoint.new(0,Color3.fromRGB(255,120,220)),
-		ColorSequenceKeypoint.new(1,Color3.fromRGB(120,180,255))
-	}
+    {
+        Name = "Doors",
+        Description = "Doors Script",
+        Icon = "🚪",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Doors/refs/heads/main/wwsp.lua"))()
+        end
+    },
 
-	local glow=Instance.new("UIStroke",btn)
-	glow.Color=Color3.fromRGB(255,255,255)
-	glow.Thickness=1.5
-	glow.Transparency=0.5
-else
-	btn.BackgroundColor3=Color3.fromRGB(35,38,45)
+    {
+        Name = "Sailor Piece",
+        Description = "Sailor Piece Script",
+        Icon = "⚓",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/SailorPiece/refs/heads/main/heh.lua"))()
+        end
+    },
+
+    {
+        Name = "Jujutsu Shenanigans",
+        Description = "Jujutsu Script",
+        Icon = "👊",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Jujutsu-Shenanigans/refs/heads/main/hai.lua"))()
+        end
+    },
+
+    {
+        Name = "Forsaken",
+        Description = "Forsaken Script",
+        Icon = "☠",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Forsaken/refs/heads/main/null.lua"))()
+        end
+    },
+
+    {
+        Name = "Rivals",
+        Description = "Rivals Script",
+        Icon = "🎯",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/rivals/refs/heads/main/loot.lua"))()
+        end
+    },
+
+    {
+        Name = "Arsenal",
+        Description = "Arsenal Script",
+        Icon = "🔫",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Arsenal/refs/heads/main/nah.lua"))()
+        end
+    },
+
+    {
+        Name = "Bee Swarm Simulator",
+        Description = "Bee Swarm Script",
+        Icon = "🐝",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/BeeSwarmSimulator/refs/heads/main/loot.lua"))()
+        end
+    },
+
+    {
+        Name = "Brookhaven RP",
+        Description = "Brookhaven Script",
+        Icon = "🏡",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Brookhaven-RP/refs/heads/main/wsp.lua"))()
+        end
+    },
+
+    {
+        Name = "Aura Ascension",
+        Description = "Aura Ascension Script",
+        Icon = "✨",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Aura-Ascension/refs/heads/main/looot.lua"))()
+        end
+    },
+
+    {
+        Name = "Dead Rails",
+        Description = "Dead Rails Script",
+        Icon = "🚂",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/Dead-Rails/refs/heads/main/hola.lua"))()
+        end
+    },
+
+    {
+        Name = "Bite By Night",
+        Description = "Bite By Night Script",
+        Icon = "🌙",
+        Action = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptjame/BiteBynight/refs/heads/main/ty.lua"))()
+        end
+    },
+}
+
+--==================================================
+-- COLORS
+--==================================================
+
+local BG = Color3.fromRGB(13, 15, 21)
+local HEADER_BG = Color3.fromRGB(17, 20, 28)
+
+local CARD = Color3.fromRGB(23, 27, 36)
+local CARD_HOVER = Color3.fromRGB(32, 38, 50)
+
+local ICON_BG = Color3.fromRGB(31, 36, 48)
+
+local TEXT = Color3.fromRGB(245, 247, 252)
+local SUBTEXT = Color3.fromRGB(145, 153, 170)
+
+local ACCENT = Color3.fromRGB(110, 165, 255)
+local ACCENT2 = Color3.fromRGB(170, 110, 255)
+
+local SEARCH_BG = Color3.fromRGB(19, 23, 31)
+
+--==================================================
+-- HELPERS
+--==================================================
+
+local function Corner(parent, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius)
+    c.Parent = parent
+    return c
 end
 
-btn.MouseButton1Click:Connect(function()
-
-click(btn)
-
-TweenService:Create(btn,TweenInfo.new(.08),{Size=UDim2.new(0.95,0,0,36)}):Play()
-task.wait(.08)
-TweenService:Create(btn,TweenInfo.new(.08),{Size=UDim2.new(0.92,0,0,34)}):Play()
-
-if copy then
-if setclipboard then
-setclipboard("www.tiktok.com/@renan1627")
+local function Stroke(parent, color, transparency, thickness)
+    local s = Instance.new("UIStroke")
+    s.Color = color
+    s.Transparency = transparency or 0
+    s.Thickness = thickness or 1
+    s.Parent = parent
+    return s
 end
-game.StarterGui:SetCore("SendNotification",{
-Title="Copied!",
-Text="Follow TikTok!",
-Duration=4
+
+local function Tween(obj, time, properties)
+    return TweenService:Create(
+        obj,
+        TweenInfo.new(
+            time,
+            Enum.EasingStyle.Quart,
+            Enum.EasingDirection.Out
+        ),
+        properties
+    )
+end
+
+local function ClickSound(parent)
+    local sound = Instance.new("Sound")
+    sound.SoundId = CLICK_SOUND
+    sound.Volume = 0.65
+    sound.Parent = parent
+    sound:Play()
+
+    Debris:AddItem(sound, 2)
+end
+
+--==================================================
+-- SCREEN GUI
+--==================================================
+
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "YungakoHub"
+Gui.ResetOnSpawn = false
+Gui.IgnoreGuiInset = true
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Gui.Parent = PlayerGui
+
+--==================================================
+-- MAIN
+--==================================================
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.Position = UDim2.fromScale(0.5, 0.5)
+Main.Size = UDim2.new(0.78, 0, 0.72, 0)
+
+Main.BackgroundColor3 = BG
+Main.BorderSizePixel = 0
+Main.ClipsDescendants = true
+Main.Parent = Gui
+
+Corner(Main, 18)
+
+local MainStroke = Stroke(
+    Main,
+    Color3.fromRGB(90, 125, 180),
+    0.55,
+    1
+)
+
+--==================================================
+-- HEADER BACKGROUND
+--==================================================
+
+local HeaderBG = Instance.new("Frame")
+HeaderBG.Name = "HeaderBG"
+HeaderBG.Size = UDim2.new(1, 0, 0, 58)
+HeaderBG.BackgroundColor3 = HEADER_BG
+HeaderBG.BorderSizePixel = 0
+HeaderBG.Parent = Main
+
+local HeaderGradient = Instance.new("UIGradient")
+HeaderGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(22, 26, 37)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 18, 26))
 })
-else
-if url then
-loadstring(game:HttpGet(url))()
+HeaderGradient.Parent = HeaderBG
+
+--==================================================
+-- HEADER
+--==================================================
+
+local Header = Instance.new("Frame")
+Header.Name = "Header"
+Header.Size = UDim2.new(1, 0, 0, 58)
+Header.BackgroundTransparency = 1
+Header.Parent = Main
+
+local Title = Instance.new("TextLabel")
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 18, 0, 6)
+Title.Size = UDim2.new(1, -100, 0, 27)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "⚡ YUNGAKO HUB | Shiba HUB"
+Title.TextSize = 19
+Title.TextColor3 = TEXT
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
+
+local Count = Instance.new("TextLabel")
+Count.BackgroundTransparency = 1
+Count.Position = UDim2.new(0, 19, 0, 32)
+Count.Size = UDim2.new(1, -100, 0, 17)
+Count.Font = Enum.Font.Gotham
+Count.Text = tostring(#Games) .. " Games  •  Ready"
+Count.TextSize = 11
+Count.TextColor3 = SUBTEXT
+Count.TextXAlignment = Enum.TextXAlignment.Left
+Count.Parent = Header
+
+--==================================================
+-- CLOSE
+--==================================================
+
+local Close = Instance.new("TextButton")
+Close.Size = UDim2.new(0, 32, 0, 32)
+Close.Position = UDim2.new(1, -43, 0, 13)
+
+Close.BackgroundColor3 = Color3.fromRGB(34, 39, 50)
+Close.BorderSizePixel = 0
+
+Close.Text = "×"
+Close.TextColor3 = TEXT
+Close.TextSize = 20
+Close.Font = Enum.Font.GothamBold
+
+Close.AutoButtonColor = false
+Close.Parent = Header
+
+Corner(Close, 9)
+
+Close.MouseEnter:Connect(function()
+    Tween(Close, .12, {
+        BackgroundColor3 = Color3.fromRGB(65, 48, 55)
+    }):Play()
+end)
+
+Close.MouseLeave:Connect(function()
+    Tween(Close, .12, {
+        BackgroundColor3 = Color3.fromRGB(34, 39, 50)
+    }):Play()
+end)
+
+--==================================================
+-- SEARCH
+--==================================================
+
+local SearchFrame = Instance.new("Frame")
+SearchFrame.Name = "SearchFrame"
+
+SearchFrame.Position = UDim2.new(0, 14, 0, 68)
+SearchFrame.Size = UDim2.new(1, -28, 0, 40)
+
+SearchFrame.BackgroundColor3 = SEARCH_BG
+SearchFrame.BorderSizePixel = 0
+SearchFrame.Parent = Main
+
+Corner(SearchFrame, 11)
+
+local SearchStroke = Stroke(
+    SearchFrame,
+    Color3.fromRGB(70, 80, 100),
+    0.7,
+    1
+)
+
+local SearchIcon = Instance.new("TextLabel")
+SearchIcon.BackgroundTransparency = 1
+SearchIcon.Position = UDim2.new(0, 11, 0, 0)
+SearchIcon.Size = UDim2.new(0, 25, 1, 0)
+
+SearchIcon.Text = "⌕"
+SearchIcon.TextColor3 = SUBTEXT
+SearchIcon.TextSize = 20
+SearchIcon.Font = Enum.Font.GothamBold
+SearchIcon.Parent = SearchFrame
+
+local SearchBox = Instance.new("TextBox")
+SearchBox.BackgroundTransparency = 1
+SearchBox.Position = UDim2.new(0, 39, 0, 0)
+SearchBox.Size = UDim2.new(1, -50, 1, 0)
+
+SearchBox.ClearTextOnFocus = false
+SearchBox.Text = ""
+SearchBox.PlaceholderText = "Search games..."
+SearchBox.PlaceholderColor3 = SUBTEXT
+
+SearchBox.TextColor3 = TEXT
+SearchBox.TextSize = 13
+SearchBox.Font = Enum.Font.Gotham
+SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+
+SearchBox.Parent = SearchFrame
+
+SearchBox.Focused:Connect(function()
+    Tween(SearchStroke, .15, {
+        Transparency = 0.25,
+        Color = ACCENT
+    }):Play()
+end)
+
+SearchBox.FocusLost:Connect(function()
+    Tween(SearchStroke, .15, {
+        Transparency = 0.7,
+        Color = Color3.fromRGB(70, 80, 100)
+    }):Play()
+end)
+
+--==================================================
+-- GAME SCROLL
+--==================================================
+
+local GameScroll = Instance.new("ScrollingFrame")
+GameScroll.Name = "GameScroll"
+
+GameScroll.Position = UDim2.new(0, 14, 0, 117)
+GameScroll.Size = UDim2.new(1, -28, 1, -132)
+
+GameScroll.BackgroundTransparency = 1
+GameScroll.BorderSizePixel = 0
+
+GameScroll.ScrollBarThickness = 3
+GameScroll.ScrollBarImageColor3 = ACCENT
+GameScroll.ScrollBarImageTransparency = 0.25
+
+GameScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+GameScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+GameScroll.Parent = Main
+
+--==================================================
+-- GRID
+--==================================================
+
+local Grid = Instance.new("UIGridLayout")
+Grid.Name = "Grid"
+
+Grid.CellPadding = UDim2.new(0, 9, 0, 9)
+Grid.CellSize = UDim2.new(0.5, -5, 0, 70)
+
+Grid.SortOrder = Enum.SortOrder.LayoutOrder
+
+Grid.Parent = GameScroll
+
+--==================================================
+-- PADDING
+--==================================================
+
+local Padding = Instance.new("UIPadding")
+Padding.PaddingTop = UDim.new(0, 3)
+Padding.PaddingBottom = UDim.new(0, 10)
+Padding.PaddingLeft = UDim.new(0, 2)
+Padding.PaddingRight = UDim.new(0, 2)
+Padding.Parent = GameScroll
+
+--==================================================
+-- NO RESULTS
+--==================================================
+
+local NoResults = Instance.new("Frame")
+NoResults.Name = "NoResults"
+
+NoResults.Size = UDim2.new(1, -10, 0, 100)
+NoResults.BackgroundTransparency = 1
+NoResults.Visible = false
+NoResults.Parent = Main
+
+local NoText = Instance.new("TextLabel")
+NoText.BackgroundTransparency = 1
+NoText.Size = UDim2.new(1, 0, 0, 25)
+NoText.Position = UDim2.new(0, 0, 0, 12)
+
+NoText.Text = "No games found"
+NoText.TextColor3 = TEXT
+NoText.TextSize = 15
+NoText.Font = Enum.Font.GothamBold
+NoText.Parent = NoResults
+
+local NoSub = Instance.new("TextLabel")
+NoSub.BackgroundTransparency = 1
+NoSub.Size = UDim2.new(1, 0, 0, 22)
+NoSub.Position = UDim2.new(0, 0, 0, 40)
+
+NoSub.Text = "Try another search"
+NoSub.TextColor3 = SUBTEXT
+NoSub.TextSize = 11
+NoSub.Font = Enum.Font.Gotham
+NoSub.Parent = NoResults
+
+--==================================================
+-- CARDS
+--==================================================
+
+local Cards = {}
+
+local function CreateCard(gameData, index)
+
+    local Card = Instance.new("TextButton")
+
+    Card.Name = "Card_" .. gameData.Name
+    Card.Text = ""
+    Card.AutoButtonColor = false
+
+    Card.BackgroundColor3 = CARD
+    Card.BorderSizePixel = 0
+
+    Card.LayoutOrder = index
+    Card.Parent = GameScroll
+
+    Corner(Card, 12)
+
+    local CardStroke = Stroke(
+        Card,
+        Color3.fromRGB(70, 78, 98),
+        0.78,
+        1
+    )
+
+    --==================================================
+    -- ICON BOX
+    --==================================================
+
+    local IconBox = Instance.new("Frame")
+
+    IconBox.Size = UDim2.new(0, 44, 0, 44)
+    IconBox.Position = UDim2.new(0, 10, 0.5, -22)
+
+    IconBox.BackgroundColor3 = ICON_BG
+    IconBox.BorderSizePixel = 0
+
+    IconBox.Parent = Card
+
+    Corner(IconBox, 11)
+
+    local IconGradient = Instance.new("UIGradient")
+
+    IconGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(
+            0,
+            Color3.fromRGB(38, 44, 58)
+        ),
+
+        ColorSequenceKeypoint.new(
+            1,
+            Color3.fromRGB(28, 32, 43)
+        )
+    })
+
+    IconGradient.Rotation = 90
+    IconGradient.Parent = IconBox
+
+    local Icon = Instance.new("TextLabel")
+
+    Icon.BackgroundTransparency = 1
+    Icon.Size = UDim2.fromScale(1, 1)
+
+    Icon.Text = gameData.Icon
+    Icon.TextSize = 20
+    Icon.Font = Enum.Font.GothamBold
+
+    Icon.TextColor3 = TEXT
+    Icon.Parent = IconBox
+
+    --==================================================
+    -- NAME
+    --==================================================
+
+    local Name = Instance.new("TextLabel")
+
+    Name.BackgroundTransparency = 1
+
+    Name.Position = UDim2.new(0, 64, 0, 12)
+    Name.Size = UDim2.new(1, -102, 0, 20)
+
+    Name.Font = Enum.Font.GothamSemibold
+
+    Name.Text = gameData.Name
+    Name.TextSize = 13
+    Name.TextColor3 = TEXT
+
+    Name.TextXAlignment = Enum.TextXAlignment.Left
+    Name.TextTruncate = Enum.TextTruncate.AtEnd
+
+    Name.Parent = Card
+
+    --==================================================
+    -- DESCRIPTION
+    --==================================================
+
+    local Description = Instance.new("TextLabel")
+
+    Description.BackgroundTransparency = 1
+
+    Description.Position = UDim2.new(0, 64, 0, 35)
+    Description.Size = UDim2.new(1, -106, 0, 17)
+
+    Description.Font = Enum.Font.Gotham
+
+    Description.Text = gameData.Description
+    Description.TextSize = 10
+    Description.TextColor3 = SUBTEXT
+
+    Description.TextXAlignment = Enum.TextXAlignment.Left
+    Description.TextTruncate = Enum.TextTruncate.AtEnd
+
+    Description.Parent = Card
+
+    --==================================================
+    -- ARROW
+    --==================================================
+
+    local Arrow = Instance.new("TextLabel")
+
+    Arrow.BackgroundTransparency = 1
+
+    Arrow.AnchorPoint = Vector2.new(1, 0.5)
+    Arrow.Position = UDim2.new(1, -11, 0.5, 0)
+
+    Arrow.Size = UDim2.new(0, 20, 0, 25)
+
+    Arrow.Text = "›"
+
+    Arrow.TextColor3 = SUBTEXT
+    Arrow.TextSize = 20
+    Arrow.Font = Enum.Font.GothamBold
+
+    Arrow.Parent = Card
+
+    --==================================================
+    -- CARD DATA
+    --==================================================
+
+    local cardData = {
+        Button = Card,
+        Data = gameData,
+        Stroke = CardStroke,
+        Arrow = Arrow,
+    }
+
+    table.insert(Cards, cardData)
+
+    --==================================================
+    -- HOVER
+    --==================================================
+
+    Card.MouseEnter:Connect(function()
+
+        Tween(Card, .13, {
+            BackgroundColor3 = CARD_HOVER
+        }):Play()
+
+        Tween(CardStroke, .13, {
+            Transparency = 0.25,
+            Color = ACCENT
+        }):Play()
+
+        Tween(IconBox, .13, {
+            BackgroundColor3 = Color3.fromRGB(43, 50, 67)
+        }):Play()
+
+        Tween(Arrow, .13, {
+            TextColor3 = ACCENT,
+            Position = UDim2.new(1, -7, 0.5, 0)
+        }):Play()
+
+    end)
+
+    Card.MouseLeave:Connect(function()
+
+        Tween(Card, .13, {
+            BackgroundColor3 = CARD
+        }):Play()
+
+        Tween(CardStroke, .13, {
+            Transparency = 0.78,
+            Color = Color3.fromRGB(70, 78, 98)
+        }):Play()
+
+        Tween(IconBox, .13, {
+            BackgroundColor3 = ICON_BG
+        }):Play()
+
+        Tween(Arrow, .13, {
+            TextColor3 = SUBTEXT,
+            Position = UDim2.new(1, -11, 0.5, 0)
+        }):Play()
+
+    end)
+
+    --==================================================
+    -- CLICK
+    --==================================================
+
+    Card.Activated:Connect(function()
+
+        ClickSound(Card)
+
+        -- press animation
+        Tween(Card, .07, {
+            BackgroundColor3 = Color3.fromRGB(40, 46, 60)
+        }):Play()
+
+        Tween(IconBox, .07, {
+            Size = UDim2.new(0, 40, 0, 40),
+            Position = UDim2.new(0, 12, 0.5, -20)
+        }):Play()
+
+        task.wait(.07)
+
+        Tween(Card, .1, {
+            BackgroundColor3 = CARD_HOVER
+        }):Play()
+
+        Tween(IconBox, .1, {
+            Size = UDim2.new(0, 44, 0, 44),
+            Position = UDim2.new(0, 10, 0.5, -22)
+        }):Play()
+
+        -- callback
+        if typeof(gameData.Action) == "function" then
+
+            task.spawn(function()
+
+                local success, err = pcall(
+                    gameData.Action
+                )
+
+                if not success then
+                    warn(
+                        "[YUNGAKO HUB] " ..
+                        tostring(gameData.Name) ..
+                        " callback error: " ..
+                        tostring(err)
+                    )
+                end
+
+            end)
+
+        end
+
+    end)
 end
+
+--==================================================
+-- CREATE CARDS
+--==================================================
+
+for i, gameData in ipairs(Games) do
+    CreateCard(gameData, i)
 end
+
+--==================================================
+-- UPDATE CANVAS
+--==================================================
+
+local function UpdateCanvas()
+
+    local contentHeight =
+        Grid.AbsoluteContentSize.Y
+
+    GameScroll.CanvasSize =
+        UDim2.new(
+            0,
+            0,
+            0,
+            contentHeight + 18
+        )
+
+end
+
+Grid:GetPropertyChangedSignal(
+    "AbsoluteContentSize"
+):Connect(UpdateCanvas)
+
+task.defer(UpdateCanvas)
+
+--==================================================
+-- SEARCH
+--==================================================
+
+local function SearchGames(query)
+
+    query = string.lower(query or "")
+
+    query = string.gsub(
+        query,
+        "^%s+",
+        ""
+    )
+
+    query = string.gsub(
+        query,
+        "%s+$",
+        ""
+    )
+
+    local visibleCount = 0
+
+    for _, item in ipairs(Cards) do
+
+        local name =
+            string.lower(item.Data.Name)
+
+        local description =
+            string.lower(item.Data.Description)
+
+        local found =
+            query == ""
+            or string.find(
+                name,
+                query,
+                1,
+                true
+            )
+            or string.find(
+                description,
+                query,
+                1,
+                true
+            )
+
+        item.Button.Visible = found
+
+        if found then
+            visibleCount += 1
+        end
+    end
+
+    NoResults.Visible =
+        visibleCount == 0
+
+    if NoResults.Visible then
+
+        NoResults.Position =
+            UDim2.new(
+                0,
+                14,
+                0,
+                125
+            )
+
+        NoResults.Size =
+            UDim2.new(
+                1,
+                -28,
+                0,
+                100
+            )
+
+    end
+
+    GameScroll.CanvasPosition =
+        Vector2.new(0, 0)
+
+    task.defer(UpdateCanvas)
+
+end
+
+SearchBox:GetPropertyChangedSignal(
+    "Text"
+):Connect(function()
+
+    SearchGames(
+        SearchBox.Text
+    )
 
 end)
 
-scroll.CanvasSize=UDim2.new(0,0,0,list.AbsoluteContentSize.Y+10)
+--==================================================
+-- RESPONSIVE GRID
+--==================================================
+
+local function UpdateGrid()
+
+    local width =
+        Main.AbsoluteSize.X
+
+    if width < 500 then
+
+        -- phone portrait
+        Grid.CellSize =
+            UDim2.new(
+                1,
+                -2,
+                0,
+                70
+            )
+
+    elseif width < 850 then
+
+        -- mobile landscape / small window
+        Grid.CellSize =
+            UDim2.new(
+                0.5,
+                -5,
+                0,
+                70
+            )
+
+    else
+
+        -- desktop
+        Grid.CellSize =
+            UDim2.new(
+                0.333,
+                -7,
+                0,
+                70
+            )
+
+    end
+
+    task.defer(UpdateCanvas)
 
 end
 
--- scripts
-createBtn
-createBtn
-createBtn
-createBtn
-createBtn
-createBtn
-createBtn
+Main:GetPropertyChangedSignal(
+    "AbsoluteSize"
+):Connect(UpdateGrid)
 
-createBtn("Allusive",nil,true,true)
-createBtn("UwU",nil,true,true)
+task.defer(UpdateGrid)
 
--- TikTok
-local tiktok=Instance.new("TextButton",frame)
-tiktok.Size=UDim2.new(1,-40,0,28)
-tiktok.Position=UDim2.new(0,20,1,-35)
-tiktok.Text="TikTok"
-tiktok.Font=Enum.Font.GothamBold
-tiktok.TextSize=13
-tiktok.TextColor3=Color3.new(1,1,1)
-tiktok.BackgroundColor3=Color3.fromRGB(255,0,128)
-Instance.new("UICorner",tiktok).CornerRadius=UDim.new(0,8)
+--==================================================
+-- REOPEN BUTTON
+--==================================================
 
-tiktok.MouseButton1Click:Connect(function()
-click(tiktok)
-if setclipboard then
-setclipboard("www.tiktok.com/@renan1627")
-end
-game.StarterGui:SetCore("SendNotification",{
-Title="Copied!",
-Text="TikTok copied.",
-Duration=4
-})
+local Reopen = Instance.new("TextButton")
+
+Reopen.Name = "Reopen"
+
+Reopen.AnchorPoint =
+    Vector2.new(0, 0.5)
+
+Reopen.Position =
+    UDim2.new(0, 18, 0.7, 0)
+
+Reopen.Size =
+    UDim2.new(0, 48, 0, 48)
+
+Reopen.BackgroundColor3 =
+    Color3.fromRGB(24, 28, 38)
+
+Reopen.BorderSizePixel = 0
+
+Reopen.Text = "⚡"
+
+Reopen.TextColor3 = TEXT
+Reopen.TextSize = 20
+Reopen.Font = Enum.Font.GothamBold
+
+Reopen.Visible = false
+Reopen.AutoButtonColor = false
+
+Reopen.Parent = Gui
+
+Corner(Reopen, 24)
+
+local ReopenStroke =
+    Stroke(
+        Reopen,
+        ACCENT,
+        0.45,
+        1
+    )
+
+--==================================================
+-- REOPEN HOVER
+--==================================================
+
+Reopen.MouseEnter:Connect(function()
+
+    Tween(Reopen, .13, {
+        BackgroundColor3 =
+            Color3.fromRGB(37, 44, 59)
+    }):Play()
+
+    Tween(ReopenStroke, .13, {
+        Transparency = 0.05
+    }):Play()
+
 end)
 
--- reopen
-local reopen=Instance.new("TextButton",gui)
-reopen.Size=UDim2.new(0,45,0,45)
-reopen.Position=UDim2.new(0,20,0.7,0)
-reopen.Text="≡"
-reopen.Visible=false
-reopen.Font=Enum.Font.GothamBold
-reopen.TextSize=20
-reopen.TextColor3=Color3.new(1,1,1)
-reopen.BackgroundColor3=Color3.fromRGB(50,55,70)
-Instance.new("UICorner",reopen).CornerRadius=UDim.new(1,0)
+Reopen.MouseLeave:Connect(function()
 
-hideBtn.MouseButton1Click:Connect(function()
-click(hideBtn)
-frame.Visible=false
-reopen.Visible=true
+    Tween(Reopen, .13, {
+        BackgroundColor3 =
+            Color3.fromRGB(24, 28, 38)
+    }):Play()
+
+    Tween(ReopenStroke, .13, {
+        Transparency = 0.45
+    }):Play()
+
 end)
 
-reopen.MouseButton1Click:Connect(function()
-click(reopen)
-frame.Visible=true
-reopen.Visible=false
+--==================================================
+-- MINIMIZE
+--==================================================
+
+Close.Activated:Connect(function()
+
+    ClickSound(Close)
+
+    Tween(Main, .18, {
+        Size = UDim2.new(
+            Main.Size.X.Scale,
+            Main.Size.X.Offset,
+            0,
+            0
+        )
+    }):Play()
+
+    task.wait(.18)
+
+    Main.Visible = false
+    Reopen.Visible = true
+
 end)
 
--- 🔥 DRAG (ONLY TITLE BAR = FIX 100%)
-local dragging=false
-local dragStart
-local startPos
+--==================================================
+-- REOPEN
+--==================================================
 
-titleBar.InputBegan:Connect(function(input)
-	if input.UserInputType==Enum.UserInputType.MouseButton1 then
-		dragging=true
-		dragStart=input.Position
-		startPos=frame.Position
-	end
+Reopen.Activated:Connect(function()
+
+    ClickSound(Reopen)
+
+    Reopen.Visible = false
+    Main.Visible = true
+
+    Main.Size =
+        UDim2.new(
+            Main.Size.X.Scale,
+            Main.Size.X.Offset,
+            0,
+            0
+        )
+
+    Tween(Main, .24, {
+        Size =
+            UDim2.new(
+                0.78,
+                0,
+                0.72,
+                0
+            )
+    }):Play()
+
+end)
+
+--==================================================
+-- DRAG SYSTEM
+--==================================================
+
+local Dragging = false
+local DragStart
+local StartPosition
+
+Header.InputBegan:Connect(function(input)
+
+    if input.UserInputType ==
+        Enum.UserInputType.MouseButton1
+        or input.UserInputType ==
+        Enum.UserInputType.Touch then
+
+        Dragging = true
+
+        DragStart =
+            input.Position
+
+        StartPosition =
+            Main.Position
+
+    end
+
 end)
 
 UIS.InputChanged:Connect(function(input)
-	if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
-		local delta=input.Position-dragStart
-		frame.Position=UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset+delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset+delta.Y
-		)
-	end
+
+    if not Dragging then
+        return
+    end
+
+    if input.UserInputType ~=
+        Enum.UserInputType.MouseMovement
+        and input.UserInputType ~=
+        Enum.UserInputType.Touch then
+
+        return
+
+    end
+
+    local Delta =
+        input.Position - DragStart
+
+    Main.Position =
+        UDim2.new(
+            StartPosition.X.Scale,
+            StartPosition.X.Offset + Delta.X,
+
+            StartPosition.Y.Scale,
+            StartPosition.Y.Offset + Delta.Y
+        )
+
 end)
 
 UIS.InputEnded:Connect(function(input)
-	if input.UserInputType==Enum.UserInputType.MouseButton1 then
-		dragging=false
-	end
+
+    if input.UserInputType ==
+        Enum.UserInputType.MouseButton1
+        or input.UserInputType ==
+        Enum.UserInputType.Touch then
+
+        Dragging = false
+
+    end
+
 end)
+--==================================================
+-- REOPEN BUTTON DRAG
+--==================================================
+
+local ReopenDragging = false
+local ReopenDragStart
+local ReopenStartPosition
+
+Reopen.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        ReopenDragging = true
+        ReopenDragStart = input.Position
+        ReopenStartPosition = Reopen.Position
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+
+    if not ReopenDragging then
+        return
+    end
+
+    if input.UserInputType ~= Enum.UserInputType.MouseMovement
+        and input.UserInputType ~= Enum.UserInputType.Touch then
+        return
+    end
+
+    local Delta = input.Position - ReopenDragStart
+
+    Reopen.Position = UDim2.new(
+        ReopenStartPosition.X.Scale,
+        ReopenStartPosition.X.Offset + Delta.X,
+        ReopenStartPosition.Y.Scale,
+        ReopenStartPosition.Y.Offset + Delta.Y
+    )
+end)
+
+UIS.InputEnded:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        ReopenDragging = false
+    end
+end)
+
+--==================================================
+-- OPEN ANIMATION
+--==================================================
+
+Main.Size =
+    UDim2.new(
+        0.78,
+        0,
+        0,
+        0
+    )
+
+Tween(Main, .3, {
+    Size =
+        UDim2.new(
+            0.78,
+            0,
+            0.72,
+            0
+        )
+}):Play()
+
+--==================================================
+-- FINAL
+--==================================================
+
+print(
+    "[YUNGAKO HUB] UI v2 loaded - " ..
+    tostring(#Games) ..
+    " games"
+)
